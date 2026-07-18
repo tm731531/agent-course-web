@@ -88,6 +88,35 @@ flowchart LR
   </div>
   <p style="color:var(--muted);font-size:.95rem">一句話:以前 GPU 是被「訓練」這個一次性工作吃掉,做完就釋放;現在 GPU 是被「推論」這個永不停止的工作吃掉,只要有人在用,它就一直被佔著。</p>
 
+  <h2>📊 更大的差異:固定批次 vs 動態爆發</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">訓練再大也是「一批」——就算開 18 台機器跑好幾天,數量和時數是固定的、排得出來、租得到。現在的 AI 不一樣:每一句話都要即時算,而<strong>一個 Agent 開一堆 task,就要一堆 GPU 同時啟動</strong>——需求是隨時爆發、沒有上限的。</p>
+
+  <p style="font-weight:700;color:#475569;margin:8px 2px 2px;font-size:1.02rem">📦 訓練:固定一批</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  F1["排定 N 台機器<br/>× 固定時數"]:::proc --> F2["整批一起跑<br/>幾小時到幾天"]:::proc
+  F2 --> F3(["跑完就結束<br/>用量有上限 · 可預估 · 可租"]):::result
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    </pre>
+  </div>
+
+  <p style="font-weight:700;color:#991b1b;margin:18px 2px 2px;font-size:1.02rem">💥 現在:每句話都算,Agent 一開更爆</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  S1["每一句話<br/>都即時算一次"]:::proc --> G["瞬間需要<br/>大量分散式 GPU<br/>同時啟動"]:::infra
+  A(["一個 Agent"]):::result --> K["開一堆 task<br/>並行子任務"]:::proc
+  K --> G
+  G --> R(["隨時爆發 · 沒有上限<br/>永遠喊不夠"]):::result
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">呼應「多 Agent 並行」那集:你一次派越多 Agent、每個 Agent 又各自開越多 task,底下要同時啟動的 GPU 運算就成倍暴衝。訓練是「一批固定的量」,Agent 時代是「隨時可能炸開的量」——這才是 GPU 永遠喊不夠的深層原因。</p>
+
   <h2>🧮 推論時,模型怎麼跟 GPU 一起跑出一個字</h2>
   <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">模型不是資料庫,是「一大堆數字(權重)」。推論不是查表,是拿這些權重做大量矩陣運算——這正是 GPU 的強項,也正是它被吃掉的地方。</p>
   <div class="diagram">
