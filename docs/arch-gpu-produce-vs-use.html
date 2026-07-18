@@ -24,6 +24,7 @@
   .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
   .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
   .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.model{background:#f3e8ff;border-color:#9333ea;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
   .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
   .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
   .steps{display:flex;flex-direction:column;gap:14px}
@@ -53,36 +54,72 @@
   <h2>🔀 兩個時代:GPU 被什麼吃掉</h2>
   <div class="legend">
     <span class="k"><span class="s proc"></span>運算 / 步驟</span>
-    <span class="k"><span class="s data"></span>模型</span>
+    <span class="k"><span class="s model"></span>模型 / 權重(參數集)</span>
     <span class="k"><span class="s infra"></span>GPU / VRAM 常駐</span>
     <span class="k"><span class="s result"></span>終態</span>
   </div>
+  <p style="font-weight:700;color:#475569;margin:8px 2px 2px;font-size:1.02rem">🕰️ 過去 ML:GPU 吃在「產出」,用完就還</p>
   <div class="diagram">
     <pre class="mermaid">
-flowchart TB
-  subgraph OLD["🕰️ 過去 ML · GPU 吃在「產出」,用完就還"]
-    direction LR
-    O1["租一批 GPU"]:::proc --> O2["訓練 · 產出一個 model"]:::proc
-    O2 --> O3(["訓練完 · 還掉 GPU"]):::result
-    O2 --> O4[("產出的小模型")]:::data
-    O4 --> O5["拿去用:CPU 或輕量卡就夠<br/>便宜 · 間歇"]:::proc
-  end
-  subgraph NOW["🔥 現在 LLM · GPU 吃在「使用」,永遠還不掉"]
-    direction LR
-    N1[("巨大模型<br/>幾十億到上千億參數")]:::data --> N2["必須常駐 GPU 記憶體 VRAM<br/>不放進去根本跑不動"]:::infra
-    N2 --> N3["每吐一個字<br/>都要一次 GPU 運算"]:::proc
-    N3 --> N4["很多人同時用<br/>24 小時不停"]:::proc
-    N4 --> N5(["GPU 被永久佔住 · 還不掉"]):::result
-  end
-  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+flowchart LR
+  O1["租一批 GPU"]:::proc --> O2["訓練<br/>產出一個 model"]:::proc
+  O2 --> O3(["訓練完<br/>還掉 GPU"]):::result
+  O2 --> O4{{"產出的小模型<br/>一組參數"}}:::model
+  O4 --> O5["拿去用<br/>CPU 或輕量卡就夠<br/>便宜 · 間歇"]:::proc
+  classDef model fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    </pre>
+  </div>
+
+  <p style="font-weight:700;color:#991b1b;margin:18px 2px 2px;font-size:1.02rem">🔥 現在 LLM:GPU 吃在「使用」,永遠還不掉</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  N1{{"巨大模型<br/>幾十億到<br/>上千億參數"}}:::model --> N2["必須常駐<br/>GPU 記憶體 VRAM<br/>不放進去跑不動"]:::infra
+  N2 --> N3["每吐一個字<br/>都要一次<br/>GPU 運算"]:::proc
+  N3 --> N4["很多人同時用<br/>24 小時不停"]:::proc
+  N4 --> N5(["GPU 被永久佔住<br/>還不掉"]):::result
+  classDef model fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87
   classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
   classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
   classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
-  style OLD fill:#f8fafc,stroke:#cbd5e1,color:#475569
-  style NOW fill:#fef2f2,stroke:#fca5a5,color:#991b1b
     </pre>
   </div>
   <p style="color:var(--muted);font-size:.95rem">一句話:以前 GPU 是被「訓練」這個一次性工作吃掉,做完就釋放;現在 GPU 是被「推論」這個永不停止的工作吃掉,只要有人在用,它就一直被佔著。</p>
+
+  <h2>🧮 推論時,模型怎麼跟 GPU 一起跑出一個字</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">模型不是資料庫,是「一大堆數字(權重)」。推論不是查表,是拿這些權重做大量矩陣運算——這正是 GPU 的強項,也正是它被吃掉的地方。</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  IN["你的文字<br/>目前為止的所有字"]:::proc
+  subgraph GPUZONE["🖥️ GPU 推論時做兩件事"]
+    direction TB
+    W{{"模型權重<br/>幾十億參數<br/>常駐 VRAM"}}:::model
+    MM["逐層矩陣乘法<br/>跑一次 forward pass"]:::proc
+    W -. 每次都要讀過全部權重 .-> MM
+  end
+  OUT(["算出下一個字的機率<br/>挑一個字輸出"]):::result
+  IN --> MM
+  MM --> OUT
+  OUT -. 把新字接回去 · 再跑一次 · 逐字生成 .-> IN
+  classDef model fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  style GPUZONE fill:#eef2ff,stroke:#a5b4fc,color:#3730a3
+    </pre>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>模型 = 一大堆權重,分很多層</b><span class="dir">不是查資料</span></div>
+      <div class="bd">訓練好的模型就是幾十億到上千億個數字(參數),排成很多層。它不「儲存答案」,而是用這些權重去算出答案。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>算一個字 = 跑一次 forward pass</b><span class="dir">矩陣乘法</span></div>
+      <div class="bd">你的文字轉成向量,一層一層跟權重做矩陣乘法,最後算出「下一個字」的機率分布,挑一個字。GPU 最擅長這種大量平行的矩陣運算,所以推論交給它跑。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>逐字生成:接回去再跑一次</b><span class="dir">autoregressive</span></div>
+      <div class="bd">挑出的字接回輸入,整個模型再跑一次算下一個字,一個一個接下去。回一段長答案 = 幾百次 forward pass——這就是為什麼「使用」是持續在燒 GPU。</div></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>GPU 的兩個角色</b><span class="dir">吃 VRAM + 吃頻寬</span></div>
+      <div class="bd">① 用 VRAM 一直裝著全部權重(所以吃 VRAM 容量);② 每個字都要把全部權重讀一遍做矩陣乘法(所以吃記憶體頻寬與算力)。這兩件事,就是「使用」永遠佔住 GPU 的原因。</div></div>
+  </div>
 
   <h2>🕰️ 為什麼以前租得到、用得起</h2>
   <div class="steps">
@@ -127,7 +164,7 @@ flowchart TB
     theme:'base',
     themeVariables:{
       fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
-      fontSize:'14px', background:'#fbfcff',
+      fontSize:'16px', background:'#fbfcff',
       lineColor:'#475569', edgeLabelBackground:'#ffffff',
       primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
       clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
