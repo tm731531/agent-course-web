@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>雲端 vs 地端:AI 跑在哪裡,跟以前有什麼不一樣 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟡 地端篇</div>
+<h1>AI 到底跑在哪裡?</h1>
+<p class="lead">第 17 集 · 雲端 vs 地端:跟以前有什麼不一樣</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=jOaAEyaU0ik" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。這一集我們換個角度,不談 AI 會做什麼,而是問一個更基本的問題:你用的 AI,到底是在「哪裡」跑的?到目前為止,你用的 AI 幾乎都跑在「雲端」,也就是別人的機器上。但其實還有另一條路,叫做「地端」,讓 AI 跑在你自己的機器上。這一集,我就帶你搞懂這兩條路差在哪,還有為什麼這件事,跟我們以前熟悉的那一套不太一樣。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>你一直在用的,叫雲端</h2>
+<div class="semoji">☁️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你打字,透過網路送到供應商的伺服器</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>模型在他們的 GPU 上跑,算完把答案傳回來</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你這台只負責收發,沒在做真正的運算</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講你最熟的那一條:雲端。你打一句話進對話框,這句話其實是透過網路,送到供應商的伺服器上。真正在算的,是他們機房裡那一整排昂貴的 GPU;算完,再把答案傳回你的螢幕。所以你手上這台電腦或手機,其實沒在做什麼粗重運算,它只負責把話送出去、把答案收回來。真正的引擎,在遠方別人家裡。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>雲端怎麼算錢:按用量</h2>
+<div class="semoji">💳</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不用買機器,隨開隨用</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>用多少付多少,通常按 token 計費</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>門檻低,但用得越多,帳單越大</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>雲端最大的好處,是你不用養一台機器。不用買 GPU、不用管散熱、不用擔心它壞掉,想用就用。相對地,你付的是「使用費」,通常按用量算,也就是前面提過的 token,送進去和拿回來的字越多,付得越多。這種模式門檻很低,新手第一天就能上手;但要記得,它是用越多、帳單越大,規模一拉起來,成本會跟著往上走。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>另一條路:地端</h2>
+<div class="semoji">🏠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把模型下載到你自己的機器上跑</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>資料不出門,不連網也能用</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>代價:硬體要你自己準備</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>現在講另一條路:地端。意思是,你把 AI 模型整包下載下來,放在自己的機器、或公司自己的伺服器上跑。這樣做有兩個吸引人的地方:第一,資料從頭到尾都在你家,不會送出去;第二,運算在本地做,理論上斷網也還能跑。當然天下沒有白吃的午餐,代價是:那台夠力的機器,得你自己準備、自己買單。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>這種「自己的機器」不新鮮吧?</h2>
+<div class="semoji">🔌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前公司自建機房,跑資料庫、跑網站</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>那種負載穩定、可預期</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以你可能覺得:地端我懂,不就那樣</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到「把東西放自己機器上跑」,你可能想:這哪裡新鮮?公司自建機房,跑資料庫、跑內部網站,做了幾十年了。沒錯,傳統地端就是這樣,而且那種工作特性很清楚:負載穩定、可以預估,規格開好大概能撐多少人,心裡有底。所以很多人第一直覺是:地端我懂,不就以前那一套。但這裡有個關鍵陷阱。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>陷阱:大模型吃的資源是另一個量級</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>跑資料庫,吃的是 CPU 跟一般記憶體</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>跑大模型,吃的是 GPU 記憶體跟頻寬</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>別用舊機房的思維去估這件事</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>陷阱在這:以前地端跑資料庫、網站,吃的主要是 CPU 跟一般記憶體。但現在地端要跑的是「大模型推論」,吃的資源完全不同,主要是 GPU 上的記憶體,還有資料在晶片裡搬動的頻寬,是另一個量級。你拿以前規劃機房的老經驗直接套上去,幾乎一定估錯。一台跑得動公司網站的伺服器,很可能連一個像樣的模型都塞不進去。這是最多人踩的坑。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>核心取捨:一張表看懂</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>雲端:省事、最新最強,但資料出門、按量計費會隨規模上升</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>地端:資料在家、可離線、長期不按 token 付</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>地端代價:硬體貴、模型通常小一截、要自己維運</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>兩邊的取捨擺一起看就清楚。雲端:省事、隨開隨用,用到的通常是最新最強的模型;但資料要送出門,用量一大,帳單一路往上。地端:資料留在家、可離線、長期重度用不必一直付 token;但硬體很貴,受限於機器,能跑的模型通常比雲端頂規小一截,還得自己維護。沒有一邊是全贏的,全是取捨。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>常見誤解:地端 ≠ 免費</h2>
+<div class="semoji">💰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你只是把「按 token 付」換成「一次買硬體」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>還有電費、維運、汰換這些隱形成本</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>算總帳,不是算單筆</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡要打破一個常見誤解:很多人以為地端不付 token,就是「免費」。錯。你只是把付錢方式換掉,從「每次用付一點」,換成「一次砸一大筆買硬體」。而且硬體之外還有一堆隱形成本:電費、維護、過幾年還要汰換升級。所以判斷地端划不划算,不能只看省下的 token,要把買機器、養機器的總帳一起算,再跟雲端長期費用比。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>那到底看什麼來決定?</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>資料有多敏感:能不能送出門</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>用量有多大:是偶爾用還是天天重度跑</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要不要離線:斷網還得不得動</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>既然地端不免費、也不一定比較好,那看什麼決定?抓三件事。第一,資料多敏感:有些資料因為隱私或規範根本不能送出去,這時地端幾乎是唯一選項。第二,用量多大:偶爾問兩句,雲端划算;天天大量跑,長期算下來地端才可能回本。第三,要不要離線:場景常沒網路、斷網也得動,本地跑就有價值。這三件事想清楚,答案通常就浮出來了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>更務實的答案:混著用</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一般任務走雲端,方便又用得到最強模型</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>敏感、大量、要離線的走地端</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這不是二選一的單選題</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這你可能以為雲端和地端要二選一。其實不是,真實世界最務實的做法是「混著用」。大部分不敏感的任務走雲端,方便又用得到最強模型;只有那些真的碰不得的敏感資料、或量大到雲端費用嚇人、或非離線不可的場景,才特地放到地端跑。你完全可以左手雲端、右手地端,兩條路一起走,各自處理最適合它的那部分工作。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>為什麼現在才聊這個</h2>
+<div class="semoji">🔭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>前幾集:AI 能幫你做什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這一集:這件事發生在哪裡</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>知道「跑在哪」,你才控制得住資料跟成本</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你可能問,前面十幾集都在講 AI 能幫我做什麼,為什麼到這集才聊「跑在哪」?因為你只是偶爾問問題時,跑在哪不太重要。但當你開始把 AI 當助理、交辦一整串任務、餵它比較重要的資料,「它在哪運算、我的資料流去了哪」就變成你必須搞懂的事。知道跑在雲端還是地端,你才握得住兩樣東西:資料安不安全,還有成本會不會失控。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>給你一個判斷順序</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先問:這批資料能不能出門</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>再問:用量大到雲端費用會痛嗎</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>最後才問:硬體我養得起嗎</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>給你一個實際的判斷順序。第一個永遠先問:這批資料能不能送出門?只要不能,不管貴不貴,地端就是方向,直接跳過後面。資料可以送,再問第二個:用量大到會讓雲端帳單很痛嗎?不痛,老實說雲端最省事。真的很痛,才進到第三個:那台夠力的機器,我養不養得起、有沒有人會顧?這三個問題按順序走一遍,你就不會被「聽起來很酷」牽著走。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>雲端和地端,沒有誰比較好</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>是資料多敏感、用量多大、要不要離線,決定你放哪</li>
+</ul>
+<div class="note">下集:為什麼有人堅持一定要用地端?</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,就是這句:雲端和地端沒有誰比較好,是你的資料多敏感、用量多大、要不要離線,這三件事決定你把 AI 放在哪裡跑。它不是一場「哪個技術比較先進」的比賽,而是一道看你自己需求的取捨題。不過你可能好奇,雲端這麼方便,為什麼還有一群人寧可花大錢、自己養機器,也堅持要用地端?下一集,我就來講講他們背後的理由。我們下一集見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=jOaAEyaU0ik" target="_blank" rel="noopener">https://www.youtube.com/watch?v=jOaAEyaU0ik</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+
