@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent 的三個構成:目標、工具、迭代 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟢 觀念篇</div>
+<h1>Agent 的三個構成</h1>
+<p class="lead">第 4 集 · 目標、工具、迭代 —— 拆解它憑什麼叫 Agent</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=Il2H5ex_l_U" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。上一集我們說,Agent 就是一個你可以「交辦」任務的 AI,你給它一個目標,它自己想辦法做完。但你有沒有想過,它憑什麼做得到?這一集我就把它拆開來給你看。其實不複雜,Agent 就是三個零件組成的:目標、工具、迭代。你先把這三個詞記住,因為這系列後面所有東西,都是從這三個零件延伸出來的。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先看全貌:三個零件</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標:知道自己要達成什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>工具:能對外界真的動手</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>迭代:做錯了會自己修正</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們先看全貌。一個 Agent 之所以叫 Agent,是因為它同時具備三樣東西。第一是目標,它知道自己要達成的是什麼結果。第二是工具,它能真的對外界動手,不是只會講話。第三是迭代,它做錯了會自己發現、自己修。這三個是一組的,缺任何一個,它就會退回去,變成一個「只會聊天」的 AI。接下來我一個一個拆給你聽。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>零件一:目標</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是「回答一個問題」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>而是「完成一個結果」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它盯的是結果,不是回話</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講第一個零件:目標。這是 Agent 跟一般問答最根本的差別。一般的問答,任務是「回答一個問題」;而 Agent 的任務是「完成一個結果」。你注意這兩個詞的差別:回答問題,講完就結束了;完成結果,是要真的把事情做到成。Agent 盯的不是「我要回你什麼話」,而是「這件事有沒有真的被我搞定」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>舉個例子:訂高鐵票</h2>
+<div class="semoji">🚄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你說「幫我訂到下週三台北到高雄最便宜的高鐵」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>目標是「訂到票」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不是「告訴我怎麼訂」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>舉個生活化的例子你就懂了。假設你跟它說:「幫我訂到下週三、台北到高雄、最便宜的那班高鐵。」這裡的目標很清楚,是「訂到票」這個結果,而不是「告訴我怎麼訂票」。如果是一般問答,它會回你一段教學:你可以上高鐵網站、選日期、比票價。但 Agent 不是,它盯著的是那張票到底有沒有到手,沒到手,這件事就還沒完。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>目標為什麼重要</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>有目標,它才知道什麼叫「做完了」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>才會一直做到達成為止</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>而不是丟一句答案就停</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那目標為什麼這麼重要?因為有了明確的目標,它才知道什麼叫「做完了」。有一個清楚的終點,它才會一路做下去,一直做到達成為止;中間卡住了,它會想別的辦法,而不是丟一句答案給你就停在那裡。你可以把目標想成它的終點線,沒有這條線,它根本不知道要跑到哪、什麼時候可以停,那它就只能回你一句話交差了事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>零件二:工具</h2>
+<div class="semoji">🛠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>能查資料、讀寫檔案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>能執行程式、操作系統</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>沒有工具,它就只是一張嘴</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個零件:工具。這是 Agent 最容易被低估的一塊。一般的 AI 只會講話,而 Agent 能真的「動手」——它可以去查資料、可以讀寫你的檔案、可以執行程式、可以操作系統。這些能讓它碰到外界的手段,就叫工具。你想想看,如果一個助理只會出一張嘴、什麼都不能碰,那他能幫你做的事其實非常有限。沒有工具的 AI,就是這樣一張嘴而已。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>工具的意義:碰得到真實世界</h2>
+<div class="semoji">🌐</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>能摸到真實資料和你的檔案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不再是憑空回答</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它能真的打開網站抓價格,不是猜</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>工具真正的意義,是讓它碰得到真實世界。有了工具,它才摸得到真實的資料、摸得到你電腦裡的檔案,而不是靠著腦袋裡的舊記憶憑空回答你。回到訂票的例子:有工具的 Agent,是真的去打開高鐵網站、把當天每一班的票價抓下來看,然後告訴你哪班最便宜;沒有工具的,就只能用它印象中的資訊猜給你聽。一個是查證,一個是用猜的,可靠度天差地遠。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>零件三:迭代</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>觀察結果 → 發現不對 → 調整 → 再試一次</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這是它最像「人」的地方</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>也跟一次性問答差最多</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個零件,也是我覺得最迷人的一個:迭代。什麼叫迭代?就是它會「觀察結果、發現不對、調整方向、再試一次」,這樣一圈一圈地繞,直到把事情做對。這是 Agent 最像「人」的地方。我們人做事不也是這樣嗎?試一下、看結果、不對就改。這一點,正好是它跟傳統那種問一句答一句、一次定生死的問答,差最多的地方。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>迭代為什麼關鍵</h2>
+<div class="semoji">🔧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>第一次很少一次到位</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>會自我修正的才可靠</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>抓錯資料時,它自己發現、退回重來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>迭代為什麼關鍵?因為說真的,不管是人還是 AI,第一次就一次到位的機會其實很少。真正決定可不可靠的,不是「會不會犯錯」,而是「犯了錯會不會自己修」。還是用訂票的例子:假設它抓價格時抓錯了一班車,一個會迭代的 Agent 會自己發現這班對不上、退回去重新查一次,再往下做。這個自我修正的能力,才是你敢把事情交給它的底氣。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>把三個零件跑一遍:訂票</h2>
+<div class="semoji">🚄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標:盯著「訂到票」這個結果</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>工具:真的開網站、比每一班票價</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>迭代:發現查錯,退回重來再往下</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們用訂票這件事,把三個零件從頭到尾跑一遍,你就會看到它們怎麼接力。首先是目標,它心裡認定的終點是「訂到那張票」,不達成就不算完。接著是工具,它真的去打開高鐵網站,把每一班的時間、票價一筆一筆抓下來比。過程中如果哪一步查錯了、對不上,迭代就上場,它自己發現、退回去重來,再繼續往下做。目標、工具、迭代,一棒接一棒,票就這樣被訂到了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>三個合起來,才叫 Agent</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標給它方向</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>工具給它手腳</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>迭代給它韌性</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>好,我們把三個零件合起來看。目標,給它方向,讓它知道要往哪跑;工具,給它手腳,讓它能真的動手做事;迭代,給它韌性,讓它跌倒了能自己爬起來再試。方向、手腳、韌性,這三個湊齊了,一個 AI 才真正稱得上是 Agent。這三個不是可有可無的加分項,而是缺一不可的核心。它們湊在一起,才是完整的那個「會替你做事的它」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>缺一個,會變成什麼</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>少了目標:它會亂跑,不知何時該停</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>少了工具:它只剩一張嘴,碰不到真實</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>少了迭代:它一錯就垮,沒法自救</li>
+</ul>
+<div class="note">缺一即退回「只會聊天」</div>
+<details class="script"><summary>逐字稿</summary><p>反過來看更清楚:少掉任何一個零件,它就會退回成一個「只會聊天」的 AI。少了目標,它不知道要跑到哪、什麼時候該停,只能回你一句話交差。少了工具,它就只剩一張嘴,碰不到真實的資料,只能憑印象猜。少了迭代,它第一步錯了就一路錯到底,沒辦法自己救回來。所以你評估一個工具,不是看它單項多強,而是看這三個是不是都在。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話:三把尺</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>有沒有明確目標</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>會不會用工具</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>會不會自己修正</li>
+</ul>
+<div class="note">下集:用 Agent 到底要花多少錢、又該怎麼開始</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,那就是這個:以後你看到任何號稱是 Agent 的工具,就用這三把尺去量它——它有沒有一個明確的目標?它會不會真的動手用工具?它做錯了會不會自己修正?三個都有,它才是真的 Agent;缺一個,你心裡就要有數。下一集,我們來聊一個很實際的問題:用 Agent 到底要花多少錢,還有,你該怎麼踏出第一步。我們下一集見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=Il2H5ex_l_U" target="_blank" rel="noopener">https://www.youtube.com/watch?v=Il2H5ex_l_U</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+
