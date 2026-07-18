@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>把開源腦養成公司資產:RAG vs 微調,怎麼選 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:24px 0;overflow-x:auto}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;
+      font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>把開源腦養成公司資產:RAG vs 微調,怎麼選</h1>
+    <p class="lead">把開源模型變成「自己的腦」,不是二選一。RAG 負責補知識、微調(FT)負責定行為,兩者搭起來,再把成果地端部署到各處——這就是把模型從「租來的成本」變成「養出來的資產」。</p>
+  </header>
+
+  <h2>🏭 從資料到資產:一條 pipeline</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  A["原始文件<br/>政策 / SOP / 問答"] --> B["資料準備<br/>整成 指令→理想回應 配對 (JSONL)"]
+  B --> C{"要補什麼?"}
+  C -->|定行為 / 語氣 / 流程| D["微調 FT<br/>QLoRA 產出 LoRA adapter"]
+  C -->|補知識 / 常變動| E["RAG<br/>外掛知識庫檢索"]
+  D --> F["驗證<br/>學到行為? 有沒有掉能力?"]
+  E --> F
+  F --> G["公司專屬模型<br/>行為 = FT · 知識 = RAG"]
+  G --> H["地端部署<br/>各處各一台推論機 (量化後)"]
+  H --> I["資產化<br/>離線 · 可複製 · 版本可回溯"]
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">文章的核心心法:「中央一顆腦(用 FT 定行為)＋ 各地各自的知識庫(用 RAG 掛在地文件)」。行為到哪都一致,知識在地各自適配。</p>
+
+  <h2>🔀 RAG vs 微調(FT):各解決什麼</h2>
+  <table>
+    <tr><th>面向</th><th>RAG(檢索增強)</th><th>微調 FT(Fine-Tuning)</th></tr>
+    <tr><td>解決什麼</td><td>補<strong>知識</strong>:公司文件、政策、參考資料</td><td>定<strong>行為</strong>:語氣、回應格式、SOP 流程、分類邏輯</td></tr>
+    <tr><td>知識放哪</td><td>外掛知識庫,查詢時注入 prompt</td><td>寫進模型權重(用配對範例調參)</td></tr>
+    <tr><td>何時用</td><td>資料常變動、要即時更新、怕過時/幻覺</td><td>要固定風格與流程、要模型「內化」公司做法</td></tr>
+    <tr><td>更新成本</td><td>改來源文件即可,自動跟著更新</td><td>要重新訓練;不適合拿來塞會過時的知識</td></tr>
+    <tr><td>可否結合</td><td colspan="2"><strong>可以,而且是正解</strong>。文章說多數 production 最後都走這條路:FT 定行為風格、RAG 供事實知識;避免把「會過時的知識」硬微調進去的昂貴錯誤。</td></tr>
+  </table>
+
+  <h2>🧱 資產化的意義</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>離線部署</b><span class="dir">資料不出門</span></div>
+      <pre>量化後的模型可在地端推論機跑(免昂貴訓練 GPU)。
+訓練素材與查詢都留在自家基礎設施內,
+第三方碰不到 → 隱私守得住。</pre></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>複製到各處</b><span class="dir">一顆腦,多個點</span></div>
+      <pre>訓練出的 adapter 很小(約 100MB 級距),
+每個點放一台一樣的推論機,行為到哪都一致;
+在地知識庫各自掛 RAG,知識在地適配。</pre></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>省費用、變資產</b><span class="dir">從成本變資產</span></div>
+      <pre>文章對比:「租 API 是成本項,養模型是資產」。
+一次訓練 vs 每月按 token 計費;
+版本可追蹤、可回溯,更新從中央統一發到各點。</pre></div>
+  </div>
+
+  <div class="links">
+    <a class="yt" href="https://www.youtube.com/watch?v=G8TdD8QfpVA" target="_blank" rel="noopener">▶ 相關影片:為什麼用地端</a>
+    <a class="src" href="https://blog.tomting.com/2026/07/11/fine-tune-gpt-oss-20b-company-brain/" target="_blank" rel="noopener">📖 延伸閱讀:原文</a>
+  </div>
+
+  <footer class="foot">技術觀念整理自作者部落格〈把開源模型微調成公司腦〉。《從問 AI 到用 Agent》架構補充頁。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default',
+    themeVariables:{fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif', fontSize:'14px'}});
+</script>
+</body></html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>地端的隱形陷阱:同一個模型,換硬體就算錯 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:24px 0;overflow-x:auto}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;
+      font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .note{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin:24px 0}
+  .note b{color:var(--accent)}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>地端的隱形陷阱:同一個模型,換硬體就算錯</h1>
+    <p class="lead">同一個 gemma4:e4b,搬到 AMD Renoir iGPU + Vulkan 上跑,速度快 8 倍,答案卻全錯——問技術問題,回你泰文學習理論。這不是模型笨,是硬體/後端把數字算歪了。這張診斷樹把整段排查攤開。</p>
+  </header>
+
+  <h2>🔍 排查流程:從吐亂碼到找出根因</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TD
+  S["症狀: gemma4:e4b 在 iGPU 超過 30 層吐亂碼<br/>低層數正常, 速度快但答案全錯"]
+  S --> A{"先懷疑: RAM 不足?"}
+  A -->|停 OMS 釋放記憶體| A2["iGPU 靠 UMA 2GB + GTT 動態借 RAM<br/>RAM 不足 GPU 借不到頁面 → 崩潰重試"]
+  A2 --> B{"二分法: 幾層開始壞?"}
+  B -->|num_gpu 1~5 正確| B1["✅ 少數層 正確"]
+  B -->|num_gpu 20+ 亂碼| B2["❌ 誤差隨層數累積"]
+  B1 --> C{"調環境變數能修嗎?"}
+  B2 --> C
+  C -->|GGML_VK_DISABLE_F16=1| C1["無效"]
+  C -->|OLLAMA_KV_CACHE_TYPE=f32| C2["輸出變旁遮普語"]
+  C1 --> R["根因: RADV/ACO 編譯器層<br/>重排 FP16 運算順序 → 每層小誤差<br/>層層放大, 第 30+ 層蓋過真訊號"]
+  C2 --> R
+  R --> F["解法: num_gpu=0 純 CPU 慢但全對<br/>或換 Mac Metal 同速且精度正常"]
+    </pre>
+  </div>
+
+  <h2>關鍵排查點與結論</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>先懷疑記憶體:RAM 不足</b><span class="dir">停 OMS 釋放記憶體</span></div>
+      <pre>現象:模型反覆崩潰重試,載入耗時 6 分鐘
+測試:停掉 OMS 服務,把系統 RAM 讓出來
+結論:iGPU 記憶體 = UMA(2GB 固定)+ GTT(動態借系統 RAM)
+      系統可用 RAM 不足時,GPU 借不到足夠頁面 → 崩潰</pre></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>二分法找精度臨界點</b><span class="dir">用複雜問題測 num_gpu 層數</span></div>
+      <pre>num_gpu = 1~5    ✅ 正確
+num_gpu = 10     ⚠️ 不穩定
+num_gpu = 20+    ❌ 亂碼
+發現:誤差隨「丟給 GPU 的層數」累積,越多層越糟</pre></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>嘗試環境變數修復</b><span class="dir">結論:應用層修不了</span></div>
+      <pre>GGML_VK_DISABLE_F16=1      → 無效
+OLLAMA_KV_CACHE_TYPE=f32   → 輸出變旁遮普語(還是錯)
+結論:bug 在 RADV/ACO compiler 那一層,應用層無法控制</pre></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>定位根因:兩層精度誤差疊加</b><span class="dir">FP16 運算順序 × 層間放大</span></div>
+      <pre>層內:RADV/ACO 為了優化,重排 FP16 運算順序
+      浮點數不符結合律 → 順序一改,結果就變
+層間:每層輸出是下層輸入,小誤差被逐層放大
+      第 30+ 層後,累積誤差已蓋過真正的訊號</pre></div>
+    <div class="step"><div class="h"><span class="num">5</span><b>解法:正確性優先於速度</b><span class="dir">寧可慢也要對</span></div>
+      <pre>「快 8 倍但答案全錯,還不如 1 tok/s 的純 CPU」
+建議:num_gpu=0(純 CPU,1 tok/s 但完全正確)
+      或換 Mac Metal(同速,但精度正常)</pre></div>
+  </div>
+
+  <h2>涉及的硬體與後端名詞</h2>
+  <table>
+    <tr><th>類別</th><th>文章中出現的實際名詞</th></tr>
+    <tr><td>硬體</td><td>AMD Renoir APU、Vega 架構 iGPU</td></tr>
+    <tr><td>模型</td><td>gemma4:e4b(共 43 層)</td></tr>
+    <tr><td>後端 / 執行層</td><td>Vulkan(RADV / ACO compiler)、llama.cpp、Ollama</td></tr>
+    <tr><td>精度 / 記憶體術語</td><td>FP16、FMA、denormal、UMA、GTT</td></tr>
+  </table>
+
+  <div class="note">
+    <b>這一頁的教訓</b> — 地端不是「裝了就會跑對」。同一個模型換到不同硬體 / 後端,可能算出完全不同的結果。要暴露這種問題,得在系統 RAM 充足、且用「複雜問題」實測下才看得到;而編譯器層級的精度缺陷,靠應用層調環境變數修不了。地端部署,硬體與後端的<b>正確性</b>必須自己驗——速度再快,答錯就是零分。
+  </div>
+
+  <div class="links">
+    <a class="yt" href="https://www.youtube.com/watch?v=4UzgcfAS3ps" target="_blank" rel="noopener">▶ 相關影片:地端硬體限制</a>
+    <a class="src" href="https://blog.tomting.com/2026/04/05/gemma4-amd-renoir-igpu-vulkan-garbled-output/" target="_blank" rel="noopener">📖 延伸閱讀:排查原文</a>
+  </div>
+
+  <footer class="foot">技術排查整理自作者部落格〈Gemma 在 AMD Renoir iGPU + Vulkan 吐亂碼〉。《從問 AI 到用 Agent》架構補充頁。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default',
+    themeVariables:{fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif', fontSize:'14px'}});
+</script>
+</body></html>

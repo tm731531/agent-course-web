@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>本地換腦實戰:把地端模型接進你的 agent | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:24px 0;overflow-x:auto}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;
+      font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;margin:22px 0}
+  .card b{font-size:1.02rem}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>本地換腦實戰:把地端模型接進你的 agent</h1>
+    <p class="lead">把 coding agent 的「腦」換成地端本地模型,實測下來的一句話結論:選對 agent 比選對模型更重要。同一顆開源模型,Claude Code 撞牆、aider 卻順順跑通。</p>
+  </header>
+
+  <h2>🧩 本地模型怎麼接進 agent:哪條路通、哪條撞牆</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  M["本地 / 開源模型<br/>ollama · Cerebras<br/>gpt-oss-120b"]
+  M --> CC["Claude Code<br/>深度綁定 Claude 格式"]
+  M --> AI["aider<br/>OpenAI 格式"]
+  CC --> X["thinking_blocks 不相容<br/>第二回合被拒"]
+  X --> STOP["撞牆:多回合崩潰<br/>檔案寫不出去"]
+  AI --> OK["多回合順跑"]
+  OK --> P["你的專案 repo<br/>檔案真實落地"]
+  classDef wall fill:#7f1d1d,stroke:#ef4444,color:#fff;
+  classDef pass fill:#065f46,stroke:#10b981,color:#fff;
+  classDef brain fill:#0369a1,stroke:#38bdf8,color:#fff;
+  class M brain;
+  class X,STOP wall;
+  class OK,P pass;
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">同一顆 <code>gpt-oss-120b</code> 餵給兩個 agent:紅色路是 Claude Code,綠色路是 aider。爆掉的不是模型,是 agent 對格式的處理方式。</p>
+
+  <h2>🚧 CC 撞牆 vs aider 跑通:對照</h2>
+  <table>
+    <tr><th>面向</th><th>Claude Code(撞牆)</th><th>aider(跑通)</th></tr>
+    <tr><td>訊息格式</td><td>Claude 專屬,把推理存成 <code>thinking_blocks</code></td><td>天生走 OpenAI 格式,不產生也不預期 <code>thinking_blocks</code></td></tr>
+    <tr><td>單回合</td><td>成功(能認出自己跑在地端模型上)</td><td>成功</td></tr>
+    <tr><td>多回合</td><td>崩潰:第二回合把 <code>thinking_blocks</code> 連歷史送回非 Claude 模型,直接被拒</td><td>順跑,不中斷</td></tr>
+    <tr><td>寫檔</td><td>寫不出去</td><td>檔案真實落地</td></tr>
+    <tr><td>想繞過</td><td>用 <code>drop_params</code> 剝欄位失效——<code>thinking_blocks</code> 藏在訊息結構裡,不是 top-level 參數。硬關推理等於「買跑車拆引擎」</td><td>不需要繞</td></tr>
+  </table>
+
+  <h2>🎯 為什麼「選對 agent 比選對模型更重要」</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>Agent 其實分四層</b><span class="dir">最易被忽略的是 agent 層</span></div>
+      <pre>腦 (LLM)      預測下一字的模型        → 換成開源 120B
+平台          模型跑在哪              → Cerebras 雲 / DGX 本地
+Agent         驅動工具迴圈的程式      → 為特定模型調校 ★ 常被忽略
+Harness/UI    遠端介面               → 中繼那層</pre></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>模型有能力,是殼不相容</b><span class="dir">120B 沒問題</span></div>
+      <pre>CC + gpt-oss-120b     單回合 ✓ / 多回合 ✗
+aider + 同一顆腦       多回合 ✓ / 寫檔 ✓
+→ 爆掉的是 CC 的處理方式,不是模型</pre></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>決策規則</b><span class="dir">照腦選 agent</span></div>
+      <pre>腦是 Claude 級 (Opus)   → 用 Claude Code 最順
+腦是本地 / 開源         → 用 model-agnostic 的 aider / OpenHands
+鐵律:CC 深度綁定 Claude,任何非 Claude 的腦都會被綁手綁腳</pre></div>
+  </div>
+
+  <div class="card">
+    <b>🔧 實務提醒:本地模型 + 對的 agent,才跑得順</b>
+    <p style="margin-top:8px">換腦決定成敗的,不是腦有多聰明,而是「腦到手之間的管線」對不對。本地/開源模型要配 model-agnostic 的 agent(aider / OpenHands),換腦幾乎只是改一行 <code>--model</code>,agent、UI、流程全不用動。反過來,把地端模型硬塞進為 Claude 綁定的殼裡,再強的模型也只能單回合跑一下就卡死。先選對 agent,再談換哪顆腦。</p>
+  </div>
+
+  <div class="links">
+    <a class="yt" href="https://www.youtube.com/watch?v=jOaAEyaU0ik" target="_blank" rel="noopener">▶ 相關影片:雲端 vs 地端</a>
+    <a class="src" href="https://blog.tomting.com/2026/07/13/local-brain-swap-hands-on/" target="_blank" rel="noopener">📖 延伸閱讀:本地換腦實戰原文</a>
+  </div>
+
+  <footer class="foot">技術流程整理自作者部落格〈本地換腦實戰:把地端本地模型接進 coding agent〉。《從問 AI 到用 Agent》架構補充頁。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default',
+    themeVariables:{fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif', fontSize:'14px'}});
+</script>
+</body></html>
