@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Tool Use 完整拆解:一次帶工具的往返 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:24px 0;overflow-x:auto}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;
+      font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>LLM Tool Use 完整拆解:一次帶工具的往返</h1>
+    <p class="lead">Agent 之所以能「動手」,底層就是這個往返:你的程式、LLM、工具三方,把訊息傳來傳去,一共四步。這張時序圖把它攤開。</p>
+  </header>
+
+  <h2>🔁 一次 tool use 的四步往返</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+sequenceDiagram
+  actor U as 使用者
+  participant App as 你的程式 (App)
+  participant LLM as LLM
+  participant Tool as 工具 get_weather
+  U->>App: 「台北天氣?」
+  App->>LLM: ① messages + tools 定義
+  LLM-->>App: ② tool_calls:呼叫 get_weather<br/>finish_reason = tool_calls
+  App->>Tool: ③ 執行 get_weather(Taipei)
+  Tool-->>App: {temp:28, 晴}
+  App->>LLM: ④ 把 tool result 加回 messages 重送
+  LLM-->>App: ⑤ 最終人話回應<br/>finish_reason = stop
+  App-->>U: 「台北現在 28 度,晴時多雲」
+    </pre>
+  </div>
+
+  <h2>每一步實際傳什麼(OpenAI 格式)</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>你的程式 → LLM</b><span class="dir">送出 messages + 工具定義</span></div>
+      <pre>POST /chat/completions
+{
+  "messages": [{ "role": "user", "content": "台北天氣?" }],
+  "tools": [{ "name": "get_weather", "parameters": {…} }]
+}</pre></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>LLM → 你的程式</b><span class="dir">回傳「要呼叫工具」的意圖</span></div>
+      <pre>{
+  "tool_calls": [{ "id": "call_123",
+     "name": "get_weather",
+     "arguments": {"location": "Taipei"} }],
+  "finish_reason": "tool_calls"
+}</pre></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>你的程式 執行工具 → 重送</b><span class="dir">把真實結果加回對話</span></div>
+      <pre>"messages": [
+  原始訊息,
+  { "role": "assistant", "tool_calls": [...] },   // LLM 的意圖
+  { "role": "tool", "tool_call_id": "call_123",
+    "content": "{temp:28, condition:晴}" }        // 真實執行結果
+]</pre></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>LLM → 你的程式</b><span class="dir">產生最終人話</span></div>
+      <pre>{
+  "message": { "content": "台北現在28度晴時多雲" },
+  "finish_reason": "stop"
+}</pre></div>
+  </div>
+
+  <h2>OpenAI vs Anthropic:同一件事,兩種格式</h2>
+  <table>
+    <tr><th>環節</th><th>OpenAI</th><th>Anthropic</th></tr>
+    <tr><td>工具定義</td><td><code>tools[].function.parameters</code></td><td><code>tools[].input_schema</code></td></tr>
+    <tr><td>模型要求呼叫</td><td>平行的 <code>tool_calls[]</code> 陣列<br><code>finish_reason: tool_calls</code></td><td>content 裡含 <code>tool_use</code> 積木<br><code>stop_reason: tool_use</code></td></tr>
+    <tr><td>結果訊息角色</td><td><code>role: "tool"</code></td><td><code>role: "user"</code>(內含 <code>tool_result</code> 積木)</td></tr>
+    <tr><td>參數格式</td><td><code>arguments</code> 為字串化 JSON</td><td><code>input</code> 為物件直接傳</td></tr>
+  </table>
+  <p style="color:var(--muted);font-size:.95rem">核心差異:OpenAI 用平行的 <code>tool_calls</code> 陣列;Anthropic 把文字、工具呼叫、結果都當成 content 積木,混排在同一訊息裡。</p>
+
+  <div class="links">
+    <a class="yt" href="https://www.youtube.com/watch?v=tm0T0qWKExQ" target="_blank" rel="noopener">▶ 相關影片:讓 Agent 動手用工具</a>
+    <a class="src" href="https://blog.tomting.com/2026/07/11/llm-api-request-response-tool-use-explained/" target="_blank" rel="noopener">📖 延伸閱讀:完整拆解原文</a>
+  </div>
+
+  <footer class="foot">技術流程整理自作者部落格〈LLM Request/Response 與 Tool Use 完整拆解〉。《從問 AI 到用 Agent》架構補充頁。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default',
+    themeVariables:{fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif', fontSize:'14px'}});
+</script>
+</body></html>
