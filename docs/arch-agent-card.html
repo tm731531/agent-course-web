@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Card:讓既有系統变身成 Agent | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>Agent Card:讓既有系統变身成 Agent</h1>
+    <p class="lead">你不用把系統重寫成 Agent。只要幫它掛一張「Agent Card」——一份放在公開網址上的自我介紹卡——它就變成 Agent 世界找得到、用得到的一員。這張卡設計得好不好,決定別人用不用得動你。</p>
+  </header>
+
+  <h2>🪪 三方關係:發起 Agent ↔ Agent Card ↔ 你的系統</h2>
+  <div class="legend">
+    <span class="k"><span class="s result"></span>別的 Agent(發起方)</span>
+    <span class="k"><span class="s data"></span>Agent Card(自我介紹卡)</span>
+    <span class="k"><span class="s decision"></span>驗證 / 授權關卡</span>
+    <span class="k"><span class="s proc"></span>服務 / 業務邏輯</span>
+    <span class="k"><span class="s infra"></span>既有系統元件(資料庫 / API)</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  subgraph CALLER["🤖 別的 Agent · 發起方"]
+    O(["想找人幫忙的 Agent"]):::result
+  end
+  subgraph FACE["🪪 對外的門面"]
+    CARD["Agent Card(放公開網址)<br/>我是誰 · 會哪些 skill<br/>怎麼呼叫 · 怎麼驗證身分"]:::data
+  end
+  subgraph SYSTEM["🏢 你的既有系統 · 掛卡後变身成 Agent"]
+    direction TB
+    AUTH{"🔐 驗證與授權<br/>是你本人嗎?<br/>你能用這個 skill 嗎?"}
+    SVC["服務 / 業務邏輯"]:::proc
+    DB[("資料庫")]:::infra
+    API["內部 API"]:::infra
+    SVC --- DB
+    SVC --- API
+  end
+  SVC -. 對外掛上這張卡 .-> CARD
+  O -->|① 讀卡:你是誰、會什麼、怎麼驗證| CARD
+  CARD -->|② 依卡呼叫 · 附上身分憑證| AUTH
+  AUTH -->|③ 通過| SVC
+  AUTH -.->|✗ 擋下 · 未授權| O
+  SVC -->|④ 用自己的資料與邏輯處理| DB
+  SVC -->|⑤ 回結果 / 多輪協作| O
+  class AUTH decision
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+  style CALLER fill:#f0fdf4,stroke:#86efac,color:#166534
+  style FACE fill:#fffbeb,stroke:#fcd34d,color:#92400e
+  style SYSTEM fill:#f8fafc,stroke:#cbd5e1,color:#475569
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">重點:別的 Agent 只透過「卡」認識你,碰不到你系統的內部細節。卡上寫什麼、開放哪些 skill,就決定了它能請你做什麼——所以卡本身就是你對外的邊界。</p>
+
+  <h2>📇 一張好的 Agent Card 該講清楚四件事</h2>
+  <table>
+    <tr><th>卡上宣告</th><th>白話</th><th>寫不清楚會怎樣</th></tr>
+    <tr><td>我是誰</td><td>這個 Agent 的身分、用途</td><td>別人不知道你是幹嘛的,不會來找你</td></tr>
+    <tr><td>我會哪些 skill</td><td>能被交辦的能力清單</td><td>能力含糊 → 別人不知道能請你做什麼</td></tr>
+    <tr><td>怎麼呼叫我</td><td>入口位置、要帶什麼、回什麼</td><td>接不上 → 等於沒對外開口</td></tr>
+    <tr><td>怎麼驗證身分</td><td>誰有權呼叫、怎麼認證</td><td>沒把關 → 誰都能來用你的系統</td></tr>
+  </table>
+
+  <h2>🔐 授權設計:別人憑什麼能用你</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">Agent Card 不是只宣告「我會什麼」,更要宣告「誰、憑什麼、能用哪些」。授權沒設計好,等於把系統對全世界打開。四層把關:</p>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>卡上宣告驗證方式</b><span class="dir">怎麼證明你是你</span></div>
+      <div class="bd">卡片講清楚要用哪種身分憑證(例如金鑰、權杖),呼叫方才知道該帶什麼來。沒宣告 = 誰都能來。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>呼叫時附上憑證</b><span class="dir">出示身分</span></div>
+      <div class="bd">別的 Agent 依卡片指示,呼叫時附上自己的身分憑證,而不是匿名闖入。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>系統驗身分 + 查權限</b><span class="dir">是你嗎?你能用嗎?</span></div>
+      <div class="bd">系統先確認「是你本人」(驗證),再確認「你被允許用這個 skill」(授權)。兩關都過才放行。</div></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>最小授權</b><span class="dir">只給該給的</span></div>
+      <div class="bd">每個呼叫方只開放它真正需要的 skill 與資料範圍,不是一把全開。範圍越小,出事波及越小。</div></div>
+  </div>
+
+  <h2>🎯 為什麼「卡設計得好」比什麼都重要</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>卡是唯一的對外介面</b><span class="dir">別人只看卡</span></div>
+      <div class="bd">別的 Agent 不讀你的程式碼、不進你的資料庫,它只讀這張卡。卡講得多清楚,別人就能用得多對。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>变身,不用重寫</b><span class="dir">最省力的一步</span></div>
+      <div class="bd">既有系統原封不動,掛一張卡就加入 Agent 生態。這是把舊系統接進 AI 世界最省力的路。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>卡=邊界</b><span class="dir">先想清楚開放什麼</span></div>
+      <div class="bd">卡上開放哪些 skill、要不要驗證,就是你對外的權限邊界。開放前先想清楚,別把不該給的也寫上去。</div></div>
+  </div>
+
+  <div class="links">
+    <a class="yt" href="ep29.html">▶ 相關影片:A2A 實戰 · Agent Card</a>
+    <a class="src" href="index.html">📚 回課綱總表</a>
+  </div>
+
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · Agent Card。概念示意,基於 A2A 公開協定,非特定產品實作。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:62, padding:14, useMaxWidth:true}
+  });
+</script>
+</body></html>
