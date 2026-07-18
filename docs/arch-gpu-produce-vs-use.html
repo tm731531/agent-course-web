@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPU 為什麼不夠用:產出 Model vs 使用 Model 的架構真相 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>GPU 為什麼不夠用:產出 Model vs 使用 Model</h1>
+    <p class="lead">很多人有個誤會:「我又不訓練模型,只是用它,為什麼還缺 GPU?」關鍵在一個架構的翻轉——以前 GPU 是拿來「產出」模型的(訓練完就還),現在光是「使用」模型,就把 GPU 一直佔住、還不掉。這才是 GPU 荒的根本。</p>
+  </header>
+
+  <h2>🔀 兩個時代:GPU 被什麼吃掉</h2>
+  <div class="legend">
+    <span class="k"><span class="s proc"></span>運算 / 步驟</span>
+    <span class="k"><span class="s data"></span>模型</span>
+    <span class="k"><span class="s infra"></span>GPU / VRAM 常駐</span>
+    <span class="k"><span class="s result"></span>終態</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  subgraph OLD["🕰️ 過去 ML · GPU 吃在「產出」,用完就還"]
+    direction LR
+    O1["租一批 GPU"]:::proc --> O2["訓練 · 產出一個 model"]:::proc
+    O2 --> O3(["訓練完 · 還掉 GPU"]):::result
+    O2 --> O4[("產出的小模型")]:::data
+    O4 --> O5["拿去用:CPU 或輕量卡就夠<br/>便宜 · 間歇"]:::proc
+  end
+  subgraph NOW["🔥 現在 LLM · GPU 吃在「使用」,永遠還不掉"]
+    direction LR
+    N1[("巨大模型<br/>幾十億到上千億參數")]:::data --> N2["必須常駐 GPU 記憶體 VRAM<br/>不放進去根本跑不動"]:::infra
+    N2 --> N3["每吐一個字<br/>都要一次 GPU 運算"]:::proc
+    N3 --> N4["很多人同時用<br/>24 小時不停"]:::proc
+    N4 --> N5(["GPU 被永久佔住 · 還不掉"]):::result
+  end
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+  style OLD fill:#f8fafc,stroke:#cbd5e1,color:#475569
+  style NOW fill:#fef2f2,stroke:#fca5a5,color:#991b1b
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">一句話:以前 GPU 是被「訓練」這個一次性工作吃掉,做完就釋放;現在 GPU 是被「推論」這個永不停止的工作吃掉,只要有人在用,它就一直被佔著。</p>
+
+  <h2>🕰️ 為什麼以前租得到、用得起</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>GPU 只在「訓練」時要</b><span class="dir">一次性工作</span></div>
+      <div class="bd">過去 GPU 的重活是「產出一個模型」——訓練。訓練是有頭有尾的工作:租一批 GPU、跑幾小時到幾天、拿到模型,就把 GPU 還掉。用完即還,所以租得到。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>產出的模型小,用起來便宜</b><span class="dir">間歇、輕量</span></div>
+      <div class="bd">傳統機器學習模型通常很小,訓練好之後拿去「使用」（推論），用 CPU 或一張普通卡就跑得動,而且是有需要才算一下、間歇性的。使用這一端幾乎不吃 GPU。</div></div>
+  </div>
+
+  <h2>🔥 為什麼現在「只是使用」也不夠</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>模型巨大,必須常駐 VRAM</b><span class="dir">占著不放</span></div>
+      <div class="bd">LLM 動輒幾十億到上千億參數,要跑得動,整個模型得常駐在 GPU 記憶體(VRAM)裡。光是「把模型放著等人用」,就已經把整張 GPU 佔住了,即使沒人問也還不掉。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>每個字都要一次 GPU 運算</b><span class="dir">持續運算</span></div>
+      <div class="bd">LLM 是一個字一個字吐的,每吐一個 token 就是一次完整的模型運算。回一段長答案 = 幾百次 GPU 運算。推論不再是「算一下就結束」,而是持續在燒算力。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>很多人同時用、要 24 小時開著</b><span class="dir">還要複製很多台</span></div>
+      <div class="bd">一個服務要同時應付很多人、全天候不關,就得把模型複製到很多張 GPU 上、一直開著待命。使用者越多,綁住的 GPU 越多,而且不會像訓練那樣「跑完就還」。</div></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>訓練沒消失,現在兩頭一起吃</b><span class="dir">需求爆炸</span></div>
+      <div class="bd">別忘了:那些巨大模型還是有人在訓練,產出端照樣狂吃 GPU;現在又多了全世界的「使用端」也一起吃。以前只有產出吃,現在產出 + 使用兩頭同時吃,GPU 當然不夠。</div></div>
+  </div>
+
+  <h2>💡 關鍵反直覺(很多人不知道的那一步)</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">🎯</span><b>用 LLM ≠ 用以前的小模型</b></div>
+      <div class="bd">「我只是叫個 API、又沒訓練,為什麼也缺 GPU?」因為用 LLM 這件事本身,就是把一顆巨大模型常駐在 GPU 上、不停替你算。在 LLM 時代,<strong>「使用」才是那個永遠還不掉的 GPU 工作</strong>,不是只有「產出」才吃。這一步想通了,才看得懂為什麼地端、雲端到處都在搶 GPU。</div></div>
+  </div>
+
+  <h2>🧱 這也是為什麼地端最卡的是 VRAM 與頻寬</h2>
+  <p style="color:var(--muted);font-size:.95rem">既然「使用」要把整個模型常駐 GPU、還要一直算,那地端的瓶頸就很具體:<strong>VRAM 容量</strong>——模型放不進去就跑不動;<strong>記憶體頻寬</strong>——頻寬不夠,吐字就慢。這正是挑地端機器時真正該看的兩個數字,詳見「地端硬體限制」那頁。</p>
+
+  <div class="links">
+    <a class="yt" href="ep19.html">▶ 相關影片:地端模型的限制</a>
+    <a class="src" href="arch-hardware-debug.html">🔧 延伸:地端硬體診斷</a>
+  </div>
+
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · GPU 產出 vs 使用。概念示意,說明訓練與推論在硬體需求上的架構差異。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:56, padding:14, useMaxWidth:true}
+  });
+</script>
+</body></html>
