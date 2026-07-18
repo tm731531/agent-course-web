@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L5·企業】企業用 Agent 的資安治理:你該想清楚的幾個角度 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟣 企業篇</div>
+<h1>企業用 Agent 的資安治理</h1>
+<p class="lead">第 2 集 · 你該想清楚的幾個角度</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=TN9Hzo8HQn8" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L5 企業</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》,這是企業篇的第二集。上一集我們講到,企業要用 Agent,問題會從「一個人怎麼用」變成「很多人一起用,而且資安不能出包」。這一集我不打算給你某一套平台、某一張架構圖,叫你照著抄。我要給你的,是一組「想清楚資安治理」的角度。這幾個角度,你以後不管遇到哪一種做法、哪一家的方案,都能拿來套一遍,自己判斷它到底安不安全。這是一套思考框架,不是標準答案。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先接上一集</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>上集結論:企業用 Agent = 多人 + 資安</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這集不給你「某個架構」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>給你一組自己就能套的思考角度</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先幫還沒看上一集的人接一下。上一集我的結論是:企業用 Agent,跟你自己在家用,最大的差別是兩件事,一個是要開放給很多人用,一個是資安得守得住。那接下來很自然會想問:那到底要怎麼做?這裡我要先講清楚我這集的立場。我不會塞給你一個「照這樣建就對了」的架構,因為每家公司狀況不一樣,抄別人的架構很危險。我要給你的,是幾個「你非想不可」的角度。想清楚這幾個角度,你才有能力去評估任何一種做法。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>為什麼要用「治理」這個詞</h2>
+<div class="semoji">🏛️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>個人:自己對自己負責,錯了重來就好</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>企業:很多人、要對公司和法規負責</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以需要「集中管、可稽核」的機制</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們先搞懂,為什麼企業這邊要特別用「治理」這兩個字。你自己在家用 Agent,本質上是自己對自己負責,它做錯了,大不了你重來一次,沒人會來查你。但企業不一樣:是很多人在用,而且公司要對客戶、對股東、對法規負責。這時候「你自己小心一點」是不夠的,你需要一套「集中在一個地方管、而且事後查得到」的機制,讓每個人怎麼用都在一個規矩底下。這種「集中管、可稽核」的要求,就是治理。它跟個人用最根本的差別,就在這裡。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>這集的用法:一把可以自檢的尺</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>接下來是五個角度,不是五個產品</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>每個角度都是一個「有沒有人想過」的問題</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你拿它去量任何方案,缺哪塊一問就知道</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接下來我會講五個角度。我要先提醒你,這五個是「角度」,不是五個要你去買的產品,也不是五層要你去疊的東西。你可以把它們想成一把尺,或者說五個檢查題。以後有人拿一個 Agent 方案來找你,或你自己想在公司推,你就一題一題問下去:這個角度有沒有人想過?有沒有人在守?哪一題答不出來,那就是這個方案的破口。這樣你就不用背架構,也能一眼看出一個做法到底穩不穩。好,五個角度,開始。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>角度一:身分與權限</h2>
+<div class="semoji">🪪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>誰能用哪一隻 Agent、它能碰哪些系統</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不是每個人都該有全部權限</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要能「按人、按角色」發放,也要能收回</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一個角度,身分與權限。核心就一句話:誰,能用哪一隻 Agent,而那隻 Agent 又能碰到哪些系統、哪些資料。這裡最重要的觀念是:不是每個人都該有全部權限。財務在用的 Agent,不該有辦法去翻人事資料;工讀生能碰的範圍,不該跟主管一樣。所以你要問的是:這個做法,能不能按照「人」、按照「角色」去發權限?更關鍵的是,能不能收回?一個人職務換了、或離職了,他名下 Agent 的權限收不收得掉?發得出去、也收得回來,這個角度才算及格。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>角度二:進出的內容控管</h2>
+<div class="semoji">🚦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>進去的:別把敏感資料送出去</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>出來的:別冒出不該出現的內容</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>像個資這種,要能先遮蔽再處理</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個角度,進出的內容控管。Agent 背後會接一個很大的語言模型,所以有一個問題你一定要想:哪些東西送進去、哪些東西回出來,有沒有人在把關?往裡送的時候,要防的是敏感資料被無意間送出公司;往外回的時候,要防的是模型講出不該出現的內容。最典型的例子就是個資,也就是常講的 P、I、I,像是客戶的身分證號、電話,這種東西在丟進模型前,最好能先遮蔽掉,用不到就別讓它流出去。所以這個角度的問題是:進出這一關,有沒有一道過濾?還是大家都是原封不動地丟進丟出?</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>角度三:稽核與可追溯</h2>
+<div class="semoji">📝</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>誰觸發的、讀了什麼、動了什麼,全留紀錄</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>出事要查得到,平時要證得出來</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這是企業和個人最大的差別</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個角度,稽核與可追溯,這個我認為是企業跟個人差最多的地方。稽核要留什麼?三件事:是誰觸發了這個動作、這隻 Agent 讀了哪些資料、它又動了哪些系統。從頭到尾,全部要留下紀錄。為什麼非留不可?因為它有兩個用途:一個是出事的時候,你要查得到,到底是誰、透過哪隻 Agent、動了什麼;另一個是平常沒事的時候,稽核來了,你要能證明給他看,我們是有在管的。你自己在家用,做錯了重來就好;但公司裡答不出「到底誰動了什麼」,這個 Agent 就不敢放進來。所以這一題很硬:全程留不留紀錄?</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>角度四:資料落地與邊界</h2>
+<div class="semoji">🏠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>哪些資料「絕對不能出門」,要先劃出來</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>地端在這裡是「為資安」,不是為省錢</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>呼應 L4 跟 L5 的差別</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四個角度,資料落地與邊界。你要先幫公司劃一條線:哪些資料是絕對不能離開公司的?客戶名單、財報、還沒公開的東西,這些一旦送到外面就收不回來了。劃清楚這條線之後,才會延伸出一個決定:這些不能出門的資料,相關的處理是不是得放在公司自己的機房、自己的環境裡做,也就是所謂的地端。這裡我要特別強調一個觀念,呼應我們前面 L4 跟 L5 講的:企業選擇地端,重點是「為了資安」,為了讓資料不出邊界,而不是為了省那點錢。你把「省錢」跟「守邊界」這兩件事分清楚,這個角度才想得對。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>角度五:與既有制度整合</h2>
+<div class="semoji">🔗</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>公司本來就有帳號、權限、稽核制度</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>Agent 治理要「接上去」,不是另起爐灶</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>少一套要維護、也不會出現管理死角</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第五個角度,跟既有制度整合。這個角度很容易被忽略,但超級重要。你要記住一件事:公司不是今天才開始管人的。它本來就有一套員工帳號、有一套權限制度、有一套稽核流程,運作很多年了。所以 Agent 的治理,正確的做法是「接到這套既有的制度上」,而不是另外再造一套全新的、平行的東西。為什麼?因為你另起爐灶,就會多一套系統要維護,而且兩套之間一定會有對不齊的地方,那些縫隙就是管理死角。相反的,接上去,員工用他原本的帳號登入,人一離職、原本的帳號一停,他的 Agent 權限也跟著全斷。這個角度問的是:它接不接得上公司原本的規矩?</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>五個角度,一次複習</h2>
+<div class="semoji">🧱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>① 身分權限:誰能用、能碰什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>② 內容控管:進出有沒有過濾</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>③ 稽核追溯:全程留不留紀錄</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>④ 資料邊界:哪些絕對不能出門</li>
+<li style="border-left-color:#f472b6;background:color-mix(in srgb,#f472b6 8%,transparent)"><span class="dot" style="background:#f472b6">5</span>⑤ 制度整合:接不接得上原本的規矩</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>五個角度講完,我們一次複習,你把這張記起來就好。第一,身分與權限:誰能用、能碰哪些系統,發得出、也收得回。第二,進出的內容控管:送進去、回出來,有沒有一道過濾,個資有沒有先遮。第三,稽核與可追溯:誰觸發、讀了什麼、動了什麼,全程留不留紀錄。第四,資料落地與邊界:哪些資料絕對不能出門,地端是為了守邊界。第五,與既有制度整合:接不接得上公司原本的帳號、權限、稽核。這五題,就是所謂「資安治理」四個字真正的內容。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>一個務實的心法</h2>
+<div class="semoji">🌱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不用一次做到完美,一步到位反而卡死</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但這五題「有沒有人想過、有沒有人守」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要先問清楚,再決定要不要放手用</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這你可能會有壓力:五個角度,每個都要做到滿分,那不就永遠上不了線?我給你一個很務實的心法:不用一次做到完美。真的要求一步到位,通常結果就是卡死、什麼都推不動。重點不是每個角度都滿分,而是這五題「有沒有人想過、有沒有人在守」。你可以先守住最要命的,比如稽核跟資料邊界,其他的邊做邊補。但你要能明明白白地說出:這五個角度,每一個現在是什麼狀態、誰負責。問清楚這個,再決定要不要放手讓大家用。心裡有底地放手,跟閉著眼睛放手,是兩回事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>怎麼拿這套角度做決定</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>有人來推一個 Agent 方案 → 五題問一遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>答得出來 → 心裡有底地放手</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>答不出來 → 那就是它的破口,先補再說</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那實際怎麼用這套角度?我給你一個很簡單的用法。以後只要有人拿一個 Agent 的做法來找你,不管是外面的方案、還是內部想自己做,你就把這五題依序問一遍:身分權限、內容控管、稽核追溯、資料邊界、制度整合。五題都答得出來、都有人守,那你就可以心裡有底地放手用。只要有哪一題答不出來、或是「還沒人想過」,那個地方就是這個方案的破口,先把它補起來、或者至少寫下來當風險,再決定要不要上。你不需要是資安專家,光是把這五題問出口,你就已經比多數人謹慎了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>企業級 Agent,難的不是讓它更聰明</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>難的是「怎麼讓很多人安全地用」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>五個角度守住,才敢在公司真的放手</li>
+</ul>
+<div class="note">企業級 Agent = 怎麼讓很多人安全地用</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,就是這句:企業級的 Agent,難的從來不是把它變得更聰明,而是「怎麼讓很多人安全地用」。一隻聰明的 Agent,現在不難找;真正決勝負的,是它外面那一圈——誰能用、進出過不過濾、出事查不查得到、資料出不出門、接不接得上公司原本的規矩。這五個角度守住了,你才敢在公司裡真的放手,讓大家一起用。所以下次在公司想推 Agent,先別急著誇它多聰明,把這五題問一遍,答得出來,再放手。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=TN9Hzo8HQn8" target="_blank" rel="noopener">https://www.youtube.com/watch?v=TN9Hzo8HQn8</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+

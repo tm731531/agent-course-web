@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L5·企業】企業用 Agent,為什麼是完全不同的問題 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟣 企業篇</div>
+<h1>企業用 Agent,為什麼是完全不同的問題</h1>
+<p class="lead">第 20 集 · 企業篇(L5)開場 · 從省成本到守資安</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=7sx5RPuBQBE" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L5 企業</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎來到企業篇的第一集。前面我們一路從個人怎麼用 Agent 講到地端,那時候把 AI 搬回自己家,講白了是「量起來了、為了省成本」。可是這一集我要告訴你,一旦進到企業,問題整個換了一個。它不再是省不省錢,而是「這麼多人一起用,到底怎麼管、資安怎麼守」。這一個層級,我把它叫做企業級,今天先帶你看清楚它為什麼跟前面完全不一樣。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先回到個人:一顆腦,自己用</h2>
+<div class="semoji">🧍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個人、一顆 Agent、自己交辦</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>出事自己扛、資料自己看</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>沒有『別人』要管</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們先回到個人的情境。個人用 Agent,說到底就是一個人、一顆腦、自己用。我交辦、我驗收,做壞了我自己扛,資料就在我自己電腦裡,我自己看。整個過程裡沒有「別人」這件事,所以我根本不需要去想什麼權限、什麼稽核,反正就我一個人,愛怎麼用怎麼用。這是個人級最舒服的地方,也正好是它跟企業最大的分水嶺。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>企業:幾百人一起用很多 Agent</h2>
+<div class="semoji">🏢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是一個人,是幾百人、各部門</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>各有各的權限、各碰各的系統</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同時跑很多不同的 Agent</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那企業呢?企業不是一個人,是幾百人,分成一堆部門,每個人的權限還不一樣,能碰的系統也全都不同。然後這幾百人,同時在用很多顆不同的 Agent。你把個人那顆自己用的腦乘上幾百倍,再讓它們去碰公司各種系統,你就會發現,這已經不是同一個問題,而是一個關於「一群人」的問題。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>新問題一:誰能用、能碰什麼(權限)</h2>
+<div class="semoji">🚪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>誰可以用哪一顆 Agent</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>那顆 Agent 又能碰哪些系統</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>個人根本不用想這件事</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>人一多,個人時代從來不用想的問題就冒出來了。第一個是權限:誰可以用哪一顆 Agent?那顆 Agent 又能碰到公司哪些系統、哪些資料?這在個人時代不存在,因為就我一個人,我自己就是全部權限。但在企業裡,你總不能讓每個人的 Agent 都打開所有系統。這條「誰能用、能碰什麼」的線,必須有人畫、有人管。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>新問題二:出事誰負責、查得到嗎(稽核)</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Agent 動了什麼、什麼時候動的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>出了包,要追得回是哪一次、哪個人</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>查不到 = 沒人敢負責</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個新問題是稽核。Agent 會自己動手,那它到底動了什麼、什麼時候動的、是誰交辦的?萬一出了包,你要能一路追回來,是哪一次任務、哪一個人、碰了哪個系統。如果查不到,那就等於沒人敢為它負責。個人時代你不用記帳,因為就你自己;可是企業要能對每一個動作交代得清清楚楚,這叫稽核,是企業級跑不掉的一關。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>新問題三:資料會不會外流(資安)</h2>
+<div class="semoji">🛡️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>餵給 Agent 的公司資料會不會出門</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它產出的東西會不會夾帶機密</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一個人漏,是整間公司的事</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個問題是資安。你餵給 Agent 的,是公司的客戶資料、合約、財報,這些東西會不會就這樣被送出門?它產出的內容,會不會不小心夾帶了機密?個人漏一點頂多是自己的事,但在企業裡,任何一個人漏,那是整間公司的事,可能是法規、是客戶信任。所以「資料跟輸出會不會外流」,在企業級是被放到最前面盯的一件事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>為什麼舊思維一定會出事</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把個人的『隨便交辦』直接搬進公司</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>等於人人都能讓 Agent 亂碰、亂送</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>沒人管得住,遲早爆</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡有個很多人會踩的坑:把個人那套「隨便交辦、爽就好」直接搬進公司。後果是什麼?等於每一個人都能讓自己的 Agent 隨便碰系統、隨便把資料送出去,沒有一條線攔著。平常沒事,但只要出一次包,你連是誰、動了什麼都查不到。個人的自由,搬到企業就變成失控。舊思維不是不好,是它天生就沒有「管一群人」這一塊。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>關鍵轉變:地端不再是為了省錢</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>L4 搬回地端:為了省成本</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>企業搬回地端:為了資安</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>資料不能出門、要能證明給稽核看</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接著是最關鍵的轉變。前面 L4 把 AI 搬回地端,動機是省成本,量大了自己養比較划算。可是到了企業,搬回地端的理由整個換掉,變成「為了資安」。資料不能出門,要留在公司自己的機房;而且你得證明給稽核、給法規看,證明它真的沒出去過。同樣是地端,個人是為了錢,企業是為了守得住,動機完全不同。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>所以架構會長得不一樣</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>要『集中控管』——一個地方管權限、看紀錄</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>又要『資料落地』——東西留在自己機房</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>兩件事得同時成立</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>動機變了,架構自然也得跟著變。企業要的比較刁鑽:一方面要「集中控管」,有一個地方統一管誰能用、統一留下所有紀錄;另一方面又要「資料落地」,東西全留在自己機房。集中管、又要留在家裡,兩件事得同時成立。這比個人那顆自己用的腦複雜多了,是個更大的題目,下一集我會專門把它拆開來看。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>心裡先有個譜:會分成幾層</h2>
+<div class="semoji">🧱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>跑任務的那一層(Agent 本身)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>管權限、記紀錄的那一層(治理)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>看內容、擋外流的那一層(閘道)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你現在心裡有個譜就好,不用背。企業要把這件事管起來,大概分成幾層:最底下是真正在跑任務的 Agent 本身;中間一層專門管「誰能用、能碰什麼」,還把所有動作記下來,這叫治理;最上面一層,專門看每一次進出的內容、把該擋的擋下來,常被叫做閘道。分層,就是企業級跟個人級最明顯的差別。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>這些角色,都有成熟做法</h2>
+<div class="semoji">🔌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>管身份、管進出,都不是 AI 才有的新問題</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>各層在企業資安早有成套解法</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你不用從零造,先懂每層在解什麼</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這你可能會怕,這麼多層是不是要自己從零蓋?其實不用。這些角色——管身份、管誰能登入、管流量進出、幫你擋跟記——都不是 AI 時代才冒出來的新問題,企業資安領域本來就有一整套成熟的做法在解。我這裡不細講是哪些工具,重點是讓你知道:每一層要解的問題都真實存在,而且都有人在解。你要做的,是先看懂每一層各守哪一關,之後再去挑合適的方案。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>一個誠實的提醒</h2>
+<div class="semoji">🙏</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是每個人都得碰到這一級</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但你想在公司推 Agent,遲早要面對</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>先知道有這道牆,不會被嚇到</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這邊給你一個誠實的提醒。企業級這一關,不是每個人都非碰不可。你如果就自己一個人爽用,前面幾集就夠你走很遠了。但只要你動念,想在公司把 Agent 推起來、讓同事一起用,遲早會撞上今天這三道問題:權限、稽核、資安。我先把這道牆指給你看,不是要嚇你,是讓你到那天不會慌,知道它本來就在。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>個人用 Agent:拚的是效率</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>企業用 Agent:拚的是『讓很多人安全地用』</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>問題的重心,整個換了</li>
+</ul>
+<div class="note">下集:企業級的四層治理架構,一層一層拆給你看。</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,就是這句:個人用 Agent,拚的是效率,怎麼把自己的事做快做好;企業用 Agent,拚的是另一件事,是「怎麼讓很多人一起、安全地用」。從效率變成安全,問題的重心整個換了位置,這就是企業為什麼是全新的題目。下一集,我把企業級的四層治理架構,一層一層拆給你聽。我們下一集見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=7sx5RPuBQBE" target="_blank" rel="noopener">https://www.youtube.com/watch?v=7sx5RPuBQBE</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+
