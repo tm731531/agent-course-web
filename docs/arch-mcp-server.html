@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一台 MCP Server 長怎樣:把你的能力開放給 Agent 用 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  /* diagram: always light so lines/labels stay readable in any theme */
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>一台 MCP Server 長怎樣</h1>
+    <p class="lead">MCP 是「Agent 對外或對內操作的能力」。架一台 MCP Server,就是把你自己的能力或系統,包成任何支援 MCP 的 Agent 都能用標準方式呼叫的一端。這頁用一張分層結構圖,把它拆開給你看。</p>
+  </header>
+
+  <h2>🧩 三層結構:誰呼叫、誰宣告、誰執行</h2>
+  <div class="legend">
+    <span class="k"><span class="s data"></span>資料 / 能力宣告</span>
+    <span class="k"><span class="s proc"></span>處理 / 執行</span>
+    <span class="k"><span class="s result"></span>Agent(使用方)</span>
+    <span class="k"><span class="s infra"></span>你的系統(被接的)</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  subgraph AGENT["🤖 Agent 端 · 使用方(client)"]
+    A(["Agent<br/>要做事的那顆腦"]):::result
+  end
+  subgraph SERVER["🔌 MCP Server · 你架的那一台"]
+    direction TB
+    D["能力宣告<br/>tools 動作 · resources 資料 · prompts 提示"]:::data
+    X["執行核心<br/>收到呼叫 → 執行 → 回結果"]:::proc
+  end
+  subgraph SYS["🏢 你的能力 / 系統 · 被接的一端"]
+    direction TB
+    S1[("資料庫")]:::infra
+    S2["內部 API / 服務"]:::infra
+    S3[("檔案 / 文件")]:::infra
+  end
+  A -->|① 你有哪些工具?| D
+  D -->|② 回傳能力清單| A
+  A -->|③ 帶參數呼叫某個工具| X
+  X -->|④ 實際去操作| S1
+  X -->|④| S2
+  X -->|④| S3
+  X -->|⑤ 把結果回給 Agent| A
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+  style AGENT fill:#f0fdf4,stroke:#86efac,color:#166534
+  style SERVER fill:#eff6ff,stroke:#93c5fd,color:#1e40af
+  style SYS fill:#f8fafc,stroke:#cbd5e1,color:#475569
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">重點:Agent 不用知道你系統的內部細節,它只認得那份「能力清單」。你把什麼放進清單、給多少權限,就決定了它能碰什麼。</p>
+
+  <h2>🗺️ 架設四步驟</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  P1["① 決定<br/>開放哪些能力"]:::proc --> P2["② 定義<br/>每個能力=一個工具<br/>(名稱·輸入·輸出)"]:::proc
+  P2 --> P3["③ 跑起來<br/>成一台 server"]:::proc
+  P3 --> P4(["④ Agent 端設定<br/>連上這台 server"]):::result
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    </pre>
+  </div>
+
+  <h2>🔑 為什麼值得自己架</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>一次架、到處接</b><span class="dir">標準接頭</span></div>
+      <div class="bd">把你或公司的獨門能力,變成任何支援 MCP 的 Agent 都能用的標準能力,不用為每個 Agent 各寫一套膠水。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>對內、對外都行</b><span class="dir">同一套做法</span></div>
+      <div class="bd">同樣的做法,可以接公司內部系統(對內),也可以接外部服務(對外);差別只在你開放給誰、放在哪。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>開放=開權限</b><span class="dir">先想邊界</span></div>
+      <div class="bd">架 server 就是對外開放能力,所以架的時候就要想「這台開放什麼、給多少權限」,別把不該給的也開出去。</div></div>
+  </div>
+
+  <div class="links">
+    <a class="yt" href="ep28.html">▶ 相關影片:架一台 MCP Server</a>
+    <a class="src" href="index.html">📚 回課綱總表</a>
+  </div>
+
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · MCP Server。概念示意,非特定產品實作。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:60, padding:14, useMaxWidth:true}
+  });
+</script>
+</body></html>
