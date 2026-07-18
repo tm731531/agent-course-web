@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一次派很多個:多 Agent 並行與分工 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>一次派很多個</h1>
+<p class="lead">第 11 集 · 多 Agent 並行與分工</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=_l-wP8ZEsA8" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。前面這麼多集,我們講的都是「一個」Agent 在幫你做事:你交辦一個任務,它自己想辦法完成。但你有沒有想過,有些任務,一個 Agent 做太慢,或者需要好幾種不同的專長?這一集,我要帶你看一個更進階的用法:怎麼「一次派很多個」——也就是多 Agent 的並行與分工。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>前面都是「一個」在做事</h2>
+<div class="semoji">🧍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你交辦、它執行,一次一個任務</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>做得再好,也還是一個人的產能</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有些任務,一個扛不動</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們先回顧一下。到目前為止,你腦中的畫面應該都是:你給一個 Agent 一個目標,它自己去查、去做、去修,最後把成果交給你。這很好用,但它有個天花板——就算這個 Agent 再聰明,它一次也只能專心做一件事,那就是一個人的產能。當任務又大又雜的時候,一個 Agent 就會顯得慢,或者顧此失彼。這時候,我們就需要換一種思路。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>為什麼要一次派很多個</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>平行加速:同時做很多份</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>分工:不同角色做不同子任務</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>互相檢查:一個做、一個審</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>為什麼要一次派很多個 Agent?說穿了有三個理由。第一,是平行加速:一件事拆成很多份,同時開很多個 Agent 一起做,時間就省下來了。第二,是分工:讓不同的 Agent 扮演不同角色,各做各擅長的子任務。第三,是互相檢查:一個負責做,另一個專門挑它的毛病,品質更穩。接下來我一個一個講清楚。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>理由一:平行加速</h2>
+<div class="semoji">⚡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把一件大事切成很多小份</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>很多個 Agent 同時開工</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>總時間看最慢那個,不是加起來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講平行加速。核心概念很簡單:如果一件事可以切成很多互不相干的小份,那你就不必一份一份排隊做,而是同時派出很多個 Agent,每個負責一小份,一起開工。這樣一來,你花的時間不是把每一份加起來,而是取決於最慢的那一個做多久。份數越多、彼此越獨立,省下來的時間就越誇張。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>平行加速:一個例子</h2>
+<div class="semoji">🏭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>要比較 50 家供應商</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一個一個查 → 慢到天荒地老</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>派 50 個同時查 → 時間差很多</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>舉個例子你就有感覺了。假設我要比較 50 家供應商,把每一家的價格、交期、評價都查清楚。如果用一個 Agent,它得一家查完再查下一家,50 家排隊排下去,慢到天荒地老。但如果我一次派 50 個 Agent,一個 Agent 負責一家,大家同時查,最後再把結果彙整起來——原本要等很久的事,可能幾分鐘就有答案。這就是平行的威力。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>理由二:分工</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不同 Agent 扮演不同角色</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>各做自己擅長的子任務</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>像一個小團隊,不是一個全能的人</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個理由是分工。這跟平行不太一樣:平行是很多人做「同一種」事,分工則是每個人做「不同」的事。你可以讓一個 Agent 專門負責找資料,一個專門負責寫作,一個專門負責挑錯。每個角色只要把自己那一段做好就行。這樣的組合,其實就像一個小團隊,而不是硬要一個全能的人把所有環節都扛下來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>分工:一個例子</h2>
+<div class="semoji">✍️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>A 負責蒐集與整理資料</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>B 根據資料寫成報告</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>C 讀一遍、挑毛病、抓錯</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>舉個寫報告的例子。我可以派三個角色:第一個 Agent 專心去蒐集、整理需要的資料;第二個 Agent 拿著這些資料,把它寫成一份通順的報告;第三個 Agent 則負責從頭讀一遍,挑毛病、抓錯、看有沒有漏掉的地方。三個角色接力,各司其職。你會發現,這跟真實世界一個團隊的分工,幾乎是一模一樣的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>理由三:互相檢查</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>讓一個 Agent 專門去挑另一個的毛病</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>做的人容易看不到自己的盲點</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有人專門找碴,品質更穩</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個理由,是互相檢查,這個特別重要。人有個通病:自己做的東西,常常看不到自己的盲點。Agent 也一樣。所以一個很聰明的做法,是讓一個 Agent 負責做,再讓另一個 Agent 專門去挑它的毛病、質疑它、找它的錯。這在專業上叫「對抗式驗證」,講白話就是——安排一個專門找碴的角色。有人盯著,成果的品質就穩多了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>別忘了成本(呼應第 5 集)</h2>
+<div class="semoji">💸</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一次派 100 個 = 用量也放大 100 倍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>威力很大,帳單也很大</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>威力越大,越要主動控管</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這裡,我得把第五集講成本的那件事拉回來。還記得我說過,有時候一小時 token 會暴衝一百倍嗎?多 Agent 就是那個暴衝的主要來源。你一次派一百個 Agent,等於同時燒一百份的用量,威力放大一百倍,帳單也放大一百倍。這不是要嚇你,而是提醒你:威力越大的工具,越需要你主動去控管它,不能派出去就不管了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>什麼時候該用</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>任務夠大,值得拆成很多份平行做</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>需要好幾種不同專長分工</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>重要成果,想要有人互相檢查</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那到底什麼時候該用多 Agent?我給你幾個判斷點。第一,任務夠大、而且可以切成很多互不相干的份,平行做能省下明顯的時間。第二,這件事需要好幾種不同的專長,一個角色扛不下來,需要分工。第三,這是個重要的成果,你希望有人互相檢查、把關品質。符合這幾種情況,多 Agent 才真的划算。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>什麼時候別用</h2>
+<div class="semoji">🚫</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>小任務,一個 Agent 就綽綽有餘</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>步驟環環相扣、拆不開,平行沒意義</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>別為了「用」而用,徒增成本</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>反過來,什麼時候別用?如果只是個小任務,一個 Agent 就綽綽有餘,你硬要拆成好幾個,只是自找麻煩。還有一種情況:任務的每一步都環環相扣,後面要等前面的結果,根本拆不開,那平行也派不上用場。記住,多 Agent 不是拿來炫技的,別為了「用」而用,不然你只是白白多燒成本、多添亂。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>一個提醒:更難盯</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>同時很多個在跑,你更難全部看住</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>目標和驗收標準要說得更清楚</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>任務講不清,多派只會更亂</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後給你一個很實際的提醒。一個 Agent 你都要盯著驗收了,一次很多個同時在跑,你當然更難全部看住。所以正因為多,你反而要把目標和驗收標準說得比平常更清楚。這其實就呼應我們一直在講的那句話:任務要交辦清楚。如果你連一個都講不明白,那派十個、派一百個,只會亂上加亂,不會變好。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>多 Agent = 把「一個助理」變成「一個團隊」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但團隊要管理,也要算成本</li>
+</ul>
+<div class="note">下集:我實際怎麼用 Agent 處理真實工作。</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,那就是:多 Agent,是把「一個助理」升級成「一個團隊」。團隊能平行、能分工、能互相把關,力量大很多;但團隊也要管理,也要算成本,不是人越多越好。觀念的部分,到這裡就講得差不多了。下一集,我想換個方式,直接讓你看我實際上是怎麼用 Agent,來處理我真實工作裡的事情。我們下集見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=_l-wP8ZEsA8" target="_blank" rel="noopener">https://www.youtube.com/watch?v=_l-wP8ZEsA8</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+

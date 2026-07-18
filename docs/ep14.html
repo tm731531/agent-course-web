@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>打造你自己的 Agent 工作流:把全部串起來 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>打造你自己的 Agent 工作流</h1>
+<p class="lead">進階篇 · 把全部串起來,一套你能複製的起手式</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=UJufC3Dz8FA" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>歡迎來到這個系列的最後一集。我們一路從最基本的「問答」,走到「交辦」,再走到怎麼給工具、怎麼設邊界、怎麼指揮好幾個 Agent 一起做事。前面每一集,都是拼圖的一塊。這最後一集,我不再加新東西,我要做的是,把前面全部串成一套你自己能複製、能帶回去用的起手式。這一集講完,你就可以自己開始了。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先回顧我們走過的這條路</h2>
+<div class="semoji">🗺️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問答 → 交辦 → 講清楚 → 用工具</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>複雜任務 → 多 Agent → 設邊界</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>每一站,都是為了今天這一集鋪路</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>開始之前,我們把走過的路快速回顧一遍。我們從「問答」出發,學會把事情「交辦」出去;接著練習把需求「講清楚」,再讓 Agent 會「用工具」動手做事。然後處理「複雜任務」的拆解,學會指揮「多個 Agent」分工,最後懂得替它「設好邊界」。這七站不是各自獨立的技巧,它們本來就是同一套流程的環節,今天我們把它接起來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>這一集要給你的東西</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是新技巧,是一套「起手式」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>任何任務都能套進去的框架</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>看完今天就能自己動手</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以這一集要給你的,不是又一個新技巧,而是一套「起手式」。你可以把它想成一個固定的開場流程,不管你要交辦的是寫報告、整理資料、還是查一堆東西,都能套進這同一個框架。重點是,它簡單到你今天看完就能自己動手,不需要再等下一集、也不需要先變成高手。接下來我把這套起手式拆成四步,一步一步講給你聽。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>你的起手式:四個步驟</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一、挑一個你每天重複做的任務</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>二、好好交辦:目標、脈絡、驗收</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>三、給它工具,同時設好護欄</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>四、驗收,不對就迭代</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>整套起手式就四步,你先記住這個骨架。第一步,挑一個你每天都在重複做的任務。第二步,好好交辦,把目標、脈絡跟驗收標準一次講清楚。第三步,給它需要的工具,同時把護欄設好,讓它能動手、又不會亂動。第四步,驗收成果,不對就迭代調整。挑任務、好好交辦、給工具設護欄、驗收迭代,就這四步。下面每一步再展開。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>第一步:挑一個每天重複的任務</h2>
+<div class="semoji">📌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>越無聊、越規律的越好</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>有明確輸入,也有明確產出</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>先別挑最難的,挑最煩的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一步,挑任務。很多人一開始就想拿最難、最重要的案子來試,結果卡住,反而放棄。我的建議剛好相反:去挑那個最無聊、最規律、你每天都要做一次的小事。它最好有很明確的輸入,也有很明確的產出,這樣你才驗收得了。記住,起手式的目的不是一鳴驚人,是先讓你信任這個流程。所以先別挑最難的,挑那個最煩、最想丟掉的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>第二步:好好交辦</h2>
+<div class="semoji">📝</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標:你到底要它產出什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>脈絡:背景、限制、你在意什麼</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>驗收:怎樣算做對、做完</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二步,好好交辦,這是整套起手式最關鍵的一步。交辦不是丟一句「幫我處理一下」就好,它有三個要素。第一是目標,你到底要它產出什麼,講具體。第二是脈絡,把背景、限制、你特別在意的地方一次補齊,它才不會亂猜。第三是驗收標準,你要先講清楚怎樣算做對、做完。這三樣先想清楚再交辦,你會發現結果的品質,差非常多。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>第三步:給工具,同時設護欄</h2>
+<div class="semoji">🛠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>給它動手做事需要的工具</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>同時劃清楚:哪些不准碰</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>能力放大,邊界也要跟著放</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三步,給工具、設護欄,這兩件事一定要一起做。你給它查資料、開檔案、操作系統的能力,它才動得了手;但能力一放大,你就得同時把邊界劃清楚,哪些檔案不准動、哪些操作要先問過你、哪些地方碰都不要碰。這不是不信任它,而是一個好的工作流本來就該這樣設計。能力放到哪,護欄就跟到哪,這樣你才敢真的把事情交出去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>第四步:驗收,不對就迭代</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>對照你第二步定的驗收標準</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不對的地方,講清楚再讓它改</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一輪一輪修,不用一次到位</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四步,驗收跟迭代。東西做出來了,你就拿它去對照第二步定好的驗收標準,一條一條檢查。不對的地方,不要自己默默改掉,而是把哪裡不對、要怎麼改講清楚,再讓它重做一次。心法是:不用要求它一次到位,把它當成一輪一輪的來回,每一輪都比上一輪更接近你要的。交辦跟驗收之間這個迴圈,才是整套工作流真正在運轉的地方。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>落地建議:別一次全上</h2>
+<div class="semoji">🚀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先讓「一件事」跑順、跑到你信任</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>信任建立起來,再擴大到第二件</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一次全上,通常一件都做不成</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講完四步,給你一個很實際的落地建議:千萬不要一次全上。很多人學完很興奮,想把手上十件事全部交出去,結果每一件都做半套,最後全部放棄。正確的做法是,先挑一件事,用這套起手式把它跑順,跑到你真的信任它為止。等這份信任建立起來,你再把它擴大到第二件、第三件。先深、再廣。一次一件,你反而走得比較快。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>心態:你的角色變了</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>從「執行者」變成「設計工作流的人」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你的價值在:怎麼交辦、怎麼驗收</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這是整個系列最想帶你完成的轉變</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接下來講一件比技巧更重要的事,就是心態。當你開始這樣做,你的角色其實悄悄變了。以前你是那個從頭做到尾的執行者;現在你變成那個設計工作流、然後負責驗收的人。你的價值不再是「自己做得多快」,而是「你多會交辦、多會判斷好壞」。這個從執行者到設計者的轉變,就是我從第一集到現在,最想帶你完成的那一步。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>常見卡關:自己做還比較快</h2>
+<div class="semoji">⛰️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一開始這樣覺得,非常正常</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>那是還沒過學習曲線,不是方法錯</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>交辦、驗收也是要練的技能</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡先幫你打個預防針,講一個幾乎每個人都會遇到的卡關。你一開始一定會覺得「這樣交辦、還要驗收,我自己做還比較快」。我要告訴你,這個感覺非常正常,而且它不代表方法錯了。那只是因為你還在學習曲線的前段,交辦跟驗收本身也是需要練的技能,剛開始生疏、慢,是應該的。別因為這個念頭就退回去自己做。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>撐過去,複利就出來了</h2>
+<div class="semoji">📈</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>前幾次慢,是投資不是浪費</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>同一套流程,第十次幾乎不花力氣</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>省下的時間會滾成複利</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那要怎麼撐過那段時期?你換個角度看:前面那幾次的慢,不是浪費,是投資。因為同一套交辦流程,你第一次要想很久,但第十次幾乎不花什麼力氣,它就自動幫你把事情做完了。你今天多花的那十分鐘,會在未來每一次重複裡,一次一次還給你。撐過學習曲線,省下的時間就會滾成複利,這才是這套工作流真正值錢的地方。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>帶走一句話</h2>
+<div class="semoji">🌱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別想著一次革命</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>挑一件小事,今天就開始交辦</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>跑順它,信任它,再擴大</li>
+</ul>
+<div class="note">選配結語集:工具會一直變,但這套方法不會變。</div>
+<details class="script"><summary>逐字稿</summary><p>最後,如果這一集、甚至整個系列,你只帶走一句話,那就是這句:別想著一次革命。你不需要今天就把工作方式全部翻掉,你只需要挑一件小事,今天就開始把它交辦出去,用今天講的四步跑順它、跑到你信任它,再慢慢擴大。工具以後一定還會一直變,但我們今天講的這套方法,不會變。謝謝你一路看到這裡,我們有緣再見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=UJufC3Dz8FA" target="_blank" rel="noopener">https://www.youtube.com/watch?v=UJufC3Dz8FA</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+

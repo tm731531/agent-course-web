@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>什麼該交給、什麼不該:邊界、風險與成本護欄 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟡 進階篇</div>
+<h1>什麼該交給、什麼不該</h1>
+<p class="lead">第 13 集 · 邊界、風險與成本的護欄</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=QdjCoNH_6Is" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>歡迎來到進階篇的這一集。前面好幾集,我一直在講 Agent 有多強、可以交辦多少事情給它,我自己也講得很興奮。但這一集,我要踩一下剎車。因為越用越久,我越清楚一件事:能交辦,不代表都該交辦。有些事,你反而要小心地留給人來做。這一集,我們就好好把這條線畫清楚。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先踩一下剎車</h2>
+<div class="semoji">🛑</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>前面都在講:Agent 能做多少</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這集要講:哪些你不該交</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>「做得到」和「該讓它做」是兩回事</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講清楚我為什麼要專門開這一集。前面我教你怎麼把事情交出去、怎麼一次派很多個 Agent,那都是在講「它能做多少」。但工具越強,越需要一個大人在旁邊踩剎車。「它做得到」和「你該不該讓它做」,是完全兩回事。這一集不教新招,只教你在哪裡停下來想一下。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>為什麼一定要有邊界</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>交辦越多,出事的面積越大</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它一次能動很多東西,錯也錯很快</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不設界線,遲早會踩到雷</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>為什麼一定要有邊界?道理很簡單:你交辦得越多,一旦出事,波及的面積就越大。以前你自己慢慢做,錯了頂多錯一格;現在 Agent 一次能動很多檔案、很多資料,它做得快,錯起來也一樣快。你不先把界線設好,不是「會不會」踩雷的問題,是遲早會踩到。這集就是幫你在踩到之前,先立好護欄。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>適合放手交給 Agent 的事</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>重複性高、規則清楚</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>結果可以驗證對錯</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>低風險、錯了救得回來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那什麼事適合大方交給它?我抓四個特徵。第一,重複性高、規則很清楚,像整理資料、改格式、跑固定流程。第二,結果你驗得出對錯,一看就知道它做對沒。第三,風險低。第四,也是最關鍵的,萬一錯了,你救得回來。符合這幾點的,放手交,它幫你省下大把時間,錯了也不痛。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>必須由人把關的事</h2>
+<div class="semoji">🔒</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不可逆的動作:刪除、送出、付款</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>碰到錢和個人隱私</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>代表你對外發言、發信</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>反過來,有幾類事情,我強烈建議一定要人親自把關。第一種是不可逆的:刪東西、送出去、付錢,做了收不回來的。第二種是碰到錢和個人隱私的。第三種是對外溝通,只要是代表你去發言、發信、回覆客戶,那等於用你的名義說話。第四種是重大判斷。這些不是不能用 Agent 幫忙,而是最後那一下,要你點頭。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>別忘了成本這條線</h2>
+<div class="semoji">💸</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Agent 會燒錢:每一步都在花 token</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一次派很多個,可能一起暴衝</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要設預算上限,別讓它無限跑</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>還有一條很多人會忘記的線,是成本。這接第五集講過的:Agent 每做一步都在消耗 token,也就是在花錢。它不像人會累會停,你叫它做,它就一直做下去。尤其你一次派很多個 Agent,它們可能一起暴衝,帳單就上去了。所以務必幫它設一個預算上限、設一個停止條件,別讓它沒人看著無限跑。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>護欄一:先在救得回來的地方試</h2>
+<div class="semoji">🧪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別一上來就動正式資料</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先在測試環境、副本上跑</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>確認沒問題,再碰真的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接下來給你三個很實用的護欄。第一個:先在救得回來的地方試。不要一開始就叫它去動你的正式資料、正式系統。先給它一份副本、一個測試環境,讓它在那邊跑,你看清楚它會做出什麼、會不會出包,確認沒問題了,再讓它碰真的東西。這一步只多花幾分鐘,卻能擋掉最慘的那種災難。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>護欄二:重要動作,先確認再做</h2>
+<div class="semoji">🧯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不可逆的一步,要它停下來問你</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>「我打算這樣做,可以嗎?」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你點頭,它才動手</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個護欄:重要或不可逆的動作,要求它先給你確認,再動手。你可以直接告訴它:遇到刪除、送出、付款這類事情,先停下來,把你打算怎麼做講給我聽,等我說可以,你再做。這樣它就從「自己一路衝到底」,變成「關鍵路口先問你一聲」。多這一句確認,你就把最後的煞車握在自己手上。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>護欄三:永遠自己驗收</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它給的結果,不要照單全收</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>抽查關鍵幾筆,對一下事實</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你負責的是把關,不是簽收</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個護欄:永遠自己驗收。這是我最想叮嚀的一條。Agent 給你的東西,不要看起來很漂亮就直接收下。至少抽查關鍵的幾筆,跟事實對一下,看它有沒有唬你。記得第一集講的:你的角色是驗收。驗收不是簽個名而已,是真的去確認它做對了。照單全收,等於把你這個把關的角色也丟掉了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>一個心態:判斷別外包</h2>
+<div class="semoji">🧠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>AI 讓你更快,這很好</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但別讓它幫你把大腦關掉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>最後怎麼決定,還是你的事</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講完護欄,講一個心態。AI 讓你做事快很多,這是好事,我完全支持你用好用滿。但有一件事千萬別交出去,就是「判斷」。工具可以幫你查、幫你算、幫你整理,可是最後這件事到底該怎麼決定、能不能接受,那是你的責任,不能外包。別因為它講得頭頭是道,就跟著把自己的大腦關掉。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>交辦之前,先想資料去了哪</h2>
+<div class="semoji">🔐</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>雲端 AI 會把你給的內容送出去</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>公司內部、個人敏感資料要先想清楚</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不確定能不能外流,就先別丟</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>還有一個很容易忽略、但很重要的提醒:資料與隱私。你用的多數雲端 AI,你丟給它的內容,是會送到外面的伺服器去處理的。所以公司的內部文件、客戶名單、個人的敏感資料,交辦之前先想一下:這些東西,送出去沒關係嗎?只要你不確定它能不能外流,那就先別丟。這條線,寧可保守一點。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>不知道該不該交?用這句判斷</h2>
+<div class="semoji">🗺️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>可驗證、低風險、救得回 → 放手交</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>碰錢、碰隱私、代表你、收不回 → 人把關</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>拿不定,就先當作要人把關</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果前面講的你一時記不住,給你一個最簡單的判斷法。這件事如果是可驗證、低風險、錯了救得回來的,放手交給 Agent。如果它碰到錢、碰到隱私、代表你對外、或是做了收不回來的,那就人來把關。那要是你拿不定主意、分不清楚呢?很簡單,先當作它是要人把關的那一類,保守處理,絕對不會錯。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>交辦之前,先問一句</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>「這事錯了,救得回來嗎?」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>救不回來的,人來把關</li>
+</ul>
+<div class="note">下集:打造你自己的 Agent 工作流。</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,就是這句:在交辦任何事情之前,先問自己一句「這事如果錯了,救得回來嗎?」救得回來的,放心交,錯了再改就好;救不回來的,那一下,一定要你自己來把關。工具越強,這句話越重要。下一集,我們就進到收尾:怎麼把這些串起來,打造一套你自己的 Agent 工作流。我們下集見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=QdjCoNH_6Is" target="_blank" rel="noopener">https://www.youtube.com/watch?v=QdjCoNH_6Is</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+
