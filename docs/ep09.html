@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讓 Agent 動手:讀檔、查資料、操作系統 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟡 實作篇</div>
+<h1>讓 Agent 動手</h1>
+<p class="lead">實作篇 第 4 集 · 讀檔、查資料、操作系統</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=tm0T0qWKExQ" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 7 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>歡迎回到《從問 AI 到用 Agent》,這是實作篇的第四集。到這裡,我得老實跟你講:純聊天,已經不夠了。前面幾集我們一直在跟 AI 對話、問它、請它給建議。但你有沒有發現,它講得再好,東西還是在你的電腦裡,它碰不到。這一集,我要讓 Agent 真的動手,去碰你的檔案、你的系統、外面的資料。這集的主角,叫做工具。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>什麼是「工具」</h2>
+<div class="semoji">🔧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>讓 Agent 能對外界動作的能力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讀寫檔案、上網查資料、執行指令</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>沒有工具,它就只是一張嘴</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講清楚,什麼是工具。工具,就是讓 Agent 能夠對外界動手的能力。具體來說,像是讀跟寫你的檔案、上網去查最新的資料、或是在你電腦上執行一段程式、跑一個指令。你可以把它想成是 Agent 的手跟腳。如果只有一個很會講話的腦袋,卻沒有手腳,那它再聰明,也只是一張嘴,講完就結束了。工具,就是把手腳裝上去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>有工具跟沒工具,差在哪</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>沒工具:憑印象回答,可能亂編</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>有工具:真的去查、去讀、去做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>結果有沒有根據,差在這裡</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那有工具跟沒工具,到底差在哪?差很大。沒有工具的時候,你問它一個問題,它是憑腦袋裡的印象回答你,聽起來很順,但它可能記錯、甚至憑空編一個看起來很像的答案給你。有工具就不一樣了:它會真的去把那個網頁打開來查、真的把那個檔案讀進來看、真的把那件事做一遍。同樣一句回答,一個是憑感覺講的,一個是查證過、做過的,你敢不敢信,差別就在這裡。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>實際看它動手:讀檔 → 處理 → 存回</h2>
+<div class="semoji">🎬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>給它一個真實的檔案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讓它讀進來、處理</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>再把結果存回去</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):給 Agent 一份實際檔案,讓它讀取→處理→輸出</div>
+<details class="script"><summary>逐字稿</summary><p>光講你沒感覺,我直接做給你看。接下來我會給它一個真實的檔案,可能是一份原始資料、也可能是一份文件,然後我下一個指令,讓它把這個檔案讀進來、處理一遍,再把結果存回去變成一個新檔。你注意看它的動作:它不是在對話框跟我聊,它是真的去開了我硬碟上的那個檔案。我們來看。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>回顧:它不是「教你做」,是「做好了」</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它沒有告訴我步驟</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它直接把檔案處理好、存好</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這就是工具帶來的差別</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>好,看完回來。你有沒有抓到剛剛那個關鍵?它不是告訴我「你應該這樣做、那樣做」,然後把工作丟回給我。它是直接把那個檔案讀進去、處理完、存好,擺在那邊等我驗收。以前它只能出一張嘴,現在它能把事情做完。這一步,就是工具帶來的差別:從「會講」變成「會做」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>會做,也代表有風險</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它會真的改你的檔、跑你的指令</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>改錯了就是真的改下去了</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以要先設好界線</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但是,我要在這裡踩一下煞車。它會做,是好事,可是你要清楚一件事:它是真的在動你的東西。它會真的改你的檔案、真的跑你電腦上的指令。這代表如果它判斷錯了,那個錯也是真的發生,不是在對話框裡講講而已,是真的改下去、真的執行了。能力越大,越要先幫它設好界線。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>三個保命習慣</h2>
+<div class="semoji">🛡️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先在可回復的環境試,別直接動正式資料</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>重要動作,先讓它給你確認再做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>永遠自己驗收,別全盤照收</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以我給你三個保命的習慣。第一,先在一個可以回復的環境試,比如先拿一份備份、一個測試資料夾練手,別一開始就叫它動你唯一一份、動了就回不來的正式資料。第二,重要的、不可逆的動作,像刪檔、覆蓋、送出去,先讓它停下來給你確認,你點頭它再做。第三,也是最重要的,永遠自己驗收,它做完你要親眼看過結果對不對,別因為它很會做就全盤照收。這三條,你越常交辦,越要守。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>工具讓 Agent 從「會講」變「會做」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>會做,就代表有風險</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要設界線,也要自己驗收</li>
+</ul>
+<div class="note">下篇預告:進階篇 —— 複雜任務、多 Agent、邊界與護欄</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,那就是:工具,讓 Agent 從一個「會講」的嘴,變成一個「會做」的助手。但別忘了,會做的另一面就是有風險,所以你要幫它設好界線,也要自己驗收。到這裡,我們已經讓單一個 Agent 動起來了。可是真正複雜的任務,往往一個 Agent 忙不過來。接下來的進階篇,我們就要進到更大的場面:複雜任務怎麼拆、多個 Agent 怎麼協作、還有最關鍵的,邊界跟護欄要怎麼設。我們進階篇見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=tm0T0qWKExQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=tm0T0qWKExQ</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+

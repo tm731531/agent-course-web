@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我的第一個 Agent 任務:從頭到尾實錄 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟢 實作篇</div>
+<h1>我的第一個 Agent 任務</h1>
+<p class="lead">實作篇 第 1 集 · 從頭到尾,實錄一次給你看</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=pOisRW8AG-Y" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 8 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>歡迎進到實作篇的第一集。前面幾集我們把觀念講完了:什麼是 Agent、為什麼要交辦、跟聊天差在哪。道理你聽懂了,但我猜你心裡還是有一個疑問:講這麼多,實際做起來到底長什麼樣子?這一集就不講道理了,我挑一個最簡單的真實任務,從頭到尾完整做一次給你看。你會親眼看到一個 Agent,從我把任務交出去,到它自己做完、把結果交回來,中間的每一步。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>觀念聽懂了,這集開始動手</h2>
+<div class="semoji">🖐️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>前面講的都是「為什麼」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這集開始講「怎麼做」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>看一次,比聽十次都清楚</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講清楚這集的定位。前面觀念篇,我一直在跟你講「為什麼」:為什麼 Agent 不一樣、為什麼你該學交辦。但光聽道理,你很難真的有感覺。所以從這一集開始,我們切換到動手模式,講的是「怎麼做」。我自己的經驗是,這種東西看一次實際操作,比聽我講十次都還清楚。所以這集你就跟著我,看一個 Agent 任務完整跑一遍。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>第一次,為什麼要挑最簡單的</h2>
+<div class="semoji">🐣</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不要一開始就挑複雜任務</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先看懂那個循環:交辦 → 它自己做 → 交結果</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>循環看懂了,難的只是換內容</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>有件事我要先提醒你:第一次交辦,千萬不要挑一個很複雜的任務。我知道你可能很想馬上叫它做一件很厲害的事,但第一次的重點不是「做多難」,而是「看懂那個循環」。哪個循環?就是我把任務交辦出去、它自己動手做、最後把結果交回來,這一整圈。你只要先把這一圈看清楚,之後不管任務多難,其實都只是換一下裡面的內容而已,循環是一樣的。所以我故意挑一個很小、你一看就懂的任務。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>我要交辦的任務</h2>
+<div class="semoji">📋</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我有一份很亂的清單:名字、電話、地址混在一起</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>我要它整理成一張乾淨的表格</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>夠簡單,你一眼就看得懂好不好</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>來看我今天要交辦的任務。我手上有一份很亂的清單,就是那種一行一行、名字、電話、地址全部黏在一起、格式還不統一的資料,看了頭很痛。我要做的事很單純:把它整理成一張乾淨、對齊的表格,一欄名字、一欄電話、一欄地址。我特意選這個,是因為它夠簡單,你一看就知道「整理好」長什麼樣子,也一眼就能判斷它做得對不對。這對第一次來說很重要。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>我怎麼交辦</h2>
+<div class="semoji">🗣️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把目標講清楚:我要一張表格</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把要的結果講清楚:哪幾欄、怎麼排</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>剩下「怎麼做」,交給它想</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接著是重點:我怎麼把這件事交辦出去。交辦不是隨便丟一句「幫我用一下」,我會把兩件事講清楚。第一,目標:我要一張整理好的表格。第二,我要的結果長什麼樣:我要三欄,名字、電話、地址,一行一筆。把這兩件講清楚就夠了,至於它要怎麼一步一步拆、怎麼對齊、怎麼處理格式不一致,那些「怎麼做」的部分,我不用管,交給它自己想。你會發現交辦的功夫,全在把目標和結果講明白。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>接下來,實際做一次給你看</h2>
+<div class="semoji">🎬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我把剛剛那份亂清單交給它</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你會看到它自己一步步整理</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>看它怎麼從接到任務到交出表格</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):打開工具,把那份雜亂清單貼進去,用剛剛講的方式交辦「整理成名字/電話/地址三欄的表格」,然後不插手,讓它從頭做到尾,一路錄到它交出整理好的表格為止。</div>
+<details class="script"><summary>逐字稿</summary><p>講了這麼多,不如直接看。接下來這一段,是我實際的螢幕操作。我會打開工具,把剛剛那份亂七八糟的清單交給它,用我剛剛說的方式把任務交辦出去,然後我就退到旁邊,不插手,看它自己一步一步整理。你會看到它從接到任務,到最後交出一張乾淨表格的完整過程。我們來看畫面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>剛剛發生了什麼</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它自己把整件事做完了</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>我只做了兩件事:交辦、驗收</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>中間「動手」的部分,我完全沒碰</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>好,畫面看完了,我們倒回來看剛剛到底發生了什麼。你注意到沒有:整件事其實是它自己做完的。從頭到尾,我只做了兩件事,一件是最前面的「交辦」,把任務講清楚交出去;另一件是最後的「驗收」,看它給我的表格對不對。中間所有真正動手的部分,一筆一筆對齊、把格式喬好、排成表格,我完全沒有碰。這就是我一直在講的那個循環,你剛剛親眼看到它跑完一圈了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>換成舊做法呢</h2>
+<div class="semoji">↔️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>用問答:它只告訴我「整理清單的步驟」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>然後我自己一筆一筆貼、一筆一筆對齊</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同樣一件事,以前的手全是我在出</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們對比一下舊做法你更有感。如果我用以前那種問答的方式,我會問它「這種亂清單要怎麼整理」,它會給我一串步驟,告訴我先怎樣、再怎樣。然後呢?然後就要我自己動手了,自己一筆一筆貼、一筆一筆對齊、自己排成表格。同樣一件事,以前那些出力的手,全部都是我在出。你把這兩種擺在一起看,交辦跟問答的差別,是不是一下子就具體了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>第一次交辦,重點不是做多難</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>是看懂「交辦 → 它做 → 驗收」這個循環</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>循環熟了,任務自然越交越大</li>
+</ul>
+<div class="note">下集:交辦要怎麼講,它才會做對?目標 + 驗收標準,兩個都要給。</div>
+<details class="script"><summary>逐字稿</summary><p>這一集你帶走一句話就好:第一次交辦,重點從來不是做多難的事,而是看懂「交辦、它做、驗收」這個循環。這一圈你熟了,之後任務自然就會越交越大、越交越複雜。不過你剛剛可能也發現了,我今天交辦講得特別清楚,它才做得這麼順。那萬一講不清楚會怎樣?交辦到底要講到什麼程度,它才會做對?下一集,我就專門講這件事:一個好的交辦,要給它目標,還要給它驗收標準,兩個都不能少。我們下集見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=pOisRW8AG-Y" target="_blank" rel="noopener">https://www.youtube.com/watch?v=pOisRW8AG-Y</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+
