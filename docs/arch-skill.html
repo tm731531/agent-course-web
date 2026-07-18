@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill:把做對一次的流程,用 script + template 固化成資產 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>Skill:把做對一次的流程,固化成可重複用的資產</h1>
+    <p class="lead">MCP 是「Agent 對外操作的能力」;Skill 則是「Agent 用 script + template 固化下來的能力」。把一段做對過、驗證過的流程封裝起來,以後遇到同類任務直接調用——一次教會,之後每次都對,還能傳給整個團隊。</p>
+  </header>
+
+  <h2>🧩 從「做對一次」到「可重複調用的 Skill」</h2>
+  <div class="legend">
+    <span class="k"><span class="s proc"></span>流程 / Script</span>
+    <span class="k"><span class="s data"></span>知識 / 清單 / Template</span>
+    <span class="k"><span class="s decision"></span>封裝前審核</span>
+    <span class="k"><span class="s result"></span>Agent / 團隊</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  P["做對過的流程<br/>步驟 · 已驗證"]:::proc
+  K["需要的知識<br/>背景 · 規則"]:::data
+  CL["檢查清單<br/>驗收標準"]:::data
+  GATE{"封裝前先審<br/>真的做對、驗證過嗎?"}
+  subgraph SKILL["🧩 Skill · 用 script + template 固化"]
+    direction TB
+    SC["Script<br/>把流程固化成可重複執行"]:::proc
+    TP["Template<br/>把格式與輸出固化"]:::data
+  end
+  A(["🤖 Agent<br/>遇同類任務直接調用"]):::result
+  T(["👥 團隊<br/>同事也能用同一套"]):::result
+  P --> GATE
+  K --> GATE
+  CL --> GATE
+  GATE -->|通過| SC
+  GATE -->|通過| TP
+  GATE -.->|沒驗證過 · 別封裝| P
+  SC --> A
+  TP --> A
+  A -. 分享出去 .-> T
+  class GATE decision
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  style SKILL fill:#eff6ff,stroke:#93c5fd,color:#1e40af
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">重點:Skill 不是把「一段對話」存起來,是把「一段做對過的流程 + 該有的知識 + 驗收標準」固化。所以封裝前一定先確認它真的做對過——把錯的流程封裝,等於把錯誤自動化、散佈給全公司。</p>
+
+  <h2>🆚 每次重新交辦 vs 調用 Skill</h2>
+  <table>
+    <tr><th>面向</th><th>每次從零交辦</th><th>調用封裝好的 Skill</th></tr>
+    <tr><td>品質</td><td>看你當下記不記得所有步驟,容易漏</td><td>固定走驗證過的流程,每次都一致</td></tr>
+    <tr><td>速度</td><td>整段交辦重講一遍</td><td>一句話叫出 skill</td></tr>
+    <tr><td>成本</td><td>長交辦重複送,token 一直燒</td><td>不用每次重講,省 token</td></tr>
+    <tr><td>能不能傳承</td><td>只在你腦袋裡</td><td>變成團隊資產,同事直接用</td></tr>
+  </table>
+
+  <h2>🧱 裡面固化了什麼</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>Script:固化流程</b><span class="dir">怎麼做</span></div>
+      <div class="bd">把「一步一步怎麼做」寫成可重複執行的流程,不靠人每次臨場記得。這是 Skill 的骨架。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>Template:固化格式</b><span class="dir">長什麼樣</span></div>
+      <div class="bd">把輸出的格式、要填的欄位、範例做成模板,產出每次長一樣、不走鐘。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>知識 + 檢查清單:固化標準</b><span class="dir">對不對</span></div>
+      <div class="bd">把該懂的背景規則、還有「做到什麼才算對」的驗收清單一起封進去,Agent 才知道往哪個靶打。</div></div>
+  </div>
+
+  <h2>🎯 為什麼值得封裝</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>一次教會,之後每次都對</b><span class="dir">品質穩定</span></div>
+      <div class="bd">把做對的方法固定下來,不再靠人每次記得,品質不因人、不因當下狀態而浮動。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>個人經驗變團隊資產</b><span class="dir">可傳承</span></div>
+      <div class="bd">你封裝的 skill,同事也能調用;一個人的做對,變成整個團隊都做對。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>先驗證、再封裝</b><span class="dir">別自動化錯誤</span></div>
+      <div class="bd">封裝前確認流程真的做對過、驗證過。把沒驗證的流程封裝起來,錯誤會被一次次自動重播,而且散給所有人。</div></div>
+  </div>
+
+  <div class="links">
+    <a class="yt" href="ep25.html">▶ 相關影片:技能封裝</a>
+    <a class="src" href="arch-mcp-server.html">🔌 延伸:架一台 MCP Server</a>
+  </div>
+
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · Skill。概念示意,非特定產品實作。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:58, padding:14, useMaxWidth:true}
+  });
+</script>
+</body></html>
