@@ -14,20 +14,32 @@
   h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
   .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
   h2{font-size:1.3rem;margin:36px 0 14px}
-  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:24px 0;overflow-x:auto}
-  .diagram .mermaid{display:flex;justify-content:center;min-width:560px}
+  /* diagram: always light so lines/labels stay readable in any theme */
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
   .steps{display:flex;flex-direction:column;gap:14px}
   .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
   .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
   .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
   .step .h b{font-size:1.02rem}
   .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
-  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;
-      font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
   table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
   th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
   th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
   code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
   .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
   .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
   .links .yt{background:var(--accent);color:#04121f}
@@ -42,22 +54,28 @@
   </header>
 
   <h2>🧭 一個候選模型,過五道評估關卡</h2>
+  <div class="legend"><span class="k"><span class="s proc"></span>候選輸入</span><span class="k"><span class="s decision"></span>評估關卡</span><span class="k"><span class="s result"></span>淘汰 / 過關結果</span></div>
   <div class="diagram">
     <pre class="mermaid">
 flowchart TB
-  M["候選模型<br/>(89 個之一)"] --> G1
-  G1["① 規模 × 平台 context<br/>同模型換平台差很多?"] -->|"8K 被餓死"| OUT1["淘汰:平台把它綁死"]
+  M["候選模型<br/>(89 個之一)"]:::proc --> G1
+  G1{"① 規模 × 平台 context<br/>同模型換平台差很多?"}:::decision -->|"8K 被餓死"| OUT1(["淘汰:平台把它綁死"]):::result
   G1 -->|"203K 滿血"| G2
-  G2["② 寫程式 codegen<br/>一次過率 / 契約遵循"] -->|"eval 作弊 / 繞圈"| OUT2["淘汰:綠燈但壞碼"]
+  G2{"② 寫程式 codegen<br/>一次過率 / 契約遵循"}:::decision -->|"eval 作弊 / 繞圈"| OUT2(["淘汰:綠燈但壞碼"]):::result
   G2 -->|"狀態機 10/10"| G3
-  G3["③ 工具呼叫 / agent<br/>多步 loop 收斂?"] -->|"繞圈不收斂"| OUT3["淘汰:agent 不穩"]
+  G3{"③ 工具呼叫 / agent<br/>多步 loop 收斂?"}:::decision -->|"繞圈不收斂"| OUT3(["淘汰:agent 不穩"]):::result
   G3 -->|"讀→篩→寫→回報 閉環"| G4
-  G4["④ coder vs reasoning<br/>吃碼 or 吃推理?"] -->|"吃碼力"| C["選 coder:快又省"]
-  G4 -->|"吃推理"| R["選 reasoning:能想"]
+  G4{"④ coder vs reasoning<br/>吃碼 or 吃推理?"}:::decision -->|"吃碼力"| C(["選 coder:快又省"]):::result
+  G4 -->|"吃推理"| R(["選 reasoning:能想"]):::result
   C --> G5
   R --> G5
-  G5["⑤ 格式 / 免費 / 隱私<br/>原廠免費? 資料訓練?"] -->|"聚合商轉賣 :free 常 429"| OUT5["淘汰:不穩 / 有疑慮"]
-  G5 -->|"原廠免費層穩定"| PASS["雙過候選:可當副手"]
+  G5{"⑤ 格式 / 免費 / 隱私<br/>原廠免費? 資料訓練?"}:::decision -->|"聚合商轉賣 :free 常 429"| OUT5(["淘汰:不穩 / 有疑慮"]):::result
+  G5 -->|"原廠免費層穩定"| PASS(["雙過候選:可當副手"]):::result
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
     </pre>
   </div>
 
@@ -130,8 +148,17 @@ flowchart TB
 </div>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script>
-  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default',
-    themeVariables:{fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif', fontSize:'14px'}});
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:60, padding:14, useMaxWidth:true}
+  });
 </script>
 </body></html>

@@ -14,22 +14,32 @@
   h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
   .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
   h2{font-size:1.3rem;margin:36px 0 14px}
-  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:24px 0;overflow-x:auto}
-  .diagram .mermaid{display:flex;justify-content:center;min-width:560px}
+  /* diagram: always light so lines/labels stay readable in any theme */
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
   .steps{display:flex;flex-direction:column;gap:14px}
   .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
   .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
   .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
   .step .h b{font-size:1.02rem}
   .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
-  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;
-      font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
   table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
   th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
   th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
   code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
-  .note{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 20px;margin:24px 0}
-  .note b{color:var(--accent)}
+  pre{margin:0;padding:16px 18px;background:var(--code);color:var(--codetext);overflow-x:auto;font-family:"Noto Sans Mono CJK TC",ui-monospace,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.55}
   .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
   .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
   .links .yt{background:var(--accent);color:#04121f}
@@ -44,22 +54,28 @@
   </header>
 
   <h2>🔍 排查流程:從吐亂碼到找出根因</h2>
+  <div class="legend"><span class="k"><span class="s proc"></span>排查步驟 · 現象</span><span class="k"><span class="s decision"></span>判斷分支</span><span class="k"><span class="s infra"></span>硬體 / 資源</span><span class="k"><span class="s result"></span>結論</span></div>
   <div class="diagram">
     <pre class="mermaid">
 flowchart TD
-  S["症狀: gemma4:e4b 在 iGPU 超過 30 層吐亂碼<br/>低層數正常, 速度快但答案全錯"]
-  S --> A{"先懷疑: RAM 不足?"}
-  A -->|停 OMS 釋放記憶體| A2["iGPU 靠 UMA 2GB + GTT 動態借 RAM<br/>RAM 不足 GPU 借不到頁面 → 崩潰重試"]
-  A2 --> B{"二分法: 幾層開始壞?"}
-  B -->|num_gpu 1~5 正確| B1["✅ 少數層 正確"]
-  B -->|num_gpu 20+ 亂碼| B2["❌ 誤差隨層數累積"]
-  B1 --> C{"調環境變數能修嗎?"}
+  S["症狀: gemma4:e4b 在 iGPU 超過 30 層吐亂碼<br/>低層數正常, 速度快但答案全錯"]:::proc
+  S --> A{"先懷疑: RAM 不足?"}:::decision
+  A -->|停 OMS 釋放記憶體| A2[["iGPU 靠 UMA 2GB + GTT 動態借 RAM<br/>RAM 不足 GPU 借不到頁面 → 崩潰重試"]]:::infra
+  A2 --> B{"二分法: 幾層開始壞?"}:::decision
+  B -->|num_gpu 1~5 正確| B1["✅ 少數層 正確"]:::proc
+  B -->|num_gpu 20+ 亂碼| B2["❌ 誤差隨層數累積"]:::proc
+  B1 --> C{"調環境變數能修嗎?"}:::decision
   B2 --> C
-  C -->|GGML_VK_DISABLE_F16=1| C1["無效"]
-  C -->|OLLAMA_KV_CACHE_TYPE=f32| C2["輸出變旁遮普語"]
-  C1 --> R["根因: RADV/ACO 編譯器層<br/>重排 FP16 運算順序 → 每層小誤差<br/>層層放大, 第 30+ 層蓋過真訊號"]
+  C -->|GGML_VK_DISABLE_F16=1| C1["無效"]:::proc
+  C -->|OLLAMA_KV_CACHE_TYPE=f32| C2["輸出變旁遮普語"]:::proc
+  C1 --> R(["根因: RADV/ACO 編譯器層<br/>重排 FP16 運算順序 → 每層小誤差<br/>層層放大, 第 30+ 層蓋過真訊號"]):::result
   C2 --> R
-  R --> F["解法: num_gpu=0 純 CPU 慢但全對<br/>或換 Mac Metal 同速且精度正常"]
+  R --> F(["解法: num_gpu=0 純 CPU 慢但全對<br/>或換 Mac Metal 同速且精度正常"]):::result
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
     </pre>
   </div>
 
@@ -112,8 +128,17 @@ OLLAMA_KV_CACHE_TYPE=f32   → 輸出變旁遮普語(還是錯)
 </div>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script>
-  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default',
-    themeVariables:{fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif', fontSize:'14px'}});
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:60, padding:14, useMaxWidth:true}
+  });
 </script>
 </body></html>

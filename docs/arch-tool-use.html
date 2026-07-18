@@ -15,7 +15,8 @@
   .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
   h2{font-size:1.3rem;margin:36px 0 14px}
   .diagram{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:24px 0;overflow-x:auto}
-  .diagram .mermaid{display:flex;justify-content:center;min-width:560px}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
   .steps{display:flex;flex-direction:column;gap:14px}
   .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
   .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
@@ -108,8 +109,18 @@ sequenceDiagram
 </div>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script>
-  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  mermaid.initialize({startOnLoad:true, theme: dark?'dark':'default',
-    themeVariables:{fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif', fontSize:'14px'}});
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      actorBkg:'#dbeafe', actorBorder:'#2563eb', actorTextColor:'#17335e',
+      signalColor:'#475569', signalTextColor:'#334155',
+      noteBkgColor:'#fef3c7', noteBorderColor:'#d97706', noteTextColor:'#78350f'
+    }
+  });
 </script>
 </body></html>
