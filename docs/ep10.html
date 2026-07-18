@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>複雜任務:它自己規劃、執行、還會驗證 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>複雜任務:它自己規劃、執行、還會驗證</h1>
+<p class="lead">第 10 集 · 交辦的事,可以更大了</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=kOPznrYi2W0" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 7 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎來到進階篇第十集。前面幾集我們交辦給 Agent 的任務,其實都還算單純,大多是一步就能做完的事。這一集我要帶你升級,交辦一種需要「規劃」的任務,一種很多步驟、一步接一步的複雜任務。你會看到它怎麼自己把大事拆開、照順序做下去,而且做完還會回頭檢查對不對。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>複雜任務難在哪</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>步驟很多,不是一步就做完</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>步驟之間有先後、有依賴</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>中間錯一步,後面全歪掉</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講清楚複雜任務難在哪。它不是一步就能解決的,而是有很多步。更麻煩的是,這些步驟之間有先後順序、有依賴關係,後面那步要用到前面那步的結果。所以只要中間錯了一步,後面全部都會跟著歪掉。這種任務,你以前大概不太敢整個丟給 AI,因為你會怕它做到一半就亂了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>Agent 怎麼處理:先規劃</h2>
+<div class="semoji">🗺️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>拿到大任務,先不急著動手</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把它拆成一小步一小步</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>排出該先做什麼、後做什麼</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那 Agent 是怎麼處理這種任務的?第一步,它會先規劃。拿到一個大任務,它不會急著動手,而是先想清楚:這件事可以拆成哪幾個小步驟?哪一步要先做、哪一步要後做?就像一個做事有條理的人,會先在腦袋裡列出步驟,再開始動工。這個「先想再做」,就是它能扛住複雜任務的關鍵。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>Agent 怎麼處理:依序執行、邊做邊驗</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>照著計畫,一步一步做</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>每做完一步,回頭檢查對不對</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>錯了就退回修,不會一路錯到底</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>規劃好之後,第二步就是照著計畫一步一步做下去。而且它不是悶著頭做到底,是邊做邊檢查。每完成一步,它會回頭看一下這步的結果對不對、能不能接到下一步。如果發現不對,它會退回去修,而不是帶著錯誤一路衝到終點。規劃、執行、再加上驗證,這三件事湊起來,它才有辦法把複雜任務做完。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>實際看它做一個多步驟任務</h2>
+<div class="semoji">🎬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我丟一個真的很多步的任務給它</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>看它自己規劃、一步步做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>還會自我檢查,錯了回頭修</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):我丟一個有好幾個相依步驟的真實任務給 Agent(例如「上網查資料 → 整理成表 → 做分析 → 產出一份報告」這種一步接一步的任務),全程看它先規劃、再依序執行、中間自我檢查、發現錯了回頭修,最後產出成品。</div>
+<details class="script"><summary>逐字稿</summary><p>講到這裡,不如直接看它做。接下來我丟一個真正多步驟的任務給它,一個要先上網查資料、再整理、再分析、最後產出一份報告的任務,每一步都要接著上一步。我們一起看它怎麼自己規劃、怎麼一步一步做下去,還會自己回頭檢查。我們來看畫面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>剛剛發生了什麼</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它不是一次就吐出答案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>是先想步驟,再一步步做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>做完還會回頭檢查,像人一樣</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>看完了。回頭看它剛剛做的事:它不是我一問就一次吐出一整包答案。它是先想好步驟、排好順序,再一步一步做下去,而且做完還會回頭檢查對不對。這個過程,其實跟一個做事仔細的人很像:先想清楚再動手,做完再核對一遍。這已經不是「回答問題」,而是「完成一件事」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>跟單步任務差在哪</h2>
+<div class="semoji">📈</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>單步:一問一答就結束</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>複雜任務:它自己撐完整段流程</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你能交辦的事,一下子變大了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這跟前面單步的任務差在哪?單步任務就是一問一答,一下就結束了。而複雜任務,它能自己撐完一整段流程,從頭走到尾。這個差別對你來說很重要,因為它意味著,你能交辦出去的事情,一下子變大了。以前只敢丟小事給它,現在整個專案裡的一大段,你都可以放心交出去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>複雜任務靠的是「規劃 + 驗證」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不是更聰明的一次回答</li>
+</ul>
+<div class="note">下集:一次派很多個 Agent 同時做事</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,那就是:Agent 能搞定複雜任務,靠的不是「更聰明的一次回答」,而是「會規劃、會驗證」這兩件事。它把大事拆小、排好順序做、做完再檢查,靠的是流程,不是靈光一閃。那如果一個 Agent 就能撐完整段流程,一次派很多個 Agent 同時做事會怎樣?下一集,我們就來玩這個。我們下一集見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=kOPznrYi2W0" target="_blank" rel="noopener">https://www.youtube.com/watch?v=kOPznrYi2W0</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+
