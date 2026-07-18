@@ -25,6 +25,7 @@
   .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
   .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
   .legend .s.model{background:#f3e8ff;border-color:#9333ea;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+  .legend .s.hook{background:#ccfbf1;border-color:#0d9488;border-radius:4px}
   .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
   .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
   .steps{display:flex;flex-direction:column;gap:14px}
@@ -116,15 +117,49 @@ flowchart TB
       <div class="bd">在指令「真正執行之前」攔下來:改寫吵雜輸出、擋掉危險動作、記錄成本。工具怎麼被呼叫,由 Harness 說了算。</div></div>
   </div>
 
-  <h2>🪝 Hook 的五個時機</h2>
+  <h2>🪝 通用 Agent 的 Hook 點(照生命週期)</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">剛剛只放大看 <code>PreToolUse</code> 一個。實際上一個通用 Agent 框架,在<strong>整條生命週期</strong>處處都留了 hook 點——Harness 就是靠掛在這些點上接管一切。照 agent 從開機到關機的順序看:</p>
+  <div class="legend">
+    <span class="k"><span class="s hook"></span>Hook 點</span>
+    <span class="k"><span class="s model"></span>模型思考</span>
+    <span class="k"><span class="s infra"></span>工具執行</span>
+    <span class="k"><span class="s result"></span>Session 起訖</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  A(["▶ Session 開始"]):::result --> SS["SessionStart<br/>載入規則 · 記憶 · 過去的坑"]:::hook
+  SS --> UPS["UserPromptSubmit<br/>你每送一則訊息 · 處理前"]:::hook
+  UPS --> TH{{"模型思考<br/>決定要不要用工具"}}:::model
+  TH --> PRE["PreToolUse<br/>工具執行前"]:::hook
+  PRE --> TL["工具執行"]:::infra
+  TL --> POST["PostToolUse<br/>工具執行後"]:::hook
+  POST -->|還要用更多工具| TH
+  TH -->|這一輪回完| STOP["Stop · SubagentStop<br/>主 / 子 agent 回完"]:::hook
+  TH -.要權限或通知.-> NOTI["Notification"]:::hook
+  STOP -->|下一則訊息 · 再一輪| UPS
+  STOP --> PC["PreCompact<br/>上下文壓縮前 · 存檔"]:::hook
+  PC --> SE["SessionEnd<br/>收尾 · 記帳 · 稽核"]:::hook
+  SE --> EN(["■ Session 結束"]):::result
+  classDef hook fill:#ccfbf1,stroke:#0d9488,stroke-width:2px,color:#134e4a
+  classDef model fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    </pre>
+  </div>
   <table>
-    <tr><th>時機</th><th>Harness 做什麼</th></tr>
-    <tr><td>對話開始</td><td>載入規則 + 過去的教訓到模型視野</td></tr>
-    <tr><td>工具執行前</td><td>改寫吵雜指令(例如只抓失敗的行)、擋危險動作</td></tr>
-    <tr><td>工具執行後</td><td>記錄這次學到的教訓</td></tr>
-    <tr><td>記憶壓縮前</td><td>把進度做個存檔(checkpoint)</td></tr>
-    <tr><td>回應結束</td><td>記錄 token 成本、稽核有沒有守規則</td></tr>
+    <tr><th>Hook</th><th>何時觸發</th><th>Harness 常做的事</th></tr>
+    <tr><td><code>SessionStart</code></td><td>開一個新對話 / session</td><td>載入規則、記憶、過去踩過的坑</td></tr>
+    <tr><td><code>UserPromptSubmit</code></td><td>你每送出一則訊息(處理前)</td><td>補上下文、擋不該問的、加提醒</td></tr>
+    <tr><td><code>PreToolUse</code></td><td>每次工具執行前</td><td>改寫吵雜指令、擋危險動作、記成本</td></tr>
+    <tr><td><code>PostToolUse</code></td><td>每次工具執行後</td><td>記錄教訓、檢查結果、格式化輸出</td></tr>
+    <tr><td><code>Notification</code></td><td>agent 要通知你時(要權限 / 要你注意)</td><td>轉發到手機 / Slack、決定要不要打擾你</td></tr>
+    <tr><td><code>Stop</code></td><td>主 agent 回完一輪</td><td>驗收、稽核有沒有守規則、決定要不要繼續</td></tr>
+    <tr><td><code>SubagentStop</code></td><td>子 agent 回完</td><td>收子代理結果、彙整</td></tr>
+    <tr><td><code>PreCompact</code></td><td>上下文要壓縮前</td><td>把進度存檔,免得壓縮後失憶</td></tr>
+    <tr><td><code>SessionEnd</code></td><td>session 結束</td><td>記帳、稽核、把學到的寫回去</td></tr>
   </table>
+  <p style="color:var(--muted);font-size:.95rem">不同 Agent 框架的 hook 名稱會略有出入,但邏輯一樣:<strong>開場 → 每輪對話 → 每次工具 → 通知 → 收尾</strong>,每個轉折都留一個掛勾。你掛得越準,Harness 就越能在對的時機接管,而不用改動 Agent 或模型本身。</p>
 
   <h2>🎯 為什麼重要</h2>
   <div class="steps">
