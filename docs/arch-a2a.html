@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2A:把既有系統安全開成一個 Agent 能用的服務 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>A2A:把既有系統,安全開成一個 Agent 能用的服務</h1>
+    <p class="lead">從「我的 Agent」出發:我要嘛去用別人的服務,要嘛把自己的既有系統開放給別的 Agent 用。這頁的重點是三件事——我的 Agent Card、A2A 的 API 設計,以及最容易被忽略的:怎麼在開放的同時,守住既有系統的穩定。</p>
+  </header>
+
+  <h2>🕰️ 時代感:對外的介面一直在進化</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">同一個系統,對外開放的「介面」換了三個時代——從給人看,到給程式接,到給 Agent 自己讀。Agent Card 就是這一代的介面。</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  U["🖥️ UI<br/>給「人」用<br/>眼睛看 · 手點"]:::era1
+  A["🔌 API<br/>給「程式」用<br/>工程師寫 code 呼叫"]:::era2
+  C(["🪪 Agent Card<br/>給「Agent」用<br/>自己讀卡 · 自己呼叫"]):::era3
+  U -->|人到程式| A
+  A -->|程式到 Agent| C
+  classDef era1 fill:#e5e9f0,stroke:#64748b,stroke-width:2px,color:#334155
+  classDef era2 fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef era3 fill:#dcfce7,stroke:#16a34a,stroke-width:2.5px,color:#14532d
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">重點:每一代都沒取代上一代——UI、API 還在。Agent Card 是「多開一個給 Agent 讀的門面」,讓你的系統也能被 AI 直接使用。</p>
+
+  <h2>🧱 一條垂直的開放堆疊:卡 → API → 隔離層 → 既有系統</h2>
+  <div class="legend">
+    <span class="k"><span class="s result"></span>呼叫方 Agent</span>
+    <span class="k"><span class="s data"></span>我的 Agent Card</span>
+    <span class="k"><span class="s proc"></span>A2A API / 服務邏輯</span>
+    <span class="k"><span class="s decision"></span>隔離 / 授權層</span>
+    <span class="k"><span class="s infra"></span>既有系統(資料庫 / 佇列)</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  CALLER(["🤖 呼叫方 Agent<br/>我的 Agent,或別人的"]):::result
+  CARD["🪪 我的 Agent Card<br/>放 /.well-known/agent-card.json<br/>宣告 skill · 參數 · 回傳 · 驗證方式"]:::data
+  API["🔌 A2A API<br/>GET 讀卡=公開發現 · POST /tasks=要驗證<br/>憑證放 HTTP header,不進 skill 參數"]:::proc
+  ADP{"🛡️ 隔離 / 授權層<br/>驗身分 · 限流<br/>依 token 推導你能看什麼"}
+  subgraph SYS["🏢 既有系統 · 原封不動"]
+    direction TB
+    SVC["服務 / 業務邏輯"]:::proc
+    DB[("資料庫")]:::infra
+    Q["背景任務佇列<br/>長任務丟這裡跑"]:::infra
+    SVC --- DB
+  end
+  CALLER -->|① 讀卡:你會什麼、怎麼呼叫| CARD
+  CARD -->|② 回傳能力與呼叫方式| CALLER
+  CALLER -->|③ POST /tasks · 憑證放 header| API
+  API --> ADP
+  ADP -->|④ 通過才碰,且只碰你該看的| SVC
+  ADP -.->|長任務:立刻回 taskId,不佔線| Q
+  SVC -->|⑤ 回結果 / 多輪| CALLER
+  class ADP decision
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+  style SYS fill:#f8fafc,stroke:#cbd5e1,color:#475569
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">關鍵:既有系統原封不動,你多加的是「卡 + API + 隔離層」這一層外皮。呼叫方碰不到你的資料庫,只碰隔離層放行的東西。</p>
+
+  <h2>🔌 A2A 的 API 設計:兩個端點、兩層分工</h2>
+  <table>
+    <tr><th>端點</th><th>做什麼</th><th>要驗證嗎</th></tr>
+    <tr><td><code>GET /.well-known/agent-card.json</code></td><td>公開發現:別的 Agent 讀卡,知道你會什麼</td><td>通常不用(看得到 ≠ 能用)</td></tr>
+    <tr><td><code>POST /tasks</code></td><td>實際執行:帶 skill 代號 + 參數來辦事</td><td>一定要(帶憑證)</td></tr>
+  </table>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>兩層分工</b><span class="dir">語言層 vs 傳輸層</span></div>
+      <div class="bd">自然語言層:呼叫方的 LLM 讀你的 skill 描述、自己挑對的一個;傳輸層:負責把請求送到、驗證身分。業務參數走語言層,憑證走傳輸層。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>憑證放 header,不放 skill 參數</b><span class="dir">鐵則</span></div>
+      <div class="bd">token 一定放 HTTP header,絕不塞進 skill 參數——這樣憑證永遠不會流經 AI 的推理過程,不會被模型看到或說出去。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>兩種模式</b><span class="dir">同步 vs 非同步</span></div>
+      <div class="bd">Message 模式:一來一回、像呼叫一個函式,適合查詢;Task 模式:回一個 taskId,任務在背景跑(submitted → working → completed),可追進度、可多輪——這才是「像 Agent」的行為。</div></div>
+  </div>
+
+  <h2>🛡️ 既有系統的穩定性:開放的同時不被打垮</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>Adapter 隔離,不直接開資料庫</b><span class="dir">加一層翻譯</span></div>
+      <div class="bd">不要把資料庫直接對外。每個 skill 走一個小 handler,在這層做驗證、過濾、限流;後端完全不碰到未經檢查的輸入。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>長任務丟背景佇列</b><span class="dir">系統不會被佔滿</span></div>
+      <div class="bd">A2A 立刻回 taskId,實際工作丟到獨立的背景佇列與工作池跑,不佔用網頁請求執行緒——就算有人塞一堆長任務,你的系統也不會被卡死。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>能看什麼由 server 推導</b><span class="dir">別信呼叫方自報</span></div>
+      <div class="bd">從憑證取出身分,由 server 決定這個人能看哪些資料(可搭配資料庫的列級權限 RLS),絕不讓呼叫方自己宣稱權限——防止「假冒代理」越權。</div></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>寫入動作要人工核准</b><span class="dir">human-in-loop</span></div>
+      <div class="bd">查詢可以自動放行,但「會改資料、送出、付款」這類寫入動作,加一道人工核准關卡,別讓 Agent 自己一路寫到底。</div></div>
+  </div>
+
+  <div class="links">
+    <a class="yt" href="ep29.html">▶ 相關影片:A2A 實戰 · Agent Card</a>
+    <a class="src" href="arch-agent-card.html">🪪 延伸:Agent Card 設計</a>
+  </div>
+
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · A2A。架構材料整理自作者部落格〈A2A:把資料庫變成 AI 技能〉與〈AI 開發堆疊〉。概念示意,非特定產品實作。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'14px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:58, padding:14, useMaxWidth:true}
+  });
+</script>
+</body></html>
