@@ -43,7 +43,7 @@
   .links .yt{background:var(--accent);color:#04121f}
   .links .src{border:1px solid var(--line);color:var(--text)}
   .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
-.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}
+.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}
 </style></head>
 <body><div class="wrap">
   <header class="hero">
@@ -158,6 +158,6 @@ flowchart TB
     flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:58, padding:14, useMaxWidth:true}
   });
 </script>
-<button class="totop" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="回到最上面">↑</button>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
 <script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
 </body></html>

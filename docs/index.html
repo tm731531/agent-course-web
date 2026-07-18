@@ -22,6 +22,7 @@ body{background:var(--bg);color:var(--text);line-height:1.7;font-family:-apple-s
 .archjump:hover{background:var(--accent);color:#04121f}
 .totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
 .totop.show{opacity:.92;pointer-events:auto}.totop:hover{opacity:1}
+html{scroll-behavior:smooth}
 .moddesc{color:var(--muted);font-size:.98rem;margin:8px 0 16px}
 ul.eps{list-style:none;padding:0;display:flex;flex-direction:column;gap:10px}
 li.ep{display:flex;gap:18px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
@@ -155,6 +156,6 @@ li.ep{display:flex;gap:18px;align-items:center;background:var(--surface);border:
   <div style="color:var(--muted);font-size:.9rem;margin-top:2px">診斷樹:二分法找臨界層 → 根因 → 解法</div></div></li></ul></section>
 <footer class="foot">每集提供網頁版投影片 + 逐字稿;影片在 YouTube。分門別類、依序觀看。</footer>
 </div>
-<button class="totop" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="回到最上面">↑</button>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
 <script>addEventListener('scroll',function(){var b=document.querySelector('.totop');if(b)b.classList.toggle('show',scrollY>500)})</script>
 </body></html>
