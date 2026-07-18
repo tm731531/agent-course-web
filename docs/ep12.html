@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我實際怎麼用 Agent 處理真實工作 | 從問 AI 到用 Agent</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>我實際怎麼用 Agent 處理真實工作</h1>
+<p class="lead">而最真的例子,就是你正在看的這一切</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=4h0sc7y_sJw" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill">🎬 10 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>這一集,我不講教科書例子,我把我自己真的在用 Agent 的方式,打開給你看。而最真的例子,我不用去別的地方找,就是你正在看的這整個系列。這一整套影片,就是我用 Agent 做出來的。我來一步一步拆給你看。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先講一個有點難堪的事實</h2>
+<div class="semoji">😅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我不會剪影片</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>我不想對著麥克風配音</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>我沒有做投影片的設計手感</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講一個有點難堪的事實。我不會剪影片,我也不想對著麥克風一句一句錄旁白,我更沒有把投影片做得好看的那種設計手感。照理說,一個同時有這三個缺點的人,是做不出一整門影片課的。這三件事,隨便一件都能把整個計畫卡死。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>以前的結局:要嘛不做,要嘛花大錢</h2>
+<div class="semoji">🧱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>自己學剪輯、配音、設計 → 幾個月</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>外包 → 一大筆錢 + 來回溝通</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>多數人的結局:算了,不做了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果是以前,我大概只能這樣:第一,自己去學剪輯、學配音、學設計,少說幾個月,而且不一定學得會。第二,花錢外包,十九集的剪輯加配音,輕鬆就是幾萬塊,還要一直來回溝通。而大部分人走到這一步,結局就是四個字:算了,不做了。這種課,通常就死在這裡。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>現在:我把「執行」整段交辦出去</h2>
+<div class="semoji">🤝</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我出的:方向、主題、每個決定</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它出的:腳本、投影片、配音、字幕、上傳</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一句話:我出腦,它出手</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但這一次不一樣。我把「執行」這一整段,交辦給了 Agent。我負責的是方向、是這個系列要講什麼、是每個岔路口的決定。它負責的,是把腳本寫出來、把投影片生出來、把旁白合成出來、把字幕上好、再把影片傳上去。分工非常清楚:我出腦,它出手。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>連 demo 都是真的 agent 跑的</h2>
+<div class="semoji">🤖</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是演的,也不是截圖拼的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>真的叫一個 agent 去做真任務</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把它的操作過程自動擷取下來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最誇張的是,你前面幾集看到的那些 demo,不是我演出來的,也不是把截圖拼起來的。是真的叫一個 agent 去跑一個真的任務,像是把一份雜亂的名單整理成乾淨的表格,然後把它實際的操作過程,自動擷取下來變成畫面。連示範,都是真的在做,不是在演。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>直接秀給你看:這門課的產線</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個指令:生投影片 + 合成配音</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一個指令:真 agent 跑出 demo</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一個指令:自動上傳 YouTube</li>
+</ul>
+<div class="note">▶ DEMO:這門課的產線實際在跑(自動生成)</div>
+<details class="script"><summary>逐字稿</summary><p>光用講的你可能沒感覺,所以我直接把產線秀給你看。一個指令,生出一集的投影片跟配音;另一個指令,讓真的 agent 跑出一段 demo;再一個指令,把影片自動傳上 YouTube。整條線跑起來,我只是在旁邊看、需要的時候調一下。你接下來看到的,就是它真的在動。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>數字:省的不只是時間</h2>
+<div class="semoji">📊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>19 集,在一個工作階段裡做完</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>傳統做法約 150 小時體力活</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>還跳過我根本不會的技能</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>給你一個真實的數字。這十九集,是在一個工作階段裡做出來的。如果用傳統方式,一支影片抓八到十五小時,十九支就是大概一百五十個小時的體力活,晚上抽空做,要好幾個月。但比時間更關鍵的是:它跳過了我根本不會、也不想學的技能。那些本來會直接把我卡死的牆,直接不存在了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>但我沒有把大腦關掉</h2>
+<div class="semoji">🧠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>每一集我都一支支看過</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>抓到一集旁白跟畫面對不上</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>退回去修好,才留著</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但我要特別強調一件事:我沒有因為它自動,就把大腦關掉。這些影片,我是一支一支看過的。中間我還真的抓到一集,旁白講的數字,跟畫面上的條列對不上,我就把它退回去、修好、再重傳一次。這一步非常重要,因為如果我沒看,那個錯就這樣公開出去了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>這正好就是這系列的核心</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>執行,可以交辦</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>判斷,不要外包</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>越自動,越要有人把關</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你有沒有發現,這整件事,剛好就是這個系列從頭到尾在講的那句話:執行可以交辦,判斷不要外包。越是自動、越是快,那個「有沒有人在把關」就越重要。我省掉的,是我不會的、重複的體力活;我留下來的,是只有我能做的判斷跟驗收。這兩件事的分工,就是整套方法的重點。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>你也可以,從一件事開始</h2>
+<div class="semoji">🌱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>挑一件你重複做、又討厭做的工作</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先練習把它講清楚、交辦出去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>做順一件,再慢慢擴大</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以你也可以。你不用一次就做一整門課,先挑一件你每天重複做、又有點討厭做的工作,練習把它講清楚、交辦給 Agent,把一件事做順了,再慢慢擴大。你會發現,很多你以為「我不會,所以我做不了」的事情,其實是「我不會,但我可以交辦」。這中間的差別,大到會改變你能做的事的範圍。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你剛看完的一切,本身就是證明</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不會的技能,交辦掉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>該你扛的判斷,留下來</li>
+</ul>
+<div class="note">下一步:把你自己的第一個任務,交辦出去</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,那就是這句:你剛剛看完的這一整個系列,本身就是證明。一個不會剪片、不會配音、也沒有設計手感的人,靠著把執行交辦出去、把判斷留在自己手上,做出了一整門課。不會的技能,交辦掉;該你扛的判斷,留下來。這,就是從「問 AI」到「用 Agent」,真正的差別。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=4h0sc7y_sJw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=4h0sc7y_sJw</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+</body>
+</html>
+
