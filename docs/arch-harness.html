@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness:把模型變成「值得信任的 Agent」的那層 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.model{background:#f3e8ff;border-color:#9333ea;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>Harness:把模型變成「值得信任的 Agent」的那層</h1>
+    <p class="lead">同一顆模型,為什麼有人用起來又穩又可靠,有人卻一直失憶、亂跑、燒錢?差別常常在「Harness」——包在模型外面的執行框架,像廚房的水電,平常看不見,卻決定了整間店跑不跑得動。它不讓 AI 更聰明,而是讓 AI 值得信任。</p>
+  </header>
+
+  <h2>🏗️ 它在五層堆疊的哪一層</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  L5["🧠 Brain / 模型 —— 負責推理(Claude · GPT · 本地)"]
+  L4["🤖 Agent —— 真正在做事的(Claude Code · aider)"]
+  L3["🔄 Workflow —— 編排與品質驗證"]
+  L2["🔧 Harness —— 不失憶 · 自動帶規則 · 接管工具層"]
+  L1["📋 SPEC —— 把需求變成可驗證的規則"]
+  L5 --- L4
+  L4 --- L3
+  L3 --- L2
+  L2 --- L1
+  style L5 fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87
+  style L4 fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  style L3 fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  style L2 fill:#0ea5e9,stroke:#0369a1,stroke-width:3px,color:#04121f
+  style L1 fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">Harness 夾在「Agent 要用的工具」和「Workflow 的編排」之間。上面幾層決定「要做什麼」,Harness 管的是「做的時候不出事」。</p>
+
+  <h2>🔧 Harness 在做什麼:一次工具呼叫,被它接管</h2>
+  <div class="legend">
+    <span class="k"><span class="s proc"></span>Hook / 步驟</span>
+    <span class="k"><span class="s model"></span>模型</span>
+    <span class="k"><span class="s decision"></span>攔截判斷</span>
+    <span class="k"><span class="s infra"></span>工具執行</span>
+    <span class="k"><span class="s result"></span>擋下 / 結果</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  H1["① 對話開始 · SessionStart<br/>自動載入規則 + 過去踩過的坑"]:::proc
+  BRAIN{{"🧠 模型<br/>帶著規則做決定"}}:::model
+  DECIDE["Agent 決定要用工具<br/>例如 npm test"]:::proc
+  PRE{"② PreToolUse<br/>這指令要改寫或擋下嗎?"}
+  REWRITE["橋接腳本改寫<br/>npm test → 只留 FAIL 那幾行"]:::proc
+  BLOCK(["危險動作 → 直接擋下"]):::result
+  TOOL["③ 實際執行工具"]:::infra
+  POST["④ PostToolUse<br/>記錄教訓 + 記帳 + 稽核"]:::proc
+  H1 --> BRAIN --> DECIDE --> PRE
+  PRE -->|一般指令 · 改寫瘦身| REWRITE --> TOOL
+  PRE -.->|太危險 · 不放行| BLOCK
+  TOOL --> POST --> BRAIN
+  class PRE decision
+  classDef model fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">關鍵在中間那道 <strong>PreToolUse</strong>:模型想跑什麼,先被攔下來。該瘦身的瘦身(例如一個測試吐一萬行,只留失敗那幾行,省 token 又不洗版),該擋的擋。原則:只動會洗版的噪音指令,一般讀寫別亂改,免得把 AI 真正需要的資料也砍掉。</p>
+
+  <h2>🧱 三個職責</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>記憶保存:不失憶</b><span class="dir">SessionStart</span></div>
+      <div class="bd">每次對話開始,自動把「該守的規則 + 以前踩過的坑」注入模型的視野,不用你每次重講。把「天才但會失憶的實習生」變成記得住事情的人。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>規則自動生效:不用每次叮嚀</b><span class="dir">紀律</span></div>
+      <div class="bd">公司/個人的做事規矩自動套用,不靠你每次重新交代。規則不會在對話中途被忘掉。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>接管工具層:攔截與改寫</b><span class="dir">橋接腳本</span></div>
+      <div class="bd">在指令「真正執行之前」攔下來:改寫吵雜輸出、擋掉危險動作、記錄成本。工具怎麼被呼叫,由 Harness 說了算。</div></div>
+  </div>
+
+  <h2>🪝 Hook 的五個時機</h2>
+  <table>
+    <tr><th>時機</th><th>Harness 做什麼</th></tr>
+    <tr><td>對話開始</td><td>載入規則 + 過去的教訓到模型視野</td></tr>
+    <tr><td>工具執行前</td><td>改寫吵雜指令(例如只抓失敗的行)、擋危險動作</td></tr>
+    <tr><td>工具執行後</td><td>記錄這次學到的教訓</td></tr>
+    <tr><td>記憶壓縮前</td><td>把進度做個存檔(checkpoint)</td></tr>
+    <tr><td>回應結束</td><td>記錄 token 成本、稽核有沒有守規則</td></tr>
+  </table>
+
+  <h2>🎯 為什麼重要</h2>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>沒有 Harness 會怎樣</b><span class="dir">失控</span></div>
+      <div class="bd">AI 表面「做好了」其實悄悄降級了安全設定;一個測試吐一萬行把 token 燒爆;五分鐘前交代的規則中途就忘;出事沒有紀錄可查。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>有 Harness 之後</b><span class="dir">可信</span></div>
+      <div class="bd">不失憶、自動帶規則、接管工具層、每個動作有帳可查。Harness 不是讓 AI 變聰明,是讓它從「聰明但靠不住」變成「可以放進正式工作」。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>它跟前面幾塊的關係</b><span class="dir">底層基建</span></div>
+      <div class="bd">MCP 給 Agent 工具、Skill 固化流程、記憶讓它記得住——這些能穩定運作,底下都靠 Harness 這層水電在撐。它是把單次能用,變成「天天可靠」的地基。</div></div>
+  </div>
+
+  <div class="links">
+    <a class="yt" href="index.html">📚 回課綱總表</a>
+    <a class="src" href="arch-skill.html">🧩 延伸:Skill 封裝</a>
+  </div>
+
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · Harness。技術觀念整理自作者部落格〈AI 開發堆疊:SPEC / Harness / Agent / Brain〉。概念示意,非特定產品實作。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'16px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:46, rankSpacing:56, padding:14, useMaxWidth:true}
+  });
+</script>
+</body></html>
