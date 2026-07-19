@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】技能封裝:把做對一次的流程變成可重複用的資產</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>技能封裝</h1>
+<p class="lead">把做對一次的流程,變成可重複用的資產</p>
+<div class="badges">
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。這一集我想聊一個我自己覺得很關鍵、但很多人都跳過的觀念,叫做技能封裝。你先不用管這個名字,我先問你一個問題:你有沒有發現,同一種任務,你每一次都要重新跟 Agent 交辦一遍、重新講一遍它該怎麼做?這一集,我就要講怎麼把「你已經做對過一次的流程」封裝起來,以後遇到同類的事,直接一句話就套用。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>你是不是每次都在重講</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>同一種任務,每次從頭交辦一遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>上次怎麼講的,這次還得再想一遍</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>做對了,但那套做法沒有被留下來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講一個我自己天天遇到的狀況。假設我每個月都要整理一份月報,第一次我花了很多力氣,把該做的步驟、格式、要注意的地方,一句一句講清楚,Agent 做得很好。結果呢?下個月我又要做一次,我發現我得從頭再交辦一遍,上次到底怎麼講的、順序是什麼,我還得再回想一次。做是做對了,但那套做對的方法,沒有被留下來,每個月都在重來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>每次重講,代價有三個</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>浪費時間:同樣的交辦講第 N 遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>會講漏:漏一步,品質就掉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>每個人講法不一:結果不穩定</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你可能覺得,重講一遍而已,有這麼嚴重嗎?我把代價拆給你看,有三個。第一,浪費時間,同樣一段交辦你講第五遍、第十遍,那都是時間。第二,會講漏,人是會忘的,你這次少講了一個檢查步驟,產出品質馬上就掉。第三,更麻煩的是,如果換一個同事來交辦,他講法跟你不一樣,做出來的東西就長得不一樣。同一件事,結果不穩定,這才是真正的問題。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>什麼是「技能」</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把一段做對過的流程打包起來</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>連同需要的知識、檢查清單一起裝進去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>變成 Agent 隨時可以調用的一個能力</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那解法是什麼?就是技能封裝。所謂的技能,英文叫 skill,意思是:把一段你已經做對過的流程,連同它需要用到的知識、還有驗收的檢查清單,一起打包起來,變成 Agent 隨時可以調用的一個能力。你可以把它想成,你不是每次口頭交代,而是把「怎麼做這件事」寫成一份 Agent 看得懂、而且會照著走的說明書,存起來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>一個技能裡裝了什麼</h2>
+<div class="semoji">📦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>流程:第一步做什麼、第二步做什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>知識:這件事的規則、格式、注意事項</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>檢查清單:做完要符合哪些驗收標準</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我把一個技能裡面到底裝了什麼,講得更具體一點。它通常有三塊。第一塊是流程,就是這件事第一步做什麼、第二步做什麼,一個清楚的順序。第二塊是知識,這件事情本身的規則、格式、有哪些眉角要注意。第三塊,也是最容易被忽略的,是檢查清單,也就是做完之後,要符合哪些標準才算合格。流程、知識、檢查清單,這三塊湊在一起,才是一個完整的技能。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>舉個例子:把「整理月報」封裝起來</h2>
+<div class="semoji">📊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>流程:抓數據 → 算變化 → 畫表 → 寫摘要</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>知識:報表格式、哪些指標一定要有</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>驗收:數字對得起來、結論有根據</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>用剛剛的月報來舉例。我把「整理月報」這件事封裝成一個技能。流程我寫清楚:先去哪裡抓數據、算出跟上個月的變化、畫成表、最後寫一段摘要。知識我也寫進去:報表要用什麼格式、哪幾個指標一定要出現。驗收標準我也定好:數字要對得起來、結論要有數據根據、不能憑空講。這三塊我一次寫好,存成一個叫「月報」的技能。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>封裝之後,用起來長怎樣</h2>
+<div class="semoji">🗣️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前:一步一步重新交辦一長串</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>現在:一句「跑月報技能」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>剩下的它照著封裝好的做法走</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>封裝完之後,使用起來的差別非常明顯。以前我要一步一步重新交辦一長串;現在我只要說一句「幫我跑月報技能」,就這樣。剩下的,Agent 會自己去翻出那份封裝好的說明書,照著流程走、套用裡面的知識、最後對照檢查清單驗收。我不用再回想上個月怎麼講的,因為那套做法,已經固定在技能裡面了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>好處一:一次教會,之後每次都對</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把「做對的方法」固定下來</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不靠人每次記得、每次重講</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>第一次調校好,後面每次都受惠</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這樣做的第一個好處,是一次教會,之後每次都對。你把那套做對的方法固定下來之後,它就不再依賴「你這次有沒有記得講、有沒有講完整」。你第一次多花點力氣把它調校好,後面每一次都在享受這個成果。品質不再隨你當下的狀態上上下下,而是穩定地維持在你當初調校好的那個水準。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>好處二:變成團隊資產</h2>
+<div class="semoji">👥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你封裝的技能,同事也能直接用</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>個人的經驗 → 整個團隊的能力</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>新人不用重學,叫技能就上手</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個好處,我覺得是最有價值的:技能會變成團隊資產。你封裝好的這個月報技能,不是只有你能用,你的同事也能直接叫來用。也就是說,你一個人摸索出來的經驗,變成了整個團隊都能共用的能力。新人來了不用從頭學你那套眉角,他只要會叫這個技能就上手了。這其實就是把個人的本事,沉澱成公司的資產。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>好處三:省成本</h2>
+<div class="semoji">💰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不用每次把長長的交辦重講一遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>少打很多字、少花很多來回</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>呼應前面講的 token 成本</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個好處很實際,就是省成本。還記得前面幾集我們聊過,你每次交辦講的每一段話,背後都是有成本的。技能封裝之後,你不用每一次都把那一長串交辦重新講一遍,少打很多字、少很多來回。同一件事做十次,你就省了九次重講的成本。做得越頻繁的任務,封裝起來越划算。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>它跟前面幾集的關聯</h2>
+<div class="semoji">🪜</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把任務講清楚 → 一次成功</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>工作流 → 把多步驟串起來</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>技能封裝 → 把成功變成可複用的資產</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這一集其實是前面觀念的下一步,我幫你串起來。前面我們學過,要把任務講清楚,才能一次成功;也學過用工作流,把多個步驟串成一條線。而技能封裝,是再往上走一階:它把你「這一次的成功」,升級成一個以後可以一直重複用的資產。講清楚是為了做對一次,封裝是為了讓這個對,可以無限次地被重複、被傳出去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>一個很重要的提醒</h2>
+<div class="semoji">🚧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>封裝前,先確定這流程真的做對過、驗證過</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把錯的流程封裝 = 把錯誤自動化</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>封裝的是「驗證過的正道」,不是草稿</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>不過我要給你一個很重要的提醒,不然這集會害到你。封裝之前,你一定要先確定,這個流程是真的做對過、而且驗證過的。為什麼?因為封裝的意思,就是以後都照這套走。如果你把一套有問題的流程封裝起來,那你不是在提升效率,你是在「把錯誤自動化」,而且每次都錯得一模一樣。所以順序是:先做對、先驗證,確認沒問題了,再封裝。封裝的是驗證過的正道,不是還沒確認的草稿。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別每次從零交辦</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把做對過的流程封裝成技能</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一次教會 → 之後自動套用 → 還能傳給團隊</li>
+</ul>
+<div class="note">下集:預告 —— 技能之間怎麼互相搭配,組成更大的能力。</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,那就是:別再每一次都從零開始交辦。把你做對過、也驗證過的流程,封裝成一個技能,一次教會、之後自動套用、還能傳給整個團隊。這一步跨過去,你就是把 AI 從「幫你做一次」,升級成「幫整個團隊一直做對」。這才是真正把 AI 變成資產的做法。下一集,我們來看這些技能之間,怎麼互相搭配、組成更大的能力。我們下集見。</p></details>
+</section>
+<footer class="foot">
+🧱 對應架構圖 · Skill 封裝:<a href="arch-skill.html">arch-skill.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】A2A 實戰:Agent Card 與溝通方法</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>A2A 實戰:Agent Card 與溝通方法</h1>
+<p class="lead">怎麼把「Agent 找 Agent」真的架起來</p>
+<div class="badges">
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>歡迎回到《從問 AI 到用 Agent》。上一集我們講了 A2A,重點是讓一個 Agent 去找「別的 Agent」幫忙。那一集講的是「它是什麼」,這一集我要往上疊一層,講「怎麼把它架起來」。你會發現,真正要動手的時候,核心其實就三件事:那張對外的自我介紹卡怎麼寫、一次協作裡誰是誰、還有它們之間怎麼溝通。我們一件一件來看。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>這集要架起來的三件事</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>① Agent Card:那張對外的自我介紹卡怎麼寫</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>② 角色:一次協作裡誰主動、誰被動</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>③ 溝通:兩個 Agent 之間怎麼來回</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先給你一張地圖。上一集我們知道了 A2A 是讓 Agent 之間互相交辦,但要真的把它架起來,你只要抓住三件事就好。第一,Agent Card,也就是那張讓別人找得到你的自我介紹卡,這是整集的重點。第二,角色,一次協作裡誰是去交辦的、誰是被交辦的,先分清楚。第三,溝通方法,兩個 Agent 之間到底怎麼來回。這三件事想通了,你就抓住 A2A 的骨架了,細節的協定規格你完全不用背。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>Agent Card 是什麼(核心)</h2>
+<div class="semoji">🪪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一張放在公開網址上的「自我介紹卡」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>對外講清楚:我是誰、我會哪些能力、怎麼呼叫我、怎麼驗身分</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>別的 Agent 讀到卡,就發現你、知道能拿你做什麼</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講最重要的 Agent Card。你就把它想成一張放在公開網址上的自我介紹卡。這張卡對外講清楚幾件事:我是誰、我會哪些能力、你要怎麼呼叫我、還有怎麼驗證我的身分。別的 Agent 只要讀到這張卡,不用事先跟你約定,就能發現你的存在,也知道能拿你來做什麼。這裡我刻意不去背卡片裡有哪些欄位、長什麼格式,那是工具幫你處理的;你要記住的是它的功能——一張讓陌生 Agent 看得懂的名牌。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>既有系統怎麼「變身」</h2>
+<div class="semoji">🔌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不用把系統重寫成 Agent</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>只要幫它掛一張 Agent Card</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它就變成 Agent 世界找得到、用得到的一員</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>很多人一聽到要加入 Agent 生態,就以為要把手上的系統整個重寫,其實不用。這是 Agent Card 最省力、也最實用的地方:你不必動系統的內部,只要幫它掛上一張 Agent Card,對外宣告它會什麼、怎麼呼叫,它就從一個孤立的服務,搖身變成 Agent 世界裡找得到、也用得到的一員。這是把舊系統接進這個生態最省力的一步——不是打掉重練,而是幫它開一個對外的門面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>為什麼「設計好」比什麼都重要</h2>
+<div class="semoji">⭐</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>卡寫得清楚精準 → 別的 Agent 才用得對、用得到</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>卡寫得含糊 → 等於你對外沒開口</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>靈魂:把「我會什麼、輸入輸出是什麼」講清楚</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這一張我要特別停下來講,因為這是整集的重點中的重點。這張卡設計得好不好,幾乎決定了一切。你把能力寫得清楚、精準,別的 Agent 才用得對、也用得到你;你要是寫得含含糊糊,別人讀了也不知道你到底會什麼、該怎麼交辦,那等於你對外根本沒開口。所以這張卡的靈魂,就是把「我到底會什麼、你給我什麼、我會還你什麼」這件事講清楚。花時間打磨這張卡,比什麼都值得。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>協定角色:誰主動、誰被動</h2>
+<div class="semoji">👥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>發起方:主動去交辦的那個 Agent</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>接收方:被交辦、對外開了 Agent Card 的那個</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一次協作先分清楚:誰去交辦、誰被交辦</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>架起來的第二件事,是分清楚角色。A2A 的一次協作,基本上就兩個角色。一個是發起方,也就是主動跑去交辦、去請人幫忙的那個 Agent。另一個是接收方,也就是被交辦、而且事先對外掛好了 Agent Card 讓人找得到的那個。很簡單,一個主動、一個被動。你在設計的時候,先問自己這一輪裡誰是去交辦的、誰是被交辦的,把這條線分清楚,後面誰要開卡、誰去讀卡,就一目了然了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>三種溝通方法</h2>
+<div class="semoji">💬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>① 一次性請求-回應:問一件事、拿一個答案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>② 多輪對話:來回澄清、一起把任務做完</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>③ 長任務/串流:任務跑很久,邊做邊回報進度</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三件事,是溝通方法。兩個 Agent 對上了,怎麼講話?大致有三種。第一種是一次性的請求跟回應:我問一件事,你給我一個答案,乾脆俐落。第二種是多輪對話:兩邊來回澄清、你一句我一句,一起把一件比較模糊的任務慢慢做完。第三種是長任務,或者叫串流:這件事要跑很久,對方不會讓你乾等,而是邊做邊回報進度。先記住這三個名字,下一張我用白話講什麼情況該用哪一種。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>什麼情況用哪一種</h2>
+<div class="semoji">🔀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>查一個明確答案 → 一次性請求-回應</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>任務講不清、要邊做邊對 → 多輪對話</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要跑很久的大工程 → 長任務/串流,別讓人乾等</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>用白話對一遍你就會挑了。如果只是查一個明確的東西,像問一筆資料、要一個結果,那就用一次性的請求跟回應,一來一回最省事。如果任務一開始講不太清楚,需要邊做邊對、來回確認細節,那就用多輪對話,像兩個人一起討論。如果是那種要跑很久的大工程,一次回不完,那就用長任務串流,讓對方邊做邊回報進度,不會讓你在那邊乾等、也不會不知道它到底跑到哪。挑對溝通方式,協作才順。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>修車廠例子(上):客戶→店長→技師</h2>
+<div class="semoji">🔧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>客戶把車丟給「店長 Agent」交辦(A2A)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>店長找各「技師 Agent」多輪診斷(A2A)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>來回問診:哪裡怪、什麼聲音、什麼時候發生</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我用一個修車廠的例子,把角色跟溝通一次串起來。客戶開車進來,把「我的車怪怪的」這件事交辦給店長 Agent,這是一次 A2A 交辦,客戶是發起方,店長是接收方。店長自己不親自修,它轉頭去找底下各個技師 Agent,而且不是問一句就算,是多輪對話地問診:哪裡怪、什麼聲音、什麼時候發生,來回幾輪把問題聊清楚。你看,交辦跟多輪協作,在這一段就都出現了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>修車廠例子(下):技師用工具、再找零件商</h2>
+<div class="semoji">🛠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>技師內部用 MCP 呼叫診斷儀、查維修手冊(用工具)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>技師再用 A2A 找「零件供應商 Agent」(再交辦)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>A2A 找隊友、MCP 用工具,分工一看就懂</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接著看技師這一端。技師要診斷,它在自己內部用 MCP 去呼叫診斷儀、去查維修手冊——這是「用工具」,是上上一集講的方向。等診斷出要換零件,技師又用 A2A 去找「零件供應商 Agent」下單——這又是一次交辦。整條線走下來你就懂了:A2A 是往旁邊找隊友幫忙,MCP 是往下拿工具補能力,兩個各做各的、合在一起。一個修車流程,把「找 Agent」跟「用工具」的分工講得清清楚楚。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>MCP + A2A 一起看(收束)</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>架 MCP Server = 開放你的「工具能力」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>寫 A2A Agent Card = 開放你的「Agent 身分」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不同層,合起來才是完整的對外開口</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>把這兩件事收束成一句好記的話。你架一個 MCP Server,等於對外開放你的「工具能力」,讓別人的 Agent 拿去用。你寫一張 A2A 的 Agent Card,等於對外開放你的「Agent 身分」,讓別的 Agent 發現你、跟你協作。這是兩個不同的層次:一個開放能力、一個開放身分。你不用二選一,實務上常常兩個都做——把工具掛出去,也把自己的名牌掛出去,合起來,才是一個系統完整的對外開口。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>呼應脊椎:自動連鎖,越要有邊界</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Agent 能自動互相交辦,一連串動作會自動連鎖跑</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你交辦一次,底下可能又交辦好幾層</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>威力越大,越要先劃好邊界跟把關</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>照例呼應我們這系列的脊椎:能力和風險是一體兩面。你看修車廠那條線,客戶只交辦一次,底下就自動連鎖出店長找技師、技師找零件商好幾層。這正是 A2A 厲害的地方,也是要小心的地方:你交辦一次,一連串動作可能就自動接力跑下去,不再每一步都回頭問你。所以能力越大,越要先把邊界跟把關想清楚——誰能交辦給誰、能交辦到多遠,這條線要自己先劃好。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>A2A 架起來的核心,就是那張 Agent Card</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把系統寫成一張別的 Agent 讀得懂的自我介紹卡</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>卡設計得好不好,決定別人用不用得動你</li>
+</ul>
+<div class="note">A2A 系列到此:MCP 用工具、A2A 找隊友、Agent Card 是門面</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集只帶走一句話,那就是這句:把 A2A 架起來的核心,就是那張 Agent Card。你要做的,是把你的系統寫成一張別的 Agent 讀得懂的自我介紹卡——講清楚你是誰、你會什麼、怎麼找你、怎麼跟你協作,它就能加入這個互相交辦的世界。而這張卡設計得好不好,直接決定了別人用不用得動你。工具怎麼接、隊友怎麼找,我們都講過了;把這張卡打磨好,你就真的站上這個生態了。我們下一集見。</p></details>
+</section>
+<footer class="foot">
+🧱 對應架構圖 · A2A:<a href="arch-a2a.html">arch-a2a.html</a><br>
+🧱 對應架構圖 · Agent Card:<a href="arch-agent-card.html">arch-agent-card.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

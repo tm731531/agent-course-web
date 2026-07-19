@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】架一台 MCP Server:把你的能力開放給 Agent 用</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>架一台 MCP Server</h1>
+<p class="lead">把你自己的能力,開放給 Agent 用</p>
+<div class="badges">
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>歡迎回到《從問 AI 到用 Agent》。上一集講 MCP 的時候,我把它比喻成 AI 世界的通用接頭,讓 Agent 可以用一種標準的方式接上各種工具。那一集,你是那個「拿別人做好的 server 來插」的人。這一集,我們往前再走一步:換你當那個「架 server」的人,把你自己、或你公司的能力,做成任何 Agent 都能接上來用的東西。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先接回上一集的定義</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>MCP = Agent 對外或對內操作能力的標準</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>server 就是「被操作的那一端」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>上集你當使用者,這集你當提供者</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先把上一集的定義接回來。MCP 是一套標準,規定 Agent 要怎麼去操作外面或裡面的各種能力。而所謂的 server,講白了就是「被操作的那一端」。你可以想成:Agent 是伸手要用東西的人,server 是那個把東西擺出來、等著被拿的人。上一集我們站在 Agent 這邊當使用者,這一集,我們要換到 server 這邊,當提供能力的人。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>MCP Server 到底是什麼角色</h2>
+<div class="semoji">🧰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它站在「工具那一端」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把一個能力包成標準可呼叫的 server</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>查資料、呼叫一個服務、讀一份檔…都算</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那 MCP server 到底扮演什麼角色?它站在整個流程裡「工具的那一端」。它的工作,是把某一個能力,包裝成一台 Agent 能用標準方式呼叫的 server。這個能力可以很單純,比如幫忙查一筆資料、幫忙呼叫某個服務、幫忙讀一份檔案。重點不是能力多厲害,而是:它被包成了一個標準的門面,誰都能照同一套規矩來敲門。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>一台 Server 對外宣告三種東西</h2>
+<div class="semoji">📋</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>可呼叫的動作:tools</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>可讀的資料:resources</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>可用的提示:prompts</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>一台 MCP server 架好之後,會對外宣告三種東西,你先記住這三類就好。第一種是可以呼叫的動作,叫 tools,就是「你可以叫我做這些事」。第二種是可以讀取的資料,叫 resources,就是「你可以來我這邊讀這些內容」。第三種是現成可用的提示範本,叫 prompts。Agent 當使用方連上來,就是照標準協定,去看你宣告了哪些、然後挑著用。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>架設一台 Server:四個步驟</h2>
+<div class="semoji">🗺️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>① 決定開放哪些能力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>② 把每個能力定義成一個工具</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>③ 跑成一台 server</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>④ Agent 端設定連上</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接下來講怎麼架。整件事拆成四個步驟,我先給你一張全景,後面再一個一個展開。第一步,決定你要開放哪些能力。第二步,把每一個能力,定義成一個清清楚楚的工具。第三步,把這些工具跑成一台實際在運作的 server。第四步,到 Agent 那一端做設定,讓它連上你這台 server。四步走完,一台能被 Agent 使用的 server 就成形了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>步驟一:決定開放哪些能力</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先想清楚「要讓 Agent 做什麼」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>只挑真的需要開放的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不是把手邊全部能力一次攤開</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一步,決定開放哪些能力。這一步其實是在做取捨,不是把你手邊會的東西全部攤出來。你要先想清楚:我到底想讓 Agent 幫我做哪些事?然後從裡面,挑出真的值得、也適合開放的那幾項。開得太少,Agent 幫不上忙;開得太雜,後面又難管。所以這一步花點時間想清楚範圍,是整台 server 好不好用、好不好顧的關鍵。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>步驟二:把能力定義成一個工具</h2>
+<div class="semoji">🏷️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>取一個一看就懂的名字</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>講清楚:要餵它什麼(輸入)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>講清楚:它會給什麼(輸出)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二步,把每一個能力定義成一個工具。這裡的重點是「講清楚」,因為 Agent 是靠你的描述來判斷該不該用、怎麼用。每個工具要做三件事:取一個一看就懂的名字;講清楚要餵它什麼,也就是輸入是什麼;再講清楚它會回你什麼,也就是輸出是什麼。名字和說明寫得越清楚,Agent 就越不會用錯,這一步偷懶,後面就會出亂子。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>步驟三、四:跑起來 + 接上去</h2>
+<div class="semoji">🚀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>③ 把這些工具跑成一台 server</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>④ 到 Agent 端設定,連上這台 server</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>兩邊講同一套協定,就通了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三步和第四步,把它接起來。第三步,把你定義好的那些工具,跑成一台實際在運作的 server,讓它待在那邊等人來呼叫。第四步,回到 Agent 那一端,做個設定,告訴 Agent「有這麼一台 server,連上去」。因為兩邊講的是 MCP 這同一套協定,設定好之後就通了,Agent 就看得到你宣告的那些工具,可以開始用了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>資料怎麼流:走一次完整來回</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Agent 先問:你有哪些工具?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>選一個、帶上參數,呼叫</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>server 執行 → 回結果 → Agent 接著做</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>把一次完整的來回走一遍,你就懂資料怎麼流了。Agent 想做一件事,它不會亂猜,而是先問 server:你有哪些工具?server 把宣告的清單回給它。Agent 從裡面挑一個合適的,帶上該帶的參數,發出呼叫。server 這邊實際去把事情執行掉,再把結果回傳給 Agent。Agent 拿到結果,才接著做下一步。一問、一選、一呼叫、一回傳,就這樣一圈。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>對外 vs 對內:同一套做法</h2>
+<div class="semoji">🔀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>對內:接公司內部的系統</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>對外:接外部的服務</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>差別只在:開放給誰、放在哪</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡呼應一下開頭的定義。同樣一套「架 server」的做法,你可以拿來接公司內部的系統,這叫對內;也可以拿來接外面的服務,這叫對外。做法是一樣的,差別只在兩件事:你這台 server 是開放給誰用、以及你把它放在哪裡。想通這點你就會發現,對內和對外並不是兩種技術,而是同一種技術,擺在不同的邊界上而已。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>為什麼值得自己架一台</h2>
+<div class="semoji">💎</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把你的獨門能力變成標準能力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>任何支援 MCP 的 Agent 都能接</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一次架好,到處都能用</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那為什麼值得花力氣自己架一台?因為它會把你、或你公司的獨門能力,變成一種標準能力。原本這個能力只有你會、只有你能操作;做成 MCP server 之後,任何支援 MCP 的 Agent,都能用同一套方式接上來用。你等於是一次架好,到處都能接,不用為每一個 Agent 各寫一套接法。你的能力,就這樣被放大到整個 Agent 世界。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>一個務實提醒</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>架 server = 對外開放能力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>架的時候就要想:開放什麼、給多少權限</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>別把不該給的也開出去</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後給一個務實的提醒。架一台 server,本質上就是在對外開放能力。所以你在架的當下,就要同時想清楚兩件事:這台到底要開放什麼、以及每一項給到多少權限。方便的另一面,是開得太寬,Agent 能碰的就超出你原本的預期。這不是要嚇你,而是提醒你:開放和邊界,是同一個動作的兩面,別圖方便把不該給的也一起開出去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>架 server = 幫你的能力插上標準接頭</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讓整個 Agent 世界都用得到</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你不用馬上會寫,但要知道有這條路</li>
+</ul>
+<div class="note">下集:A2A 實戰——Agent 之間互相協作的 Agent Card</div>
+<details class="script"><summary>逐字稿</summary><p>如果這集只帶走一句話,那就是:架一台 MCP server,就是把你的能力插上一個標準接頭,讓整個 Agent 世界都用得到。你現在不用馬上就會動手寫,但你要記得有這條路——以後當你想讓 Agent 用你自己的東西、或公司的系統,答案往往就是「幫它架一台 MCP server」。知道這件事能不能做、大概怎麼做,你就已經超前很多人了。我們下一集見。</p></details>
+</section>
+<footer class="foot">
+🧱 對應架構圖 · 架一台 MCP Server:<a href="arch-mcp-server.html">arch-mcp-server.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

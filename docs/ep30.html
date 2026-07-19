@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L4·地端】GPU 為什麼不夠用:產出 Model vs 使用 Model</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 地端篇</div>
+<h1>GPU 為什麼不夠用</h1>
+<p class="lead">產出 Model vs 使用 Model</p>
+<div class="badges">
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L4 地端</span>
+<span class="pill">🎬 14 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎來到《從問 AI 到用 Agent》。這一集我想跟你聊一件很多人沒想通的怪事。你有沒有發現,現在到處都在搶 GPU,大家都喊 GPU 不夠用。可是奇怪了,我又沒有在訓練模型,我只是拿現成的 AI 來用而已,為什麼連我這種「只是用」的人,也一起缺 GPU?這一集,我就把這個反直覺的架構問題,一次幫你講清楚。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先看過去:GPU 的重活是「產出模型」</h2>
+<div class="semoji">🏭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前 GPU 最吃力的工作是訓練</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>訓練 = 從資料裡「產出」一個模型</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這是有頭有尾的一次性工作</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們先把時間倒回去,看看以前 GPU 是拿來幹嘛的。在過去的機器學習裡,GPU 最吃力、最花錢的那個工作,叫做訓練。訓練在做什麼?就是餵一大堆資料進去,反覆計算,最後「產出」一個模型出來。重點是,訓練是一個有頭有尾的工作:你排定一批機器,跑個幾小時到幾天,拿到模型,任務就結束了。所以以前 GPU 的重心,是壓在「產出」這一端。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>訓練的特性:用完即還</h2>
+<div class="semoji">♻️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>排一批機器 → 跑幾小時到幾天 → 拿到模型</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>拿到模型後,GPU 就還掉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以以前租得到、排得出來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>訓練還有一個很關鍵的特性,叫「用完即還」。你想想那個流程:排一批 GPU,集中火力跑幾小時到幾天,模型一產出來,這批 GPU 的任務就完成了,可以還回去給別人用。因為它有明確的開始跟結束,你排得出時間表,也算得出要用多少張、用多久。這就是為什麼在那個年代,GPU 雖然貴,但你還是租得到、排得進去,因為每一份需求都會「跑完就走」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>而且過去「使用」很便宜</h2>
+<div class="semoji">🪶</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>傳統模型通常很小</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>訓練好之後拿去用,CPU 或一張普通卡就跑得動</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有需要才算一下,間歇性的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>更重要的是,在過去,「使用」這一端幾乎不吃 GPU。為什麼?因為傳統的模型通常很小。它訓練好之後,你拿去用,也就是做預測、做推論,用一顆 CPU、或一張很普通的顯卡就跑得動了。而且是有需要才算一下,平常沒事它就閒著,是間歇性的。所以以前的世界很單純:產出模型很重,交給 GPU;使用模型很輕,隨便一台機器都行。搶的人自然就少。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>現在的翻轉:重心從「產出」換到「使用」</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>到了大型語言模型,情況整個反過來</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>吃 GPU 的重心,從產出換成了使用</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>光是「用」,就把 GPU 一直佔住還不掉</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>好,關鍵的翻轉來了。到了現在這種大型語言模型,整個情況反過來了。吃 GPU 的重心,從「產出」那一端,整個搬到了「使用」這一端。以前是訓練很重、使用很輕;現在變成,光是「使用」這件事,就重到能把一整批 GPU 一直佔住,而且還不掉。這就是那個怪事的答案雛形:你沒訓練,你只是在用,但「用」本身,在今天已經是一個超級吃 GPU 的工作了。接下來我拆三個原因給你聽。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>原因一:模型巨大,必須常駐 VRAM</h2>
+<div class="semoji">📦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>模型動輒幾十億到上千億個參數</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>要能用,整個模型得常駐在 GPU 記憶體裡</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>光是「放著等人問」就佔住整張卡</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一個原因,模型太大了。現在的大型語言模型,動輒幾十億、甚至上千億個參數。要讓它跑得起來,你得先把整個模型,常駐在 GPU 的記憶體,也就是 VRAM 裡面。注意這個「常駐」:它不是用的時候才搬進去、用完就清掉,而是為了隨時能回應,得一直放在那裡。所以就算現在沒人問問題,這個模型只是「放著待命」,它也已經把那張 GPU 給佔住了,還不掉。這是第一筆,一直被綁住的帳。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>原因二:每吐一個字,都是一次完整運算</h2>
+<div class="semoji">⌨️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>語言模型是一個字一個字吐出來的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>每吐一個字,就是跑一次完整的模型運算</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>回一段長答案,等於算了好幾百次</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個原因,是它算的方式很燒。大型語言模型回答你,不是一次就把整段吐出來,而是一個字一個字接龍生出來的。而每吐一個字,背後就是把整個模型完整地算過一遍。你算算看,它回你一段比較長的答案,可能就是好幾百個字,那就等於連續跑了好幾百次完整運算。所以推論這件事,根本不是「算一下就結束」,而是持續在燒算力,一個字一個字地燒。這是第二筆帳。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>原因三:很多人用、還全天候不關</h2>
+<div class="semoji">🌐</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個服務要同時應付很多人</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>還要二十四小時開著待命</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>得把模型複製到很多張 GPU、一直開著</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個原因,是規模。一個 AI 服務,不是只服務你一個人,它要同時應付成千上萬的人,而且是二十四小時都不能關的。要做到這件事,就得把同一個模型,複製到很多很多張 GPU 上,每一張都一直開著待命。用的人越多,你要綁住的 GPU 就越多。這跟訓練「跑完就還」完全相反:使用這一端,是人越多、綁得越久、越還不掉。三筆帳加起來,你就懂為什麼「用」也這麼吃 GPU 了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>一個更大的差異:固定批次 vs 動態爆發</h2>
+<div class="semoji">📊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>訓練再大,也是「一批」,數量時數是固定的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>就算開很多台機器跑好幾天,也排得出來、租得到</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>使用不一樣:每一句話都要即時算</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡我要特別強調一個更根本的差異,固定批次跟動態爆發的差別。訓練再怎麼大,它本質上是「一批」。就算你開很多台機器,連續跑好幾天,那個數量跟時數都是固定的、可以事先排的、也租得到。你知道你要用多少、用多久。但使用完全是另一回事:它不是一批,是每一句話進來,都要當場、即時地幫你算出來。你沒辦法預先排定「今天會有多少句話進來」,需求是隨時冒出來的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>而且 Agent 讓需求更爆</h2>
+<div class="semoji">💥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個 Agent 會自己開一堆 task</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你又一次派出很多個 Agent</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>底下就要一堆 GPU 同時啟動、沒有上限</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>更誇張的是,Agent 讓這個爆發再往上翻好幾倍。你回想前面講多 Agent 並行那集:一個 Agent 為了完成任務,會自己拆出一堆子任務;而你,又可能一次派出好幾個 Agent 同時開工。這樣一層一層疊上去,底下就是要一堆 GPU 在同一個瞬間全部啟動去算。你派得越多、它開得越多,GPU 的運算需求就成倍往上暴衝,而且幾乎沒有上限。這就是為什麼「使用」這端的胃口,大到永遠餵不飽。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>那推論到底怎麼吃 GPU?先破一個誤會</h2>
+<div class="semoji">🔢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>模型不是資料庫,不是把答案存起來查</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它其實是「一大堆數字」,也就是權重、參數</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>分成很多層,是用這些數字「算」出答案</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那推論到底是怎麼吃掉 GPU 的?這裡先幫你破除一個很常見的誤會。很多人以為,模型是不是像一個超大的資料庫,把答案都存好,你問它就去查一筆出來?不是的,完全不是這樣。模型的本體,其實就是「一大堆數字」,這些數字我們叫它權重、或參數,一層一層堆疊起來。它裡面沒有存任何現成的答案,它是拿你的問題,去跟這一大堆數字做運算,「算」出一個答案來。這個差別很重要,接著看它怎麼算。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>算一個字 = 跑一次 forward pass</h2>
+<div class="semoji">➡️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你的文字先轉成一串數字(向量)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一層一層跟權重做矩陣乘法</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>最後算出「下一個字」的機率,挑一個出來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們把「算一個字」的過程攤開看。首先,你打的文字會被轉成一串數字,也就是向量。接著,這串數字一層一層地,跟模型裡的那堆權重做「矩陣乘法」,你就想成是大量的乘法跟加法。一路算到最後,它會算出「下一個字最可能是什麼」的機率,再挑一個字出來。這整趟從頭算到尾,有個名字叫 forward pass。而 GPU 最擅長的,正好就是這種一次要做超大量、又能平行的矩陣運算,所以推論才交給它。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>逐字生成:一個字接一個字</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>挑出的字接回輸入,整個模型再跑一次</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>算出再下一個字,一個一個接下去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這叫 autoregressive(自迴歸)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那下一個字怎麼來?它會把剛挑出來的那個字,接回輸入的後面,然後把整個模型「再跑一次」forward pass,算出再下一個字。就這樣一個接一個,像接龍一樣往下生。這種「拿自己剛生出來的,再餵回去生下一個」的做法,叫 autoregressive,自迴歸。所以你現在完全懂了:回你一段話,就等於連續跑了好幾百次 forward pass。這就是「使用」這件事,為什麼一直在燒 GPU 的真正原因。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>收束:GPU 在推論時的兩個角色</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一、用 VRAM 一直裝著全部權重 → 吃「容量」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>二、每個字都要把權重讀一遍做矩陣乘法 → 吃「頻寬與算力」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以挑地端機器要看 VRAM 容量 + 記憶體頻寬</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>把前面收束一下,GPU 在推論時,其實同時扮演兩個角色。第一個角色,是用它的 VRAM,把整個模型的權重一直裝在裡面,這吃的是「容量」,決定你裝不裝得下。第二個角色,是每生一個字,都要把這些權重通通讀一遍、拿去做矩陣乘法,這吃的是「記憶體頻寬」跟「算力」,決定你跑得快不快。這兩件事,就是「使用」永遠佔住 GPU 的根源。也正好呼應前一集:挑地端機器,要同時看 VRAM 容量,跟記憶體頻寬。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">14</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前 GPU 是被「產出一批就結束」的訓練吃掉</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>現在是被「永不停止的使用」吃掉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>再加上 Agent 把需求成倍炸開</li>
+</ul>
+<div class="note">上一集我們談了怎麼看 VRAM 與記憶體頻寬,這一集補上「為什麼使用本身就這麼吃 GPU」。兩集合起來,你就看懂了地端這道題。</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集你只帶走一句話,那就是:以前的 GPU,是被「產出一批就結束」的訓練吃掉的;而現在的 GPU,是被「永不停止的使用」吃掉的,而且外面還有 Agent,把需求一倍一倍地往上炸。真正該想通的一件事是:「使用」本身,才是那個永遠還不掉、一直佔著 GPU 的工作。你把這件事搞懂了,再回頭看外面到處在搶 GPU,你就不會再覺得奇怪,而是真的看懂了背後的架構。這一集就到這裡,我們下次見。</p></details>
+</section>
+<footer class="foot">
+🧱 對應架構圖 · GPU 為什麼不夠:<a href="arch-gpu-produce-vs-use.html">arch-gpu-produce-vs-use.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

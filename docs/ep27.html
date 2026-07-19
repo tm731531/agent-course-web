@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】A2A:讓 Agent 找 Agent 幫忙</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 進階篇</div>
+<h1>A2A:讓 Agent 找 Agent 幫忙</h1>
+<p class="lead">一群會互相交辦的 Agent,而不是單打獨鬥</p>
+<div class="badges">
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>歡迎回到《從問 AI 到用 Agent》。上一集我們講了 MCP,重點是讓一個 Agent 接上各種「工具」跟資料,幫自己長出能力。這一集要講的是另一個方向:不是接工具,而是讓一個 Agent 去找「別的 Agent」幫忙。這件事有一個名字,叫做 A2A。我們就從它跟 MCP 的差別開始講起。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先接住上一集:兩個不同方向</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>上集 MCP:讓 Agent 接「工具」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這集 A2A:讓 Agent 找「別的 Agent」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一個往下拿能力,一個往旁邊找幫手</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先把這一集擺在上一集旁邊看。MCP 解決的是:讓一個 Agent 去接工具、接資料,替自己補上原本沒有的能力,方向是往下伸手去拿東西。這一集的 A2A 不一樣,它處理的是:當一個 Agent 自己做不完,怎麼往旁邊去找「另一個 Agent」來幫忙。一個是往下拿工具,一個是往旁邊找幫手,是兩件不同的事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>本集核心對照:垂直 vs 水平</h2>
+<div class="semoji">🔀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>MCP = Agent ↔ 工具/資料(垂直:接工具拿能力)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>A2A = Agent ↔ Agent(水平:交辦給另一個 Agent)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>互補,不是二選一</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這是整集最重要的一張對照,請你記住。MCP 連的是「Agent 和工具、資料」之間,你可以想成垂直的:Agent 往下接一個工具,拿到一份能力。A2A 連的是「Agent 和 Agent」之間,是水平的:一個 Agent 把事情交辦給另一個 Agent。這兩個是互補的關係,不是要你二選一;實務上常常是一邊接工具、一邊找隊友,同時在用。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>它的正式身分</h2>
+<div class="semoji">📖</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>A2A 全名 Agent-to-Agent(代理對代理)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>Google 在 2025 年提出的開放協定</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>和 MCP 定位互補,不衝突</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講一下它的正式身分。A2A 的全名是 Agent-to-Agent,直白講就是「代理對代理」。它是 Google 在二〇二五年提出、而且開放出來的一套協定,專門定義「一個 Agent 要怎麼跟另一個 Agent 溝通、交辦任務」。它跟上一集的 MCP 是互補的定位:MCP 管 Agent 怎麼接工具,A2A 管 Agent 之間怎麼合作,兩個各司其職,不會打架。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>為什麼要讓 Agent 找 Agent</h2>
+<div class="semoji">👥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個 Agent 不可能什麼都會</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讓專門的 Agent 各做各擅長的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>像一個團隊分工,比一顆硬做全部好</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>為什麼要有這個方向?因為一個 Agent 不可能什麼都會、什麼都做得好。與其硬要一顆 Agent 從查資料、算數字到寫報告全包,不如讓幾個各有專長的 Agent 分工:擅長查的去查、擅長算的去算,再彼此交辦、把結果串起來。這就像一個團隊,大家各做各擅長的事,整體會比一個人硬扛全部,做得又快又好。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>用法一:把既有服務包成「能力」</h2>
+<div class="semoji">🪪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>給既有服務掛一張「Agent Card」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>常見是一份 agent.json,放在公開網址上</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>對外宣告:我是誰、會哪些能力、怎麼呼叫我</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>A2A 第一種常見的用法,是把一個已經存在的服務,包裝成別的 Agent 讀得懂的能力。做法是:給這個服務掛上一張「Agent Card」,常見的形式就是一份叫 agent.json 的卡片,放在服務的一個公開網址上。這張卡片對外宣告三件事:我是誰、我會哪些能力、還有你要怎麼呼叫我。等於幫服務貼上一張讓人看得懂的名牌。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>用法一(續):別的 Agent 讀卡就能用</h2>
+<div class="semoji">🔎</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別的 Agent 讀到這張卡片,就能發現它</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把它當成一個可用的技能來呼叫</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一個服務,變成 Agent 世界用得到的能力</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>有了這張 Agent Card 之後會發生什麼?別的 Agent 只要讀到這張卡片,就能「發現」這個服務的存在,知道它會什麼、怎麼呼叫,然後把它當成自己手上一個現成的技能來用。這麼一來,原本一個孤立的服務,就搖身變成「Agent 世界看得懂、也用得到」的一個能力,別的 Agent 需要的時候,交辦給它就好。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>用法二:Agent 真正的對外接口</h2>
+<div class="semoji">💬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>A2A 也可以是一個 Agent 對外開的門</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讓另一個 Agent 直接對話、交辦、來回協作</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不只是呼叫一個固定功能</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二種用法更進一步。A2A 也可以是一個「真正的 Agent」對外開的一道門:讓另一個 Agent 直接跟它對話、把任務交辦給它、甚至來回討論、多輪協作,而不只是呼叫一個寫死的固定功能。這時候兩邊都是會思考、會動手的 Agent,是真的在合作把一件事情完成,而不是一邊單純去按另一邊的按鈕。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>把兩種用法收成一句</h2>
+<div class="semoji">🧵</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一種:讓既有服務被 Agent 讀懂、被呼叫</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一種:讓 Agent 之間真的互相交辦協作</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同一個協定,兩種深度</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>把這兩種用法收攏成一句好記的話。第一種,是讓一個既有的服務被 Agent 讀懂、被當成技能呼叫,偏向「把東西掛上來讓人用」。第二種,是讓兩個 Agent 之間真的互相交辦、來回協作,偏向「真正的合作」。它們用的是同一套 A2A 協定,只是深淺不同:一個是被動被呼叫,一個是主動一起做事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>Agent Card 為什麼是關鍵</h2>
+<div class="semoji">🪧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>就是一張「自我介紹卡」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>陌生的 Agent 不用事先約定也能發現彼此</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這是「Agent 互相找得到」的基礎</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡單獨把 Agent Card 拉出來講,因為它是整件事的地基。你就把它想成一張「自我介紹卡」:上面寫著我是誰、我會什麼、怎麼找我。有了這張卡,兩個原本互不相識、事先也沒約定過的 Agent,也能發現彼此、知道對方會哪些能力。這就是「Agent 之間互相找得到」最基礎的一塊,沒有它,大家就只能各做各的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>呼應脊椎:能力越大,越要有邊界</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Agent 能自動找 Agent、自動交辦,威力更大</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但一連串動作可能自動連鎖跑下去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>更要有邊界跟把關(呼應風險那集)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡要呼應我們這系列的脊椎:能力和風險是一體兩面。當 Agent 不只會用工具,還能自動去找別的 Agent、自動把任務交辦出去,威力當然更大;但反過來想,這也代表一連串動作可能一個接一個、自動連鎖地跑下去,不再每一步都回來問你。所以能力越大,越需要清楚的邊界跟把關,這正是我們風險那一集一直強調的事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>企業要用,更要管誰能跟誰講話</h2>
+<div class="semoji">🏢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>管好:誰能跟誰對話</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>管好:能交辦什麼、不能交辦什麼</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>自動連鎖越方便,控管越不能省</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>放到公司的場景,這件事更要謹慎。當一群 Agent 可以互相交辦,你就得管清楚兩件事:第一,誰能跟誰講話,不是任何 Agent 都能隨便呼叫另一個;第二,能交辦什麼、不能交辦什麼,得先劃好線。自動連鎖越方便,越不能省掉這層控管,不然一個交辦接一個交辦,跑到哪裡你自己都不知道。這部分下一集會專門講。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>MCP 讓 Agent 拿到工具</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>A2A 讓 Agent 找到隊友</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>未來的 Agent 不是單打獨鬥,是一群會互相交辦的 Agent</li>
+</ul>
+<div class="note">下集:企業怎麼控管這些(MCP / 技能 / Agent 互連)</div>
+<details class="script"><summary>逐字稿</summary><p>如果這一集只帶走一句話,那就是這句:MCP 讓 Agent 拿到工具,A2A 讓 Agent 找到隊友。你完全不用去懂協定的細節,但你要記得一件事——未來的 Agent 不會是一顆孤零零單打獨鬥的腦袋,而是一群會互相發現、互相交辦、互相協作的 Agent。它們越能自動合作,我們就越需要學會控管;下一集,我們就正面來談企業怎麼管好這一切。我們下一集見。</p></details>
+</section>
+<footer class="foot">
+🧱 對應架構圖 · A2A:<a href="arch-a2a.html">arch-a2a.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+
