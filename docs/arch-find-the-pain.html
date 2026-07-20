@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>找痛的方法論:需求還不存在的時候怎麼挖 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  /* diagram: always light so lines/labels stay readable in any theme */
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}
+</style></head><body><div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>找痛的方法論</h1>
+    <p class="lead">客戶說不清楚自己要什麼,不一定是他的問題 ——
+    痛有七種形態,其中只有一種是「問」得到的。這頁把判斷方式、
+    實際運轉的迴圈、以及該長在哪裡,畫成三張圖。</p>
+  </div>
+
+  <h2>🩺 第一層:先判斷這是哪一種痛</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  Q{"對方講得出來嗎?"}:::decision
+  Q -->|講得出來| L1["① 喊得出來的痛<br/>他們列得出清單"]:::proc
+  L1 --> W1["⚠ 但清單貼著現有系統<br/>低槓桿,別照著做"]:::warn
+  Q -->|講不出來| Q2{"為什麼講不出來?"}:::decision
+  Q2 -->|習慣了,不覺得是問題| L2["② 麻痺的痛"]:::proc
+  Q2 -->|沒有資料,所以沒感覺| L3["③ 看不見的痛"]:::proc
+  Q2 -->|各自以為是特例| L4["④ 碎掉的痛"]:::proc
+  Q2 -->|扛的人不是受益的人| L5["⑤ 不對稱的痛"]:::proc
+  Q2 -->|早就結案「沒救」| L6["⑥ 認命的痛"]:::proc
+  Q -->|對方還沒感覺| L7["⑦ 你自己的痛"]:::result
+  L2 --> M2["做個東西丟出去<br/>他們才想得起來"]:::data
+  L3 --> M3["聽「不知道」<br/>「就這樣不見了」"]:::data
+  L4 --> M4["把人湊在一起<br/>讓他們互相對照"]:::data
+  L5 --> M5["問誰在扛、誰受益<br/>然後把負擔挪走"]:::data
+  L6 --> M6["主動說「現在做得到了」<br/>問要不要試"]:::data
+  L7 --> M7["直接動手<br/>它天然是真的"]:::data
+  classDef proc fill:#dbeafe,stroke:#2563eb,color:#17335e
+  classDef data fill:#fef3c7,stroke:#d97706,color:#4a2f06
+  classDef decision fill:#ede9fe,stroke:#7c3aed,color:#3b1d78
+  classDef result fill:#dcfce7,stroke:#16a34a,color:#0f3f22
+  classDef warn fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    </pre>
+  </div>
+  <div class="legend">
+    <span class="k"><span class="s decision"></span>判斷點</span>
+    <span class="k"><span class="s proc"></span>痛的種類</span>
+    <span class="k"><span class="s data"></span>對應的挖法</span>
+    <span class="k"><span class="s result"></span>起手式</span>
+  </div>
+  <p class="lead" style="margin:0 0 10px">
+  <b>只有第一種是問得到的。</b>而業界的需求訪談方法幾乎全是為那一種設計的 ——
+  所以用問的去挖後面六種,問到最後會以為「這客戶講不清楚自己要什麼」,
+  其實是拿錯工具。</p>
+
+  <h2>♾️ 第二層:實際運轉的迴圈(沒有出口)</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  S(["從一個小方法開始<br/>不用等需求清楚"]):::result
+  S --> D["做出一個具體的東西<br/>小、快、可以被丟掉"]:::proc
+  D --> G["給出去 · 讓它被用"]:::proc
+  G --> O["去看<br/>實際被怎麼用、卡在哪"]:::data
+  O --> N{"被說不對?"}:::decision
+  N -->|對| ST["聽他講故事<br/>「為什麼會變成這樣?」"]:::data
+  N -->|沒被否定也要記| R
+  ST --> R["記錄各種狀況<br/>限制 · 判準 · 例外"]:::data
+  R --> AI["跟 AI 討論下一步<br/>整理模式 · 想怎麼繼續"]:::infra
+  AI --> F["修正對「他們怎麼用」的理解"]:::proc
+  F --> D
+  classDef proc fill:#dbeafe,stroke:#2563eb,color:#17335e
+  classDef data fill:#fef3c7,stroke:#d97706,color:#4a2f06
+  classDef decision fill:#ede9fe,stroke:#7c3aed,color:#3b1d78
+  classDef result fill:#dcfce7,stroke:#16a34a,color:#0f3f22
+  classDef infra fill:#e5e9f0,stroke:#475569,color:#1e293b
+    </pre>
+  </div>
+  <div class="legend">
+    <span class="k"><span class="s result"></span>起點</span>
+    <span class="k"><span class="s proc"></span>你做的動作</span>
+    <span class="k"><span class="s data"></span>拿到的資訊</span>
+    <span class="k"><span class="s infra"></span>AI 在這裡幫忙</span>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>迴圈沒有出口</b><span class="dir">常態,不是階段</span></div>
+      <div class="bd">沒有「探完了、開始正式做」這個分界點。你給的東西可能是錯的,甚至可能永遠是錯的 —— 那不是失敗,那就是這個方法運作的樣子。你不是在逼近一個正確答案,你是在持續換方向。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>記錄是獨立動作</b><span class="dir">不要只記結論</span></div>
+      <div class="bd">每一輪都要記:撞到什麼限制、他們用什麼標準判斷對錯、有哪些例外。這些散開來看沒意義,累積起來才會浮出模式 —— 而模式就是你要找的那個東西。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>AI 幫的不只是「做」</b><span class="dir">也幫你決定下一步</span></div>
+      <div class="bd">AI 讓做一版的成本崩掉,這是它最明顯的貢獻。但同樣重要的是:把累積的紀錄丟給它,一起整理模式、討論下一步該往哪換。判斷還是你的,但整理和發想可以一起做。</div></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>你迭代的不是那個東西</b><span class="dir">是你的情境理解</span></div>
+      <div class="bd">表面上在改介面、加功能;實際上在修正「他們會怎麼用」的想像。所以「這不對」大多不代表功能少了 —— 補功能解決不了想錯的情境,只會讓東西越來越肥、越來越沒人用。</div></div>
+  </div>
+
+  <h2>🧱 第三層:做出來的東西該長在哪</h2>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  subgraph CORE["🏢 既有系統 · 管的是常態"]
+    C["穩定、被依賴<br/>所以它才改不動"]:::infra
+  end
+  subgraph EDGE["🌱 可以長的地方 · 價值在例外"]
+    direction TB
+    E1["關係 / 脈絡"]:::proc
+    E2["特殊事件<br/>系統不收,只在人腦裡口耳相傳"]:::proc
+  end
+  subgraph LOAD["⚖️ 負擔怎麼放"]
+    direction LR
+    A["收集端<br/>扛的人 → 幾乎零負擔"]:::result
+    B["消費端<br/>受益的人 → 才數位化"]:::data
+  end
+  C -.->|不動它,長在旁邊| EDGE
+  EDGE --> LOAD
+  A -->|累積| B
+  classDef proc fill:#dbeafe,stroke:#2563eb,color:#17335e
+  classDef data fill:#fef3c7,stroke:#d97706,color:#4a2f06
+  classDef result fill:#dcfce7,stroke:#16a34a,color:#0f3f22
+  classDef infra fill:#e5e9f0,stroke:#475569,color:#1e293b
+    </pre>
+  </div>
+  <div class="legend">
+    <span class="k"><span class="s infra"></span>改不動的核心</span>
+    <span class="k"><span class="s proc"></span>可以擴充的外圍</span>
+    <span class="k"><span class="s result"></span>零負擔的那一端</span>
+    <span class="k"><span class="s data"></span>受益的那一端</span>
+  </div>
+  <p class="lead" style="margin:0 0 10px">
+  撞到「這個改不動」的時候不要硬幹 —— <b>那不是阻礙,是地圖上的邊界,
+  而且你應該慶幸這麼早就撞到。</b>核心系統正是因為穩定才留得下來,也才不能亂動;
+  而系統不收的例外,剛好就是知識還沒被固化的地方。
+  <b>最好的探針不一定是軟體 —— 是使用者真的願意用的那個。</b></p>
+
+  <div class="links">
+    <a class="yt" href="pain-taxonomy.html">▶ 相關影片:痛有七種</a>
+    <a class="src" href="index.html">📚 回課綱總表</a>
+  </div>
+
+  <p class="archnav">📺 對應單集:<a href="pain-taxonomy.html">痛有七種</a> ·
+  <a href="find-the-need.html">需求還不存在的時候</a> ·
+  <a href="keep-probing.html">做出來被說不對,才是正常的</a>
+  &nbsp;|&nbsp; 📚 <a href="index.html">回課綱總表 →</a></p>
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · 找痛的方法論。
+  案例均已去識別化,概念示意。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'16px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:60, padding:14, useMaxWidth:true}
+  });
+</script>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body></html>
