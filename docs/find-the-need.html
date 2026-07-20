@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L6·開創】需求還不存在的時候:用做得出來的東西,把它挖出來</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟣 開創</div>
+<h1>需求還不存在的時候</h1>
+<p class="lead">用做得出來的東西,把它挖出來</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=1IgKWPtladI" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L6 開創</span>
+<span class="pill">🎬 8 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>會用 Agent 之後,大部分的討論都集中在「怎麼把事情做出來」。但真實工作裡最難的,常常不是做不出來,而是**根本沒有人知道該做什麼**。客戶說不清楚、老闆只給一個方向、你自己也覺得哪裡怪但講不出來。接下來我要講的,是我這一年在兩個真實案子裡走出來的一套做法:**當需求還沒成形的時候,你怎麼用 Agent 把它做出來。**注意我說的是「做出來」,不是「問出來」——這兩個字的差別,就是這一整段的重點。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>最貴的錯,是把東西做對了但做錯了東西</h2>
+<div class="semoji">🕳️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>做不出來,你至少知道自己卡在哪</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>做錯方向,你會一路很順地走到沒人要的成果</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>而且驗收也會過 —— 因為驗收標準也是照錯的方向訂的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講為什麼這件事值得單獨拿出來說。做不出來,其實不可怕 —— 你會卡住,卡住你就知道要求助、要換方法。**真正貴的是方向錯。**方向錯的時候,過程反而特別順:規格清楚、進度正常、驗收通過,因為**驗收標準本來就是照著那個錯的方向訂的**。然後東西交出去,沒人用。大家都很努力、每個環節都沒出錯,唯一的問題是這整件事一開始就不該做。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>為什麼「去問」通常問不到</h2>
+<div class="semoji">🎤</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>訪談拿到的,是他們「知道怎麼講」的那一層</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>要人憑空講出「我要什麼」很難</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>但給他一個東西,他馬上講得出「這不對」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最直覺的做法是去問:訪談、發問卷、開需求會議、請他們列痛點。這些方法沒有錯,但它們有一個共同的天花板:**你只拿得到「他們知道怎麼講的那一層」。**為什麼?因為要一個人憑空講出「我要什麼」,是一件非常困難的事。你自己也一樣 —— 問你「想吃什麼」,你八成回「都可以」;但如果他說「那吃這家」,你馬上就說「不要,這家太油」。**人對「不要什麼」的判斷力,遠遠高過對「要什麼」的想像力。**這件事聽起來像心理學小知識,但它其實決定了整套方法的形狀:**既然人擅長否定,那你的工作就是持續給他們可以否定的東西。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>AI 真正改變的,是探針變便宜了</h2>
+<div class="semoji">⚡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前做一版要好幾週 → 你必須先猜對才敢動手</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>現在做一版是幾小時 → 你可以承受猜錯</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>翻轉:讓對方糾正,比訪談到正確更快</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡我要講這一整段最重要的一句話,因為它解釋了為什麼是現在。「做個原型去試」這件事本身不是新方法,顧問幾十年來都在做。**新的是它變得極便宜。**以前做一版要好幾週、要一個團隊,所以**你必須先猜對才敢動手** —— 需求訪談、規格書、簽核,整套流程都是為了「做錯太貴,所以要先問對」而設計的。但現在做一版可能只要幾個小時,**所以你可以承受猜錯**。**整個經濟學翻轉了:讓對方糾正一個做錯的東西,比訪談到正確更快、也更準。**而且還有第二件事:你可以**很快地用上對應的工具** —— 不懂 HR 系統照樣做得出 HR 的東西,不懂醫療系統照樣做得出醫療的。**「我不懂那個產業」原本是進場門檻,現在那道門檻鬆掉了。**領域知識變成什麼?變成**你做出第一版之後,對方會教你的東西**。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>核心動作:持續製造可以被否定的具體物</h2>
+<div class="semoji">🔬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>小交付物不是「通往已知目標的一步」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它是**用來找目標的探針**</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>被否定的內容,本身就是需求規格</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以核心動作只有一句話:**持續製造可以被否定的具體物。**我想特別強調這裡的心態轉換,因為它跟一般做原型不一樣。一般做原型,是你已經知道要做什麼,先做個小的驗證可行性 —— **那個小東西是通往已知目標的第一步。**但這裡不是。這裡你**根本還不知道目標在哪**,那個小東西是**探針**,你放它出去是為了看它撞到什麼。它會撞出兩種你在會議室裡永遠拿不到的東西:第一種是**限制** —— 「這個改不動」;第二種是**判準** —— 「這個不對、應該要那樣」。**而被否定的內容,本身就是規格。**你不是在收集需求,你是在製造讓需求現形的條件。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>你在找的是「沒被命名的飛輪」</h2>
+<div class="semoji">🎡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>組織每天/每週在重複,而且目前完全沒有數字</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>沒命名 → 沒量測 → 沒有改善循環</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一次性的專案不是飛輪;已經有報表的也不是(已經被命名了)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>把上面那件事抽象一層,你要找的東西有個形狀,我叫它**沒被命名的飛輪**。它有兩個特徵,兩個都要滿足。第一,**這件事組織每天或每週在重複** —— 不是一次性的專案。第二,**目前完全沒有數字**。重複代表**改善的效益會複利**;沒有數字代表**現在沒有人在改善它**,因為根本無從判斷有沒有變好。**沒命名,就沒量測;沒量測,就沒有改善循環。**反過來說,兩種東西不要碰:**一次性的專案**不是飛輪,做完就沒了;**已經有報表、有儀表板的**也不是 —— 那代表它早就被命名了,有人在看、有人在管,你進去只能做邊際改善。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>三個現成的訊號:哪裡值得下探針</h2>
+<div class="semoji">📡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>已經有協會 / 自救會 / 群組在處理 → 痛到有人自發組織,而且資料已在累積</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>案量或次數逐年增加 → 需求在成長,不是一時的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>痛可以換算成錢或時間 → 有人真的在流血</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講完兩種情況,給你三個很實際的訊號,幫你判斷哪裡值得下探針。**第一,已經有人自發組織起來在處理這件事。**協會、自救會、工會、甚至只是一個 LINE 群組。這個訊號很強,因為**有人願意花自己的時間組織起來,代表痛到值得**,而且**資料其實已經在累積了,只是累積在人和紙上,沒有進系統**。**第二,案量或次數逐年在增加。**代表這是結構性的、會繼續長的,不是一時的。**第三,那個痛可以換算成錢或時間。**剛剛那個醫療的例子,受害的其實是醫生本人 —— 光是打官司就要砸掉大量的金錢和時間。**當你能把痛換算成數字,你就有了說服預算的語言。**三個湊齊,那大概就是該做的東西。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>撞到「這個改不動」的時候,不要硬幹</h2>
+<div class="semoji">🧱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>核心系統管的是常態,所以它才穩、也才改不動</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>價值在例外 —— 系統不收、只活在人腦裡口耳相傳的那些</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>預設答案:不動它,長在旁邊</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>探針放出去,你一定會撞到一句話:「**這個改不動。**」很多人這時候會覺得受挫,或者想去說服對方改。我的建議是不要。**「改不動」不是阻礙,那是地圖上的邊界,你應該高興你這麼早就撞到了。**而且要理解它為什麼改不動:**核心系統管的是常態,它正是因為穩定才會被留下來,也才不能亂動。**那能長的是什麼?**是例外。**剛剛那個醫療案子最後的結論就是這樣:現有的系統動不了,但可以擴充的是**關係**、以及那些**特殊事件** —— 那些**現有系統不收、只活在人腦裡口耳相傳的例外**。為什麼價值在例外?因為**系統不收的地方,正是知識還沒被固化的地方**。所以遇到既有系統,預設答案是:**不動它,長在旁邊。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>需求不一定要「問出來」,可以「做出來」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>因為做一個能被否定的東西,現在很便宜</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>而人對「這不對」的判斷力,遠高過對「我要什麼」的想像力</li>
+</ul>
+<div class="note">不要只聽「痛」,要聽「不知道」—— 那是資料缺口,比任何痛點都值錢。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是:**需求不一定要問出來,它可以被做出來。**因為做一個可以被否定的東西,現在已經便宜到可以隨手拋棄了;而人對「這不對」的判斷力,遠遠高過對「我要什麼」的想像力。所以下次你接到一個講不清楚的需求,別再開第三次需求會議了。**去做一個小東西,拿去給他們否定。**然後在那個過程裡,注意聽有沒有人講出「這個我們也不知道」——那句話出現的地方,通常就是整件事真正的入口。然後記住:**做出來被說不對,不是失敗,那就是這個方法在運作。**</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=1IgKWPtladI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=1IgKWPtladI</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

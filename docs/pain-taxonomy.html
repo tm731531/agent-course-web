@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L6·開創】痛有七種:先認出是哪一種,才知道要用哪一招</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟣 開創</div>
+<h1>痛有七種</h1>
+<p class="lead">先認出是哪一種,才知道要用哪一招</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=saSoC_sqSrU" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L6 開創</span>
+<span class="pill">🎬 10 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>做東西之前最難的一步,常常不是技術,是**搞清楚到底該做什麼**。而大部分人卡住的原因很單純:**他們只會一招。**去問、去訪談、去請對方列痛點 —— 這招沒有錯,但它只對其中一種情況有效,而真實世界裡至少有七種。接下來我把這七種攤開來講,每一種長什麼樣子、要用什麼方法才挖得出來。**認錯種類,你會問到最後很挫折,還以為是客戶講不清楚自己要什麼。**</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>為什麼要先分類:用錯招是最常見的失敗</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>業界的需求訪談方法,幾乎全是為第一種設計的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但真正值錢的東西,常常在後面幾種</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>用問的去挖問不到的,只會得出「這客戶很難搞」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講為什麼要分類。你去書店翻需求分析的書、去上課學需求訪談,那些方法**幾乎全部是為第一種痛設計的** —— 也就是「他們知道、只是還沒講」的那一種。問題是,真正值錢的東西常常不在那裡。**當你用「問」的方式去挖一個問不到的東西,結果只有一個:挫折。**然後你會得出一個結論:「這個客戶很難搞,講不清楚自己要什麼。」**但通常不是他講不清楚,是你用錯了工具。**所以在動手之前,先花三十秒判斷:我現在面對的是哪一種?</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>第一種:喊得出來的痛</h2>
+<div class="semoji">📋</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>特徵:他們列得出一份清單</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>怎麼挖:直接問就有 —— 這是唯一問得到的一種</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>⚠ 但清單上的東西,通常是低槓桿的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一種,**喊得出來的痛**。特徵很明顯:你一問,他們就列得出一份清單,而且講得很具體。這是七種裡面**唯一問得到的一種**,所以先問一定不吃虧。但我要給你一個很重要的警告,因為這是大部分人掉進去的地方:**那份清單通常是低槓桿的。**為什麼?我實際遇過 —— 一個製造業的人資給了我一長串痛點,每一項都是真的痛。但那些東西**全部緊貼著他們現有的流程和系統**,你要動它們,等於去撞一面改不動的牆:花很大力氣,做出很小的改善。**所以清單要收下,但不要把它當成待辦事項照著做。**它告訴你的是「他們看得到什麼」,不是「哪裡最值得做」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>第二種:麻痺的痛</h2>
+<div class="semoji">😐</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>特徵:痛很久了,已經變成空氣,沒人覺得那是問題</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>怎麼挖:做個東西丟出去,他們才想得起來</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>訊號:你做完之後他們說「其實我們也很痛」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二種,**麻痺的痛**。這種痛是真的存在,而且存在很久了,**久到已經變成空氣的一部分,沒有人會把它當成一個「問題」。**你去問,他們不會講,因為在他們的認知裡那不是問題,那是「就是這樣做事」。怎麼挖?**你做個東西丟出去。**我自己的經驗是這樣:我進一家公司的時候,入職要填一大堆紙本表單,填到我受不了。**注意當時的前提:人資部門完全不覺得這裡有問題。**我做了個小東西解決自己的麻煩,拿給他們看,他們的反應是:「其實……我們收紙本也很痛。」那個痛他們**早就有了,只是麻痺了**。**是那個具體的東西,讓他們重新有資格把它說出來。**所以偵測訊號很明確:**當對方看到你做的東西之後說「其實我們也……」,那後面接的就是一個麻痺很久的痛。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>第三種:看不見的痛</h2>
+<div class="semoji">👂</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>特徵:因為沒有資料,所以根本沒有痛感</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>怎麼挖:聽「不知道」「就這樣不見了」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這種永遠不會出現在任何一份痛點清單上</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三種,我認為是七種裡最值錢的:**看不見的痛**。它的特徵很特別 —— **因為沒有資料,所以根本沒有痛感。**你不會為一件你看不到的事情感到痛。所以推論很直接:**這種痛永遠不會出現在任何一份痛點清單上。**那怎麼挖?**不要只聽「痛」,要聽「不知道」。**當對方說出「這個我們沒辦法知道」、「就這樣不見了」、「我們也很想知道但查不到」—— 那句話要讓你耳朵豎起來。回到剛剛那個人資的例子:痛點清單聊完一輪之後,講著講著,他們順口提到一件事 —— **有一段人根本連進來都沒進來就流失了,而且他們完全無從得知。**那句話不在清單上,語氣也完全不像在提需求。**但那就是整件事的核心** —— 那是招募漏斗:職缺用詞對不對、履歷怎麼擷取、什麼描述吸引得到對的人、層層篩選的轉化。**他們每天都在做,但因為從來沒有數字,所以從來沒有人想過那是可以改善的。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>第四種:碎掉的痛</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>特徵:每個人都痛,但每個人都以為自己是特例</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>怎麼挖:把人湊在一起,讓他們互相對照</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>問誰都問不到 —— 因為沒有人擁有足夠的視野</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四種,**碎掉的痛**。這一種最反直覺,因為它問誰都問不到,而且**不是因為他們不肯講**。我在一個醫療的案子裡遇到:原本做的是一套管理系統,方向很正常。然後有意思的事情發生了 —— **醫生們開始互相對話。**一個說「我遇過某一類的糾紛」,另一個說「欸,我也有」,第三個也說「我也有」。**他們原本每個人都以為自己是特例**,是自己運氣不好、自己處理不當。講開了才發現這是共同的模式,而且已經有相關的自救組織在處理,案量還逐年增加。所以這種痛的關鍵在於:**沒有任何一個人擁有足夠的視野,看得出那是同一件事。**它不是藏在某個資深員工腦裡等你去挖,**它當下是碎的,要有人把碎片湊在一起,模式才會浮現。**怎麼挖?**促成他們對話。**聽起來不像技術工作,但它產生的東西是真的:在那之前那個需求不存在,在那之後它存在了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>第五種:不對稱的痛</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>特徵:扛負擔的人,跟拿到價值的人,不是同一個</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>怎麼挖:追問誰在扛、誰受益,能不能把負擔挪走</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這解釋了為什麼很多系統「功能都對但沒人用」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第五種,**不對稱的痛**,這一種最容易被忽略,但它解釋了一個很常見的現象:**為什麼很多系統功能都對,卻沒有人用。**特徵是:**扛負擔的人,跟拿到價值的人,不是同一個人。**我做過一個居家照顧的案子。我當然可以寫一套很完整的系統:登入、表單、欄位、報表。但照顧人員的手是忙的、時間是碎的,**不會有人為了填一份表停下來開手機、登入、找欄位。**他們扛全部的負擔,而拿到價值的是後面判讀的人。**只要使用者扛不動,那個案子就不可能成功 —— 這跟技術難度完全無關。**所以我用的是**磁鐵加一塊白板**:日常狀況貼一下就好,三秒鐘、不用學;特殊狀況才手寫補上。**解法不是去說服扛的人再努力一點,是把負擔挪走。**怎麼挖這種痛?問三句話:**這件事誰在扛?誰拿到好處?能不能讓扛的那一端幾乎不用出力?**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>第六種:認命的痛</h2>
+<div class="semoji">🕯️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>特徵:有感覺,但早就結案「這沒救」——不是說不出口,是不覺得那還是問題</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>怎麼挖:主動告訴他「現在做得到了」,問要不要試</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>訊號:「這個沒辦法啦」「以前試過,不行」「本來就是這樣」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第六種,**認命的痛**,而我認為這一種在現在這個時間點特別重要。先講它跟麻痺差在哪:**麻痺是感覺不到了;認命是感覺得到,但把期待關掉了。**他們心裡早就結案:「這件事就是這樣,沒救。」所以不會提 —— **不是說不出口,是根本不覺得那還算一個「問題」,那是現實。**打個比方你會很有感:**這有點像你跟一個失智症患者說「其實現在有新藥,你有機會可以減緩,要不要試?」**他不會來問你,因為在他的認知裡這件事已經定案了。**可能性本身,就是那則消息。**所以這一種的挖法,跟另外五種完全相反:其他幾種都是你去聽、去看、去做東西讓他反應;**這一種要你主動去講。**而這件事在現在特別關鍵,因為 **三年前真的做不到的事,現在做得到了,但沒有人回頭重開那個問題** —— 他們早就結案了。**每個組織都有一疊「我們試過,不行」的舊卷宗,那裡面全是機會。**偵測訊號:「這個沒辦法啦」「以前試過,不行」「本來就是這樣」。這幾句和「不知道」一樣值錢,但要用完全相反的動作處理。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>第七種:你自己的痛</h2>
+<div class="semoji">🩹</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>特徵:客戶還沒感覺,但你痛</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>怎麼挖:不用挖,直接動手</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這是合法的起點,而且它天然是真的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後一種比較特別,因為它不在對方身上:**你自己的痛。**很多人覺得要等客戶開口、等需求明確才能動手。我的看法相反:**你自己的痛就是一個合法的起點,而且它有一個別的來源都沒有的優點 —— 它天然是真的。**不用揣測、不用訪談、不用擔心對方講的是不是場面話,因為痛的是你。剛剛那個填紙本的例子就是這樣開始的:**當時人資根本不覺得有問題,痛的是我。**我先解決自己的麻煩,然後那個東西才反過來把他們的痛勾出來。所以如果你現在手上沒有任何明確的需求,**看看你自己每天在忍受什麼 —— 那通常不會只有你在忍。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>七種對照:先判斷,再動手</h2>
+<div class="semoji">🗺️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問得到的只有第一種 —— 其他六種要換方法</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>看不見 → 聽「不知道」;碎掉 → 湊人;不對稱 → 挪負擔</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>認命 → 主動說「現在可以了」;麻痺與自己的痛 → 直接做個東西</li>
+</ul>
+<div class="note">用錯招會讓你以為「客戶講不清楚」—— 其實是你拿錯工具。</div>
+<details class="script"><summary>逐字稿</summary><p>把七種收在一起,你就有一張判斷表了。**喊得出來的痛** —— 直接問,但警覺它低槓桿。**麻痺的痛** —— 做個東西丟出去,他們才想得起來。**看不見的痛** —— 聽「不知道」,那是資料缺口。**碎掉的痛** —— 把人湊在一起,讓模式浮現。**不對稱的痛** —— 問誰在扛、誰受益,然後把負擔挪走。**認命的痛** —— 主動告訴他現在做得到了。**你自己的痛** —— 直接動手。**七種裡面只有第一種是「問」得到的**,而大部分人手上只有那一招。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先判斷這是哪一種痛,再決定用哪一招</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>問不出來,通常不是對方的問題,是工具錯了</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>尤其別漏掉:「以前試過,不行」的那些舊卷宗</li>
+</ul>
+<div class="note">七種痛裡,只有一種是「問」得到的。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話:**在你開口問之前,先判斷你面對的是哪一種痛。**問不出來的時候,先別急著怪對方講不清楚 —— 那通常代表你拿錯工具了。而如果你想從最容易有收穫的地方開始,我建議你先去翻**那疊舊卷宗** ——去問問看:**有沒有什麼事,是你們以前試過、發現做不到,後來就不提了的?**那句話問出去,你常常會挖到一整片沒有人在動的東西。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=saSoC_sqSrU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=saSoC_sqSrU</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

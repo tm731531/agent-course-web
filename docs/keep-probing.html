@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L6·開創】做出來被說不對,才是正常的:沒有「探完了」這回事</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟣 開創</div>
+<h1>做出來被說不對,才是正常的</h1>
+<p class="lead">沒有「探完了」這回事</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=3cZMXAUzgxo" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L6 開創</span>
+<span class="pill">🎬 8 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>你做了一個東西給對方看,他說「這不對」。大部分人這時候的反應是:檢討方法、回去改流程、或者覺得自己是不是需求沒問清楚。我想講的是完全相反的事:**被說不對,不是失敗,那是這件事正常運作的樣子。**接下來我要講的,是我自己想錯很久才轉過來的一個觀念:**沒有「探索完成、開始正式做」這個分界點。**以及,當對方說不對的時候,你真正該做什麼。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>我原本以為有兩個階段 —— 那是錯的</h2>
+<div class="semoji">🚦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以為:先探索,探清楚了,再進入建置</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>實際上:沒有「探完了」這回事</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這不是一個階段,是常態</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講我想錯的地方,因為你八成也會這樣想。我原本以為這件事分兩個階段:先探索、把需求搞清楚,然後進入建置、把它做好。**很像傳統專案:需求訪談完 → 簽規格 → 開發。**後來我發現這個框架整個是錯的。**沒有「探完了」這回事。**你這次給的東西可能是錯的,而且說難聽一點,**可能永遠都是錯的**。但那不是失敗,**那就是這個方法運作的樣子:你不是在逼近一個正確答案,你是在持續換方向。**一旦你把它當成階段,你就會急著想「結束探索」;而一旦你想結束,你就會開始把對方的否定當成阻礙,而不是資訊。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>被否定的時候:馬上換方向,不要修理論</h2>
+<div class="semoji">🔀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不要回去檢討方法、不要開會討論流程</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>馬上換一個方向,重新給一個具體的東西</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>速度比正確更重要 —— 因為正確是換出來的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以當對方說「這不對」的時候,該做什麼?**第一件事是:不要回去修理論。**我看過太多人在這個時候開始檢討方法論、開會討論「我們的需求流程是不是有問題」。那些會議的產出通常是一份更完整的流程,然後下一次一樣被說不對。**正確的動作是:馬上換一個方向,再給一個具體的東西。****在這裡速度比正確更重要**,因為正確不是想出來的,是換出來的。你換得越快,撞到的邊界越多,地圖畫得越快。而且這件事現在可行,是因為做一版的成本已經很低了 —— **低到你可以把「做錯」當成一種常態開銷,而不是一次事故。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>比「哪裡錯」更值錢的:聽他講故事</h2>
+<div class="semoji">📖</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問「哪裡錯」拿到的是答案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>聽故事拿到的是脈絡 —— 誰吃過虧、為什麼不能動</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>那些東西你問一百個問題都問不到</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接下來這一點,我覺得是整段最實用的。被否定的時候,大部分人會問:「那哪裡不對?應該要怎樣?」這樣問沒錯,但你拿到的是**答案**。**更值錢的是:讓他講故事。**他為了解釋為什麼不對,會講出一段經過 —— 以前發生過什麼事、誰因為這個吃過虧、為什麼這條規定不能動、上次有人這樣做結果如何、那個部門為什麼堅持要用紙本。**那些東西你問一百個問題都問不到,因為那不是答案,那是脈絡。**而且這些故事有個共同點:**它們全都是「系統裡查不到、只在人和人之間流傳」的東西。**所以你的問法可以很簡單:不要問「應該要怎樣」,問「**為什麼會變成現在這樣?**」、「**以前有發生過什麼事嗎?**」然後閉嘴,讓他講完。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>你真正在迭代的,不是那個東西</h2>
+<div class="semoji">🧠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>表面上你在改介面、加功能、修流程</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>實際上你在修正「你對他們怎麼用」的理解</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以「這不對」大多不是功能少了,是你把情境想錯了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡有一個很容易搞混的地方。表面上,你每一輪都在迭代那個東西:改介面、加功能、調流程。**但你真正在迭代的,是你對「他們實際會怎麼用」的理解。**這個區別會直接影響你怎麼回應「這不對」。**如果你以為在迭代功能,你的反應就是「那我加一個」;如果你知道在迭代理解,你的反應會是「那我對這件事的想像哪裡錯了」。**而大部分時候,答案是後者 —— **不是功能少了,是情境想錯了。**這件事很重要,因為**補功能解決不了想錯的情境**,只會讓那個東西越來越肥、越來越難用,最後變成一個什麼都有、但沒有人願意打開的東西。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>所以要不斷想兩件事:怎麼用、怎樣順</h2>
+<div class="semoji">🌊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>誰在什麼時候、什麼狀態下會用它?手上同時在做什麼?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>前一步從哪裡來,下一步要去哪裡?</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>以及最重要的:用起來卡不卡</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那要怎麼修正對情境的理解?我把它收成兩個要一直問自己的問題。**第一,這個東西在真實情境裡會被怎麼用?**誰在什麼時候打開它?他當下是什麼狀態 —— 坐著還是站著、專心還是被打斷、手上同時還在做什麼?他的前一步從哪裡來,做完之後下一步要去哪裡?**第二,而且我認為這個更關鍵:怎樣才順?**注意,不是「功能有沒有」,是「**用起來卡不卡**」。很多東西功能全部都對,但因為多了一個登入、多了一次切換、或者出現的時機不對,實際上就是沒人用。**功能是你在紙上想得出來的;順不順只有真的放到情境裡才知道。**所以每一輪你都在問同一件事:**我對他們怎麼用這件事,又想錯了哪裡?**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>一個實例:負擔要放在有餘力的那一端</h2>
+<div class="semoji">🧲</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>居家照顧:照顧人員手是忙的、時間是碎的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>收集端用磁鐵貼一下就好,特殊狀況才手寫</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>消費端(判讀的人)才數位化</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>舉一個我自己做過、而且完全不科技的例子。一個居家照顧的案子。我當然可以寫一套完整的系統:登入、表單、欄位、報表。但我很快想清楚一件事:**對照顧人員來說,那是很重的負擔。**他們的手是忙的、時間是碎的,不會有人為了填一份表停下來開手機、登入、找欄位。**而只要使用者扛不動,那個案子就不可能成功,這跟技術難度完全無關。**所以最後用的是**磁鐵加一塊白板**:日常狀況拿磁鐵貼一下,三秒鐘,不用學;**遇到特殊狀況,才用手寫補上去。**注意這個分工:**常態用最省力的方式收,例外留白讓人自由寫。**而且更關鍵的是負擔的分配:**收集的那一端是磁鐵,幾乎零負擔;判讀的那一端才數位化。****負擔要放在有餘力的那一端,不是平均分攤。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>那面白板真正解決的問題</h2>
+<div class="semoji">📋</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>失智照顧:每次陪病人去看診的人都不一樣</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>每個人只知道自己看到的那一段 → 醫生拿到的是隨機的碎片</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>後果不只是資訊不足 —— 是照著片面印象在調整用藥</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那面白板真正解決的問題,其實不在照顧現場,在診間。失智照顧有一件事很麻煩:**陪病人去看診的人,每次都不一樣。**今天是這個家屬、明天是那個照顧人員、下週又換一個班次。**每個人都只知道自己看到的那一段。**所以醫生門診那幾分鐘,拿到的永遠是碎片,而且是隨機的碎片。**而這件事的後果,不是「醫生資訊不足」這麼輕描淡寫。**他很可能就在那個很茫然的狀態下,**根據今天這個人給的「認知」,去決定要不要加藥、要不要改藥。**那是拿某一個人的片面印象,在動一個病人的用藥。但如果那面白板一直在累積,**就變成:不管今天是誰帶病人去,只要把平板打開給醫生看,他就能完整知道這一個月到底發生了什麼事。**所以最後一句我想留給你:**做東西變便宜,不代表每個東西都該是軟體。最好的那個,是使用者真的願意用的那個。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>被說「不對」不是失敗,那是這個方法在運作</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不要修理論 —— 馬上換方向,然後聽他講故事</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你迭代的不是那個東西,是你對「他們怎麼用」的理解</li>
+</ul>
+<div class="note">沒有「探完了」這回事 —— 這是常態,不是階段。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話:**做出來被說不對,不是失敗,那就是這個方法在運作。**所以不要急著結束探索,因為根本沒有結束這回事。下次你被否定的時候,試著做三件事:**第一,不要回去修方法,馬上換一個方向再做一個。****第二,別只問「哪裡錯」,問「為什麼會變成現在這樣」,然後讓他講完。****第三,回頭問自己:我對他們怎麼用這件事,想錯了什麼?**做久了你會發現,那些被否定的版本沒有一個是白做的 —— **它們每一個都在幫你畫地圖。**</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=3cZMXAUzgxo" target="_blank" rel="noopener">https://www.youtube.com/watch?v=3cZMXAUzgxo</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+
