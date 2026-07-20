@@ -26,6 +26,13 @@ body{background:var(--bg);color:var(--text);line-height:1.7;font-family:-apple-s
 .totop.show{opacity:.92;pointer-events:auto}.totop:hover{opacity:1}
 html{scroll-behavior:smooth}
 .moddesc{color:var(--muted);font-size:.98rem;margin:8px 0 16px}
+.stance{margin:26px 0 22px;padding:20px 22px;border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:0 10px 10px 0;max-width:64ch}
+.stance h2{font-size:1.02rem;margin:0 0 10px;letter-spacing:.02em}
+.stance p{color:var(--muted);font-size:.97rem;margin:0 0 9px;line-height:1.75}
+.stance b{color:var(--text)}
+.stance-punch{color:var(--text)!important;font-weight:700;font-size:1.02rem!important;
+  margin:14px 0 0!important}
 ul.eps{list-style:none;padding:0;display:flex;flex-direction:column;gap:10px}
 li.ep{display:flex;gap:18px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
 .epnum{font-size:1.4rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;min-width:2ch}
@@ -41,17 +48,31 @@ li.ep{display:flex;gap:18px;align-items:center;background:var(--surface);border:
 <header class="hero"><div class="eyebrow">教學影片系列</div>
 <h1>從問 AI 到用 Agent</h1><p>一個人的實戰升級 —— 給每一個想從「問 AI」跨到「用 Agent」的人</p>
 <p style="color:var(--muted);font-size:.95rem;margin-top:10px">不必照順序 —— 依你的難度挑,先把同一級看熟,再往上一級。</p>
-<div class="lvlnote"><a href="#L1"><span>L1 入門 · 把前提講清楚 —— 看完才懂後面在幹嘛</span></a><a href="#L2"><span>L2 上手 · 開始動手 —— 照著也能做</span></a><a href="#L3"><span>L3 進階 · 深度使用 —— 想玩深的追</span></a><a href="#L4"><span>L4 工程 · 把它做成穩定的產線 —— 記憶、封裝、評估、地端</span></a><a href="#L5"><span>L5 企業 · 一整間公司安全地用 Agent —— MCP Server、A2A、治理</span></a></div>
+<div class="lvlnote"><a href="#L1"><span>L1 入門 · 沒用過 Agent —— 先搞懂它跟聊天差在哪</span></a><a href="#L2"><span>L2 上手 · 想跑出第一個結果 —— 照著做就會</span></a><a href="#L3"><span>L3 進階 · 用進日常工作 —— 複雜任務、多 Agent、邊界</span></a><a href="#L4"><span>L4 工程 · 要它可靠、可重複、跑得起來</span></a><a href="#L5"><span>L5 企業 · 組織要導入 —— 開放能力、跨系統、治理</span></a><a href="#L6"><span>L6 開創 · 還沒有人知道該做什麼 —— 把需求做出來</span></a></div>
 <p style="color:var(--muted);margin-top:14px;max-width:62ch">
 這裡有兩個版本。<b>版本二</b>是現在的主線:22 支主題式影片,每一支都能單獨看,
 想解決什麼問題就點什麼。<b>版本一</b>是最初的 30 集循序課程,照難度一路爬,
 內容大致相同但講法較舊 —— 保留給想從頭走一遍的人。</p>
+<div class="stance">
+<h2>這門課的立場</h2>
+<p><b>批判性思考通常被教成一件內省的事</b> —— 質疑假設、檢視證據、想清楚再說。
+但內省找不到自己的盲點,因為盲點的定義就是你看不見它。</p>
+<p><b>所以這裡教的是把批判外包給現實:</b>
+你不用聰明到想得出對的問題,做個東西讓對方否定它;
+不用有洞察力看出他們沒說的痛,聽他講「不知道」;
+不用預判哪裡改不動,撞上去,牆會告訴你。
+AI 讓這件事可行的原因,是把「被否定」的成本壓到幾乎為零。</p>
+<p><b>而現在最需要被批判的,是 AI 自己給你的東西</b> ——
+它產出的東西流暢、有條理、聽起來就是對的,
+而流暢跟正確,在它身上完全沒有關聯。</p>
+<p class="stance-punch">執行可以交辦,判斷不能外包。</p>
+</div>
 <div><a class="archjump" href="#course">📼 版本一 · 循序課程(30 集)↓</a>
  <a class="archjump" href="#arch">🧱 架構補充 ↓</a></div>
 </header>
 <section class="mod" style="padding-bottom:0">
   <div class="modhead" id="topic" style="scroll-margin-top:16px">
-    <h2>版本二 · 主題式(22 支)</h2><span class="modcount">現行版本</span></div>
+    <h2>版本二 · 主題式(25 支)</h2><span class="modcount">現行版本</span></div>
   <p class="moddesc">不用照順序。挑你現在正卡住的那個題目點進去,
   每一支都從頭把該講的講完,不預設你看過別支。</p></section><section class="mod" id="L1" style="scroll-margin-top:12px">
   <div class="modhead"><h2>L1 入門</h2><span class="modcount">4/4 上線</span></div>
