@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L1·入門】我免費 GPT 就夠了:那我為什麼還需要 Agent?</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟢 入門</div>
+<h1>我免費 GPT 就夠了</h1>
+<p class="lead">那我為什麼還需要 Agent?</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=6yc-I21C3YY" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L1 入門</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>我常常被問到同一句話:「Tom,我用免費的 ChatGPT 就能做完我要的事了,我幹嘛還要去學什麼 Agent?」這個問題超級合理,我完全不覺得是在抬槓。所以接下來我不繞圈子,就正面回答:免費 GPT 到底夠不夠?什麼時候你才真的需要 Agent?</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>這個問題我聽了很多次</h2>
+<div class="semoji">💬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>「我 ChatGPT 用得很順啊」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>「我要的它都答得出來」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>「學 Agent 是不是多此一舉?」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講,我一點都不想說服你「你錯了、你要趕快學」。因為會問這句話的人,通常 ChatGPT 已經用得很順了,要什麼它都答得出來,日子過得好好的。你會覺得「我現在就夠用了,學 Agent 是不是多此一舉?」這個懷疑不但合理,而且很健康。我自己就是這樣一路懷疑過來的。所以接下來我要先做一件事:老實承認,你有一半是對的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>老實說:你有一半是對的</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一次性的小問題,免費 GPT 真的就夠</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>別殺雞用牛刀</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>誠實一點,這系列才有說服力</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>是的,一半是對的。如果你的需求是那種一次性的小問題,免費的 ChatGPT 真的就夠了,你完全不需要 Agent。硬要為了一件小事去搬一整套 Agent,那叫殺雞用牛刀,反而更累。我不想騙你說「Agent 什麼都比較好」,那不是真的。我寧可誠實一點,先把「什麼時候不需要」講清楚,你才會相信我後面講「什麼時候需要」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>這些情況,免費 GPT 剛剛好</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>查一個字、翻一句話</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>想一個標題、潤一段文字</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>問一個概念、要一個方向</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>舉幾個例子你就有感覺。查一個英文單字怎麼用、把一句話翻成日文、幫我想三個影片標題、把這段文字潤得順一點、解釋一個我看不懂的名詞——這些都是問一次、拿一個答案、事情就結束了。它們有一個共同點:只要一步,而且我只做一次。這種情況你打開對話框問一句,兩秒鐘搞定,叫 Agent 出場反而是找自己麻煩。所以問題不是「GPT 夠不夠強」,而是「你的任務長什麼樣子」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>那 Agent 什麼時候才值得?</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>任務是多步驟,不是問一句就完</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>同一件事要重複做很多次</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>需要真的動手:查、算、跑、開檔</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那反過來,Agent 什麼時候才值得請出來?我給你三個訊號。第一,任務是多步驟的,不是問一句就結束,而是要一步接一步走完。第二,同一件事你要重複做很多次,不是做一次而已。第三,它需要真的動手去用工具:查資料、算數字、跑程式、開檔案。只要你的任務踩到這三點的其中一點,你就開始值得考慮 Agent 了。而這三點,其實都指向同一個東西。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>還有一個訊號:你在當人肉迴圈</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>複製 → 貼上 → 跑一次 → 檢查 → 再來一遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>答案是 GPT 給的,但每一輪都你在轉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你不想再當那個轉輪子的人</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>還有第四個訊號,而且最貼身:你有沒有在當「人肉迴圈」?就是你複製一段、貼過去、跑一次、看結果、發現要改、再回去問、再複製、再貼上——同樣的動作轉了一輪又一輪。答案確實是 GPT 幫你想的,但每一輪的手都是你在動,你變成一顆人肉的轉輪子。如果你已經受不了這種重複,那不是你不夠勤勞,那是這件事本來就該交給 Agent。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>真正的差別,一句話</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問答 = AI 幫你「想」,你還是那雙手</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>Agent = AI 幫你「做完」,你變驗收的人</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>差在誰動手,不是差在誰比較聰明</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這裡,我把真正的差別濃縮成一句話。問答,是 AI 幫你「想」,它給你思路、給你答案,但動手把事情做完的,還是你那雙手。Agent,是 AI 幫你「做完」,它把整件事跑到底,而你的角色,從動手的人變成驗收的人。你注意到沒有,差別根本不在「誰比較聰明」,底層可能是同一個模型;差別在「誰動手」。想通這一點,你就抓到重點了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>你從「1 雙手」變「N 雙手」</h2>
+<div class="semoji">🙌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問答:你永遠只有你這一雙手</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>交辦:同時可以有好幾件事在跑</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你的產出不再被你的手速卡住</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>換個角度看,這件事的重量會更清楚。用問答,你永遠只有你這一雙手,一次只能做一件事,做完才能做下一件。而當你會交辦,你等於可以同時派好幾件事出去跑,這件在查資料、那件在算表格,你在中間看結果。你從一雙手,變成 N 雙手。這時候真正卡住你產出的,不再是你的手速,而是你能不能把事情講清楚、能不能判斷做得好不好。這是一個層級的跳躍。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>老闆視角:別搞錯重點在哪</h2>
+<div class="semoji">📊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>重點不是「員工打字更快」——那是邊際效益</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>重點是「整段工作流被接手」——那是結構槓桿</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>省下的是執行人力,不是壓縮答案品質</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果你是主管、是老闆,我特別要提醒你別看錯重點。很多人以為導入 AI 的價值是「員工打字更快、寫信更快」,那只是邊際效益,省個幾分鐘而已。真正的價值不在這裡。真正的價值是,一整段工作流程可以被 Agent 接手做完,那是結構性的槓桿。你省下來的不是「答案品質」,答案本來 GPT 就會給;你省下來的,是那段執行的人力。看懂這個差別,你的投資報酬算法就完全不一樣了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>所以 ROI 要這樣算</h2>
+<div class="semoji">💰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問答:幫「想」提速,但執行還是要人</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>Agent:把「執行」整段搬走</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>算的是省下的工時,不是省下的字數</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以投資報酬到底怎麼算?用問答,你優化的是「想」這一段,思路更快出來,但後面的執行還是要一個人從頭做到尾,人力沒有省掉。用 Agent,你搬走的是「執行」那一整段,那才是真正吃掉你時間的地方。所以你要算的,不是它幫你多打了幾個字,而是它幫你省下多少工時。當你用工時去算,而不是用字數去算,你就會發現這兩者根本不在同一個量級。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>個人視角:時間不再跟工作量綁死</h2>
+<div class="semoji">📈</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前:做 10 倍的事 → 花 10 倍時間</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>現在:只多花「交辦 + 驗收」的時間</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你的產出,鬆開了跟手速的線性綁定</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>就算你不是老闆,只是想讓自己輕鬆一點,這件事對你一樣重要。以前你的時間是跟工作量死死綁在一起的:要做十倍的事,就得花十倍的時間,沒有別條路。可是當你會交辦給 Agent,同樣做十倍的事,你多花的只是「把任務交辦出去」加上「回來驗收」的那一點時間。你的產出,第一次鬆開了跟手速的線性綁定。這不是快一點慢一點的問題,是你的天花板整個被抬高了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>如果你現在還覺得「沒差」</h2>
+<div class="semoji">🌱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>那是因為你還在用「問」的方式使喚它</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你還沒真正「交辦」過一次</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>完整交辦一次,你才看得到那個複利差距</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這裡,可能還是有人心裡想:「我試過啊,也還好,沒你講得那麼神。」我很誠實跟你說,如果你現在還覺得沒差,很可能是因為你還在用「問」的方式在使喚它,你其實還沒真正「交辦」過一次完整的任務。這兩件事的手感差很多。所以我請你先別下結論,等你真正完整交辦過一次,你會慢慢看到那個差距是會複利的——一開始不明顯,越往後拉越大。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>帶走一句話</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>小問題,就問——別殺雞用牛刀</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>真正的工作,學會交辦</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>值不值得,看任務,不看模型強不強</li>
+</ul>
+<div class="note">判斷方法:一次性的就問;多步驟、會重複的,交辦。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是:小問題,就問;真正的工作,學會交辦。要不要用 Agent,不是看模型夠不夠強,而是看你這件任務長什麼樣子——一次性的就問一句,多步驟、要重複、要動手的,就把它交辦出去。下次你要打開對話框之前,先看一眼手上這件事:它是一句話能答完的,還是要跑好幾步的?答案會告訴你該用哪一種。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=6yc-I21C3YY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=6yc-I21C3YY</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

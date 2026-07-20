@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L2·上手】做壞了怎麼救:它為什麼有時做對、有時做爛</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔵 上手</div>
+<h1>做壞了怎麼救</h1>
+<p class="lead">它為什麼有時做對、有時做爛</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=bGJI8BbJE1s" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L2 上手</span>
+<span class="pill">🎬 10 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>我想跟你講一件很多教學都不太願意講的老實話:Agent 不是每次都會成功。有時候你交辦一件事,它一次到位,漂亮得不得了;但有時候它繞了一大圈遠路,甚至根本做錯方向。接下來我就帶你看它為什麼會做爛,還有更重要的,當它做爛的時候,你可以怎麼救。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先回到那個迴圈</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標 → 用工具 → 看結果 → 調整</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它其實一直在跑這個圈</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>做得好、做得爛,都在同一個圈裡</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>要看懂它為什麼會爛,得先看懂 Agent 做事的那個迴圈。Agent 做事,本質上就是一直在跑一個圈:先看目標要達成什麼,再用工具去做一步,然後看看結果對不對,再根據結果調整下一步。目標、用工具、看結果、調整,就這四步一直轉。它做得漂亮,是在這個圈裡;它做得很爛,也是在這個圈裡。所以只要搞清楚這個圈的哪一環卡住了,你就知道怎麼救。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>做爛通常卡在這三個點</h2>
+<div class="semoji">🧯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>① 目標模糊:它根本不知道你要幹嘛</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>② 工具用錯、資料不對:方向對、材料錯</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>③ 沒回頭檢查就往下衝:錯了還一路做</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我自己踩了很多次之後,發現它做爛幾乎都卡在三個點。第一個,目標模糊,你交辦的時候講得太籠統,它其實不知道你到底要什麼,只好自己猜,一猜就歪。第二個,工具用錯或拿到的資料不對,方向其實是對的,但材料錯了,做出來當然不對。第三個,它沒有回頭檢查就一路往下衝,前面一步錯了,後面全部跟著錯。你先把這三個點記住,等一下看畫面你就會一個一個對上。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>接下來,我故意讓它出點狀況</h2>
+<div class="semoji">🎬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我丟一個容易出錯的任務給它</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>看它從哪裡開始歪掉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>再看我怎麼一步步把它導回正軌</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):丟一個容易出錯的任務給 Agent(例:交辦它整理一份資料、或寫一小段程式,但故意把目標講得很籠統)。① 讓觀眾看它歪掉——猜錯方向、拿錯資料、或沒檢查就往下做。② Tom 介入三招:先把目標收窄講清楚要什麼,再指給它對的資料來源,最後要求它做完自己檢查一遍。③ 對照重跑一次成功,凸顯「同一個 Agent,差別在你怎麼帶它」。</div>
+<details class="script"><summary>逐字稿</summary><p>光講你沒感覺,我直接做給你看。接下來這段是我的實際操作畫面。我故意丟一個容易出狀況的任務給它,先讓你看它從哪裡開始歪掉,是目標沒搞懂、還是資料拿錯、還是沒檢查就往下衝。然後你會看到我怎麼介入,一步一步把它導回正軌。我們來看畫面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>救它的第一招:把目標收窄</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別只說「幫我處理一下」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>說清楚:要什麼、範圍到哪、長什麼樣</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>目標愈具體,它猜錯的空間愈小</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>看完畫面,我把救它的方法整理成三招,剛好對上前面那三個卡點。第一招,把目標收窄。剛剛你有看到,我一開始講得太籠統,它就自己亂猜。後來我改成講清楚:我要什麼、範圍到哪裡、做出來大概長什麼樣子。目標愈具體,它能猜錯的空間就愈小。很多時候不是它笨,是你給的目標太模糊。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>第二招:給它對的工具或資料</h2>
+<div class="semoji">📥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它拿錯資料,方向再對也白搭</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>直接指給它:看這個檔、這個來源</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>與其怪它,不如把對的材料塞到它手上</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二招,給它對的工具或資料。你剛剛看到,它有一步是拿了錯的資料去做,方向明明是對的,結果還是錯。這種時候不用跟它嘔氣,你直接指給它看:欸,不是那個,是看這個檔案、這個來源。與其在旁邊怪它找錯,不如把對的材料直接塞到它手上,它馬上就接得回去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>第三招:要求它做完自己檢查一遍</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>加一句「做完自己檢查對不對」,低級錯就攔下來了</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但它檢查的是它自己 —— 有盲點</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>方向錯的那種,它會「檢查通過」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三招,也是我最常用的一招:要求它做完自己檢查一遍。你只要在交辦的時候多加一句「做完之後,你自己檢查一遍對不對」,它就會回頭去驗證,發現不對就自己修掉。你剛剛在畫面裡有看到,同一個任務,加了這句跟沒加這句,差很多。很多很低級的錯,其實一句話就攔下來了。但這一招我要給你一個很重要的但書,不然你會太依賴它:**它檢查的是它自己。**跟人一樣,自己看自己做的東西會有盲點 —— 如果它一開始就理解錯方向,那它後面每一步都會照著那個錯的方向「檢查通過」,然後很有信心地跟你說沒問題。所以這一招抓得到「算錯、漏一筆、格式跑掉」這種錯,**抓不到「它從頭到尾都在做另一件事」這種錯。**那種錯只有你看得出來,因為只有你知道你要什麼。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>最難防的一種:它很有把握地講錯</h2>
+<div class="semoji">😐</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>答錯的時候,語氣跟答對的時候一模一樣</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它不會說「我不太確定」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以「聽起來很篤定」不能當作判斷依據</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講完三招,我要講一種最難防的狀況,因為它沒有任何警訊。**它有時候會很有把握地跟你講錯的東西。**重點在「很有把握」這四個字:它答錯的時候,語氣、條理、用詞,跟它答對的時候**一模一樣**,一樣流暢、一樣像那麼回事。它不會露出遲疑,不會說「這部分我不太確定,你要不要再查一下」。這就是為什麼它比一個會犯錯的同事還難防 —— 同事講到沒把握的地方,你聽得出來他語氣飄了;它不會。所以我要請你把一個很自然的判斷習慣改掉:**別再用「它講得很篤定」來判斷它對不對。**那兩件事在它身上是完全沒有關聯的。那要看什麼?看**它有沒有給你可以自己核對的東西** —— 數字是哪來的、檔案在哪、出處是什麼。講得出來源,你才有得驗;只有結論、沒有來源,那就先當作「還沒確認」。尤其是**數字、日期、人名、法規、金額**這幾類,一定要自己對一次。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>卡住了,就開一個新對話</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>同一個對話拉太長,它會開始變鈍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>反覆糾正反而讓它更混亂</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>重開一個,把結論帶過去,常常一次就對</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後給你一招,很簡單但非常有效,而且大部分人不知道:**開一個新對話。**什麼時候用?當你發現你已經跟它來回好幾輪、一直在糾正同一個地方,它卻越改越歪,甚至把你剛剛才講過的要求又忘掉。這時候你的直覺會是「再解釋一次」,但那通常會更糟。為什麼會這樣?因為它每次回答,是把**整段對話**重新看一遍。對話越長,裡面就塞了越多東西 —— 包括你前面那些已經作廢的說法、它自己做錯的那幾版。那些東西不會消失,它們一直在它眼前,**你的糾正跟你原本講錯的話,是混在一起被它一起讀的。**所以與其在一團亂裡繼續解釋,不如**重開一個乾淨的對話**,然後做一件關鍵的事:**把你這一輪學到的結論,一次講清楚帶過去。**像是「我要的是這樣的表格,注意電話要統一格式,不要動到原始檔」。你會很常發現,同一個任務,在乾淨的對話裡一次就做對了。**不是它突然變聰明,是你終於一次把話講清楚了,而且沒有雜訊干擾。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>心態調整:它不是魔法</h2>
+<div class="semoji">🧠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它是會犯錯、但可以被引導的助手</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不是丟出去就一定成</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你的介入,能大幅提高成功率</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這邊我想講一下心態。你要把 Agent 當成一個會犯錯、但可以被引導的助手,而不是一個丟出去就一定成的魔法。它不是每次都對,但關鍵是,它是可以被你帶的。同一個 Agent,你會不會收窄目標、會不會給對資料、會不會要求它自檢,結果可以差非常多。你的介入不是多餘的,你的介入正是把成功率拉上去的那隻手。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它做爛時,先別急著怪它</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>回頭看:目標、工具、檢查,哪一環出問題</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>找到那一環,常常一句話就救回來</li>
+</ul>
+<div class="note">做爛時的三個檢查點:目標、工具、檢查。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是:它做爛的時候,先別急著怪它,回頭看目標、工具、檢查這三環,是哪一環出了問題。找到那一環,你常常只要補一句話,它就救回來了。所以下次它做出來的東西不對,先別重打一次指令,而是先問:是目標沒講清楚、還是沒給它對的資料、還是我沒要求它自己檢查?</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=bGJI8BbJE1s" target="_blank" rel="noopener">https://www.youtube.com/watch?v=bGJI8BbJE1s</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

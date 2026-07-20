@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L2·上手】從零跑出你的第一個結果:選工具、開通、挑任務,實錄一次</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔵 上手</div>
+<h1>從零跑出你的第一個結果</h1>
+<p class="lead">選工具、開通、挑任務,實錄一次</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=9GhGDaxkGlY" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L2 上手</span>
+<span class="pill">🎬 14 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>很多人觀念都聽懂了,卻卡在同一個地方:不知道怎麼開始。工具那麼多要選哪個?要不要先學程式?第一件事該交辦什麼?然後就這樣停住,再也沒動手。接下來我把整條路走一遍給你看:從選工具、開通,到挑第一個任務,最後我實際交辦一次,你看著它做完。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先把心理門檻放下來</h2>
+<div class="semoji">🚪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你不用很懂技術,不用先學一堆名詞</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不用在電腦裝一堆東西</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>從「介面版、訂閱制」開始就好</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先把門檻放下來。你不需要很懂技術,也不需要先把一堆名詞搞懂;你不用在電腦上裝什麼東西,更不用寫程式。從最簡單的「網頁介面、訂閱制」開始就好,跟你平常開一個網站用它沒兩樣。真正的門檻從來不是技術,是你願不願意花二十分鐘動手試一次。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>第一步:選一個入口</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>個人先用「訂閱制、介面版」的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>判斷原則:能直接對話交辦、操作簡單</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>先別糾結挑哪一家</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一步,選一個入口。個人起步,就挑訂閱制、有網頁介面的那種。判斷原則只有兩個:能不能直接用對話把任務交辦下去、操作是不是夠簡單。至於挑哪一家,先別糾結 —— 主流那幾家練到的東西是一樣的,你要練的是「怎麼交辦」這個手感,不是某一家的按鈕位置。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>第二步:開通、註冊</h2>
+<div class="semoji">🔑</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>註冊一個帳號</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>選一個「小錢」的方案就好,不用選最貴</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>先不要碰 API、不要碰進階設定</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二步,開通。註冊一個帳號,選一個小錢的方案就好,不用一開始就挑最貴的。然後有一件事我要特別提醒:先不要去碰 API,也不要去研究那些進階設定。那些東西不會讓你更快學會,只會讓你在還沒跑出第一個結果之前就先放棄。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>第三步:挑「第一個任務」</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>最簡單</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你一眼能判斷對錯</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>做壞了也沒差(低風險)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三步,挑第一個任務。這步很關鍵,挑錯了你會白白挫折一次。三個原則:第一,要最簡單;第二,你要能一眼看出它做得對不對;第三,做壞了也沒差。為什麼要挑這麼簡單的?因為你第一次要學的不是「它能做多難的事」,而是看懂那個循環:你交辦、它自己做、把結果交回來。循環看懂了,之後難的只是換內容而已。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>幾個很好上手的例子</h2>
+<div class="semoji">📋</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把一段雜亂的文字整理成條列重點</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>比較幾個選項、列出各自優缺點</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>草擬一封信、一段訊息</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>給你幾個很好上手的例子:把一段很亂的文字整理成條列重點;把幾個選項擺在一起,請它列出各自的優缺點;或是請它草擬一封信、一段訊息。這幾種的共同點是:你看一眼就知道好不好,而且就算做壞了,你也只是刪掉重來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>第四步:練習「交辦」而不是「問」</h2>
+<div class="semoji">🗣️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把「目標」講清楚</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把「你要的結果長怎樣」講清楚</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>講完就放手,讓它去做</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四步,也是最重要的一步:練習交辦,而不是發問。差別在於,你不是問它「該怎麼做」,而是告訴它「我要什麼結果」。把目標講清楚,再把你要的成品長什麼樣子講清楚 —— 例如「幫我把這段整理成五點重點,每點一句話」。講完就放手,讓它自己去想中間怎麼做。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>我實際要交辦的任務</h2>
+<div class="semoji">📇</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一份很亂的清單:名字、電話、地址混在一起</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>我要它整理成一張乾淨的表格</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>夠簡單,你一眼看得出好不好</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這裡,我直接做一次給你看。我手上有一份很亂的清單:名字、電話、地址全部混在一起,格式還每一行都不一樣,有的用逗號、有的用空白。我要它整理成一張乾淨的表格。這個任務剛好符合前面那三個原則:夠簡單、你一眼就看得出它做得對不對、而且做壞了我也只是刪掉重來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>我怎麼交辦</h2>
+<div class="semoji">✍️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標:我要一張表格</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>成品:哪幾欄、怎麼排</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>剩下「怎麼做」,交給它想</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):把雜亂清單交給 Agent,交辦「整理成名字/電話/地址三欄的表格」,不插手,一路錄到它交出結果。</div>
+<details class="script"><summary>逐字稿</summary><p>我是這樣交辦的:目標,我要一張表格;成品長怎樣,分成名字、電話、地址三欄,一行一個人。就這樣,講完。我沒有告訴它要怎麼切字串、怎麼判斷哪一段是電話 —— 那些是「怎麼做」,是它的事。我只負責把「我要什麼」講清楚。接下來,我把這份清單交給它,你看著它自己做。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>剛剛發生了什麼</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它自己把整件事做完了</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>我只做了兩件事:交辦、驗收</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>中間「動手」的部分,我完全沒碰</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們回頭看剛剛發生了什麼。它自己讀懂了那份亂清單,自己判斷哪一段是名字、哪一段是電話、哪一段是地址,自己排成三欄,然後把整理好的表格交回來。整個過程我只做了兩件事:一開始交辦,最後驗收。中間那段真正花時間的「動手」,我完全沒有碰到。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>換成舊做法呢</h2>
+<div class="semoji">↩️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>用問答:它只告訴我「整理清單的步驟」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>然後我自己一筆一筆貼、一筆一筆對齊</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同樣一件事,手全是我在出</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果換成舊做法會怎樣?我如果只是問它「這種亂清單要怎麼整理」,它會給我一段很正確的步驟說明:先辨識分隔符號、再切欄位、最後對齊。然後呢?然後我還是得自己一筆一筆貼、一筆一筆對。同樣一件事,同樣一個 AI,差別只在我是問它、還是交辦給它。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>第五步:驗收,然後補一句</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>看它做出來的,對不對、合不合你要的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不對 → 補一句話請它調整,再看一次</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>「交辦 → 驗收 → 補一句」就是你之後的循環</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後一步是驗收。你看它交回來的東西,對不對、是不是你要的。如果不對,不用整個重來,補一句話請它調整就好,例如「電話那欄請統一成同一種格式」。然後再看一次。「交辦、驗收、補一句、再驗收」,這個循環就是你之後每一次用它的節奏。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>第一次一定不完美</h2>
+<div class="semoji">💪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>這很正常,別追求一步到位</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>卡住了就補一句話再試,不是你不行</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>重點不是完美,是「先跑出一個結果」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我要先幫你打個預防針:第一次一定不完美,這非常正常。它可能少一欄、可能格式跟你想的不一樣。這時候不要覺得是自己不行,也不要覺得這東西沒用 —— 補一句話再試一次就好。第一次的目標從來不是完美,是先跑出一個結果,把手感建立起來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>如果你是在公司工作</h2>
+<div class="semoji">🏢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先用「個人帳號」練,不要動公司系統</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>拿「不敏感」的東西練手,零風險</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>跟公司要不要導入無關 —— 先把手感練出來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果你是在公司上班,這裡特別提醒一句:練習階段請用你自己的個人帳號,不要去動公司的系統,也不要拿公司的機敏資料當練習素材。拿不敏感的東西練,零風險。你要練的是手感,這件事跟公司之後要不要導入完全是兩回事,不用等公司決定你才開始。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">14</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別停在「看懂」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>今天就挑一件最簡單的事,親手交辦一次</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>手感,是看影片給不了的</li>
+</ul>
+<div class="note">整條路不用寫一行程式:選入口 → 開通 → 挑任務 → 交辦 → 驗收。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是:別停在「看懂」。整條路我走給你看了,而且不用寫一行程式。現在你就可以去開通一個帳號,挑一件最簡單、做壞了也沒差的小事,親手交辦一次。手感這種東西,是看影片給不了的 —— 你得自己交辦一次,才會真的懂那個差別。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=9GhGDaxkGlY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=9GhGDaxkGlY</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

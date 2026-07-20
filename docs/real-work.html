@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】我實際怎麼用 Agent 處理真實工作:最真的例子就是你正在看的這一切</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟡 進階</div>
+<h1>我實際怎麼用 Agent 處理真實工作</h1>
+<p class="lead">最真的例子就是你正在看的這一切</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=c_eNKFkY3zQ" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>接下來,我不講教科書例子,我把我自己真的在用 Agent 的方式,打開給你看。而最真的例子,我不用去別的地方找,就是你正在看的這整個系列。這一整套影片,就是我用 Agent 做出來的。我來一步一步拆給你看。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先講一個有點難堪的事實</h2>
+<div class="semoji">😅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我不會剪影片</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>我不想對著麥克風配音</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>我沒有做投影片的設計手感</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講一個有點難堪的事實。我不會剪影片,我也不想對著麥克風一句一句錄旁白,我更沒有把投影片做得好看的那種設計手感。照理說,一個同時有這三個缺點的人,是做不出一整門影片課的。這三件事,隨便一件都能把整個計畫卡死。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>以前的結局:要嘛不做,要嘛花大錢</h2>
+<div class="semoji">🧱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>自己學剪輯、配音、設計 → 幾個月</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>外包 → 一大筆錢 + 來回溝通</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>多數人的結局:算了,不做了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果是以前,我大概只能這樣:第一,自己去學剪輯、學配音、學設計,少說幾個月,而且不一定學得會。第二,花錢外包,十九集的剪輯加配音,輕鬆就是幾萬塊,還要一直來回溝通。而大部分人走到這一步,結局就是四個字:算了,不做了。這種課,通常就死在這裡。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>現在:我把「執行」整段交辦出去</h2>
+<div class="semoji">🤝</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我出的:方向、主題、每個決定</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它出的:腳本、投影片、配音、字幕、上傳</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一句話:我出腦,它出手</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但這一次不一樣。我把「執行」這一整段,交辦給了 Agent。我負責的是方向、是這門課要講什麼、是每個岔路口的決定。它負責的,是把腳本寫出來、把投影片生出來、把旁白合成出來、把字幕上好、再把影片傳上去。分工非常清楚:我出腦,它出手。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>連 demo 都是真的 agent 跑的</h2>
+<div class="semoji">🤖</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是演的,也不是截圖拼的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>真的叫一個 agent 去做真任務</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把它的操作過程自動擷取下來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最誇張的是,這門課裡那些 demo,不是我演出來的,也不是把截圖拼起來的。是真的叫一個 agent 去跑一個真的任務,像是把一份雜亂的名單整理成乾淨的表格,然後把它實際的操作過程,自動擷取下來變成畫面。連示範,都是真的在做,不是在演。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>直接秀給你看:這門課的產線</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個指令:把定稿的腳本變成投影片 + 配音</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一個指令:真 agent 跑出 demo</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一個指令:自動上傳 —— 但腳本本身是我磨出來的</li>
+</ul>
+<div class="note">▶ DEMO:這門課的產線實際在跑(自動生成)</div>
+<details class="script"><summary>逐字稿</summary><p>光用講的你可能沒感覺,所以我直接把產線秀給你看。先講清楚一件事:**腳本本身是我跟它來回磨出來的**,那一段才是慢的,也才是我真正在花腦的地方;定稿之後的所有體力活,才是一個指令的事。一個指令,把定稿的腳本變成一集的投影片跟配音;另一個指令,讓真的 agent 跑出一段 demo;再一個指令,把影片自動傳上 YouTube。整條線跑起來,我只是在旁邊看、需要的時候調一下。你接下來看到的,就是它真的在動。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>數字:省的不只是時間</h2>
+<div class="semoji">📊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>整套課,一個人做完</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>傳統做法是幾百小時的體力活</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>而且跳過我根本不會的技能</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>給你一個真實的對照。這一整套課,從頭到尾就我一個人 —— 沒有剪接師、沒有配音員、沒有設計。如果用傳統方式,一支影片抓八到十五小時,幾十支就是好幾百個小時的體力活,晚上抽空做,要好幾個月。但比時間更關鍵的是:它跳過了我根本不會、也不想學的技能 —— 那些本來會直接把我卡死的牆,直接不存在了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>花了多少錢?幾乎是零</h2>
+<div class="semoji">💸</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>投影片、語音、組裝,全部在自己電腦上跑</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>上傳也不用錢</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>真正的成本是訂閱費,和我坐在旁邊看的時間</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那花了多少錢?這個答案可能跟你想的不一樣:**產線的帳單幾乎是零**。投影片是在我自己電腦上畫的,語音合成是免費的,把畫面和聲音組起來的工具也是免費的,上傳到平台一樣不用錢。整條產線從頭到尾,沒有一段是要按次計費的。所以真正花的是兩件事:一個是 AI 助手的訂閱費,另一個 —— 而且是比較大的那個 —— 是我坐在旁邊看它做、抓它做錯的那些時間。我講這個不是要說「都不用錢」,是要你知道**錢花在哪裡**:不是花在算力上,是花在判斷上。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>老實說:我第一次就把大腦關掉了</h2>
+<div class="semoji">🧠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>旁白說「五個訊號」,畫面上只有三點</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>而且那一集,講的就是「別貼上不看就跑」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>我當時一支都沒看過就整批上傳了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我要老實講一段,因為它比前面所有數字都值得你記住。有一次我一口氣讓 AI 生了十幾集的腳本,然後**一支都沒看,整批上傳**。後來被抓到:有一集的旁白說「我給你五個訊號」,但畫面上的條列只有三點,而且編號還跳號。最諷刺的是 —— **那一集講的正好就是「別把 AI 給的東西貼上就跑」**。我用那個錯誤的方式,做出了那一集。我學到的是:量一大,「我應該都檢查過了」這句話,很容易變成「其實我只是覺得應該沒問題」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>第二次更陰:檢查通過,東西還是壞的</h2>
+<div class="semoji">🟢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>寫了程式掃過三百多張投影片,回報「全部乾淨」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但成品影片還是有字衝出畫面</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>因為蓋住東西的是事後才燒上去的字幕</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>被抓到之後我學乖了,寫了一支程式,把每一張投影片都掃過 —— 檢查有沒有字太長、有沒有蓋到、有沒有破格。三百多張,回報「全部乾淨」。結果呢?成品影片還是有字衝出畫面。為什麼?因為**蓋住東西的不是投影片,是事後才燒上去的字幕** —— 那是另一個圖層,我的檢查程式根本看不到它。這一次的教訓比第一次更難受:第一次是我沒檢查;**第二次是我檢查了,而且檢查說通過,但我檢查的是中間產物,不是真正要出貨的東西。**所以「我檢查過了」這句話,可以同時是真的、又是沒用的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>這正好就是這系列的核心</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>執行,可以交辦</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>判斷,不要外包</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>越自動,越要有人把關</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你有沒有發現,這整件事,剛好就是那句話:執行可以交辦,判斷不要外包。越是自動、越是快,那個「有沒有人在把關」就越重要。我省掉的,是我不會的、重複的體力活;我留下來的,是只有我能做的判斷跟驗收。這兩件事的分工,就是整套方法的重點。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>你也可以,從一件事開始</h2>
+<div class="semoji">🌱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>挑一件你重複做、又討厭做的工作</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先練習把它講清楚、交辦出去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>做順一件,再慢慢擴大</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以你也可以。你不用一次就做一整門課,先挑一件你每天重複做、又有點討厭做的工作,練習把它講清楚、交辦給 Agent,把一件事做順了,再慢慢擴大。你會發現,很多你以為「我不會,所以我做不了」的事情,其實是「我不會,但我可以交辦」。這中間的差別,大到會改變你能做的事的範圍。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你剛看完的一切,本身就是證明</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不會的技能,交辦掉</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>該你扛的判斷,留下來</li>
+</ul>
+<div class="note">下一步:把你自己的第一個任務,交辦出去</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是這句:你剛剛看完的這一整個系列,本身就是證明。一個不會剪片、不會配音、也沒有設計手感的人,靠著把執行交辦出去、把判斷留在自己手上,做出了一整門課。不會的技能,交辦掉;該你扛的判斷,留下來。這,就是從「問 AI」到「用 Agent」,真正的差別。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=c_eNKFkY3zQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=c_eNKFkY3zQ</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

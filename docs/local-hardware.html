@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L4·工程】地端硬體怎麼看:VRAM、頻寬,以及 GPU 為什麼不夠用</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟠 工程</div>
+<h1>地端硬體怎麼看</h1>
+<p class="lead">VRAM、頻寬,以及 GPU 為什麼不夠用</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=nwPROiXr-LM" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L4 工程</span>
+<span class="pill">🎬 14 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>很多人下定決心要在自己家裡跑 AI,買了機器才發現跑不動 —— 不是根本開不起來,就是慢到想哭。問題常常不是「算力不夠」,而是卡在別的地方。接下來我先講清楚 AI 在運算的時候到底在做什麼,你就會知道該看哪兩個數字,以及為什麼現在 GPU 到處都不夠用。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先破一個誤會:它不是資料庫</h2>
+<div class="semoji">❌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>模型不是把答案存起來給你查</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它其實是「一大堆數字」,也就是權重</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>分成很多層,用這些數字「算」出答案</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先破一個很多人有的誤會:語言模型不是一個資料庫。它不是把全世界的答案存起來,你問它就去查一筆給你。它其實是一大堆數字 —— 我們叫它權重或參數 —— 分成很多很多層。你問它問題,它是拿你的問題,一層一層跟這些數字做運算,「算」出一個答案來。是算,不是查。這個差別決定了它為什麼這麼吃硬體。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>算一個字,就要跑完整台模型</h2>
+<div class="semoji">🔢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你的文字先轉成一串數字</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一層一層跟權重做矩陣乘法</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>算出「下一個字」的機率,挑一個出來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們把它算一個字的過程拆開來看。你的文字會先被轉成一串數字,然後一層一層跟權重做矩陣乘法,最後算出「下一個字最可能是什麼」的機率,從裡面挑一個出來。重點來了:這樣跑完一整趟,只產出一個字。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>一個字接一個字,重跑好幾百次</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>挑出的字接回輸入,整個模型再跑一次</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>算出再下一個字,一個一個接下去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>回一段長答案 = 跑了好幾百次</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>挑出來的那個字,會被接回輸入的最後面,然後整個模型再從頭跑一次,算出再下一個字。一個接一個,像這樣一路接下去,這個機制叫做自迴歸。所以當它回你一段兩三百字的答案,意思是它把整台模型從頭跑了兩三百次。你就知道為什麼它這麼吃資源了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>所以第一個關卡:裝不裝得下</h2>
+<div class="semoji">📦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>模型要整個搬進 GPU 記憶體才能用</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>VRAM 不夠 → 被逼著拆一半到一般記憶體,慢一個檔次</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>實際要留的 = 權重 + 對話快取 + 餘裕</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>從剛剛那個機制,直接推出第一個關卡:VRAM,也就是 GPU 記憶體。因為每算一個字都要用到全部的權重,所以模型必須整個搬進 GPU 記憶體裡待著。VRAM 不夠會怎樣?模型會被迫拆一部分放到一般記憶體去跑,結果就是**慢到不能用** —— 不是完全開不起來,是開了你不會想用。另外提一下:有些機器是 CPU 跟 GPU 共用同一池記憶體,規格表上不會單獨寫 VRAM,那種要看的是整台的記憶體大小跟它的頻寬,判斷邏輯一樣,只是欄位名稱不同。還有一件很重要、但幾乎沒人一開始就講的事:**VRAM 不是只被權重佔走**。模型算過的內容會被快取起來,免得每次重算 —— 你餵進去的資料越長、對話拉越久,這塊快取就越大。所以估記憶體不能只算模型本身,還要留一塊給「你打算一次餵多長的東西」。很多人是模型明明裝得下,結果一丟長文件進去就爆掉,原因就在這裡。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>模型多大?看參數量,裝不下可以壓</h2>
+<div class="semoji">🎚️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>參數量 × 每參數位元組 ≈ 權重要多少記憶體</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>量化 = 降低儲存精度,可壓到約四分之一</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>模型變小,速度也一起變快 —— 但壓過頭會變笨</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那模型多大怎麼看?看參數量。參數你可以想成模型腦袋裡的旋鈕,越多通常越聰明,但也越佔記憶體。給你一個可以自己算的方式:**把參數量乘上「每個參數佔幾個位元組」,就是權重大概要多少記憶體**。沒壓縮過的通常是一個參數兩個位元組。如果裝不下怎麼辦?有個方法叫量化,原理是**降低每個參數的儲存精度** —— 本來每個參數用比較多位元存,現在用比較少的位元存,整包模型就縮小了,常見的檔次大概能壓到四分之一。而且好處不只是省空間:因為每吐一個字都要把整包權重讀一遍,**模型變小,搬的量也變小,連速度都會一起變快**。代價是品質會折損,但壓到常見的那幾檔通常不太感覺得出來;**壓過頭就會開始變笨**,不要為了硬塞進去一直往下壓。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>第二個關卡:頻寬決定跑多快</h2>
+<div class="semoji">🚰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>每吐一個字,都要把權重整批讀一遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>頻寬 ÷ 模型大小 ≈ 每秒能吐幾個字的上限</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>但「等很久才開始講話」是算力,不是頻寬</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個關卡是記憶體頻寬,這是最多人忽略、也最容易踩到的死穴。回想剛剛:每吐一個字,都要把權重讀出來算一遍。如果頻寬不夠,GPU 就會一直在等資料搬過來,卡的不是「算」,是「搬」。很多人買了一張帳面算力很漂亮的卡,結果慢到想哭,原因就在這裡。這個也可以自己粗估:**用這張卡的記憶體頻寬,除以你這包模型的大小,大概就是它每秒能吐幾個字的上限**。算出來的是天花板,實際只會更低 —— 但如果連天花板都低到你不能接受,那就不用買了。不過要補一個分別,不然你會誤會算力沒用。推論其實有兩段:**第一段是把你送進去的東西整份讀完**,這段可以一次平行處理,**吃的是算力**;**第二段才是一個字一個字吐出來**,這段吃的是頻寬。所以你的體感也會分兩種:「按下去要等很久才開始講話」通常是算力不夠,「開始講之後一直慢慢吐」才是頻寬不夠。你如果常常整份文件丟進去,第一段就會很有感。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>比喻:水塔和水管</h2>
+<div class="semoji">💧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>記憶體大 = 水塔大(裝得下)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>頻寬高 = 水管粗(流得快)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>水塔再大,水管細,水還是慢慢滴</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>用一個比喻你就記住了。記憶體容量就像水塔的大小,決定你裝不裝得下;頻寬就像水管的粗細,決定水流得快不快。水塔蓋得再大,水管如果細,水還是一滴一滴地流。而且這個比喻要再加一句才完整:**你不是裝著慢慢用,是每吐一個字,就要把整座水塔的水從水管過一遍**。所以模型越大 —— 水塔越大 —— 每個字要搬的量就越多,速度就越慢。這就是為什麼「大模型比較慢」不是感覺,是算出來的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>一個解法方向:MoE 架構</h2>
+<div class="semoji">🧠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>混合專家:每次只喚醒模型的一小部分</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>省的是頻寬跟算力 —— 跑得更快</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>但全部專家還是要常駐:裝得下,看的是總參數</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>有一個解法方向值得知道,叫 MoE,混合專家架構。它的想法是:每次回答不需要動用整台模型,只喚醒其中一小部分專家就好。用到的部分少,每吐一個字要搬的資料就少,所以**速度快很多**。但這裡有個很多人搞錯的地方,而且搞錯會讓你買錯機器:**MoE 省的是頻寬跟算力,不省記憶體。**因為下一個字會用到哪幾個專家,是臨時決定的 —— 所以全部專家的權重還是得整組放在記憶體裡待命。你看到有些模型標榜「總參數很大、實際啟用只有一小部分」,**裝不裝得下要看的是總參數,跑得快不快才是看啟用的那部分**。用剛剛的比喻:水塔一樣大,只是每次只抽其中一格。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>第三個關卡:整機,不是只看顯卡</h2>
+<div class="semoji">🔩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>系統 RAM、儲存、散熱都算數</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>兩張卡以上:還要看卡間傳輸、電源</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>決定買多大的不是「一天用多少」,是「尖峰幾個人同時用」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三個關卡是整機配置。除了 GPU 之外,系統記憶體、儲存速度、甚至散熱,任何一環卡住,整台機器都會被拖慢。散熱尤其容易被忽略 —— 溫度上去,晶片會自己降頻保護,你就會遇到「剛開始很快、跑一陣子變慢」的狀況。另外,如果你打算靠「插兩張卡」來湊 VRAM,要多看一件事:**模型被切到兩張卡上時,卡跟卡之間要一直傳資料**,這條通道如果慢,你加的第二張卡發揮不出應有的效果。電源瓦數也要一起算進去。還有一個影響很大、但很少人講的:**同時幾個人在用**。因為權重讀一次可以同時服務好幾個請求,所以多人一起用的時候,整台機器的總產出會比一個人用高很多,不是照人數線性變慢。反過來說,**決定你該買多大機器的不是「一天總共用多少」,是「尖峰的時候幾個人同時在用」**。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>為什麼現在 GPU 到處都不夠</h2>
+<div class="semoji">⏱️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前 GPU 的重活是「訓練」——排一批、跑幾天、還掉</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>現在是「使用」——常駐、全天候、每個字都要算</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>從固定批次,變成永不停止</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>順便解釋一件很多人不解的事:為什麼現在 GPU 這麼難搞到。以前 GPU 最吃力的工作是訓練,也就是產出一個模型。訓練有頭有尾 —— 大模型的訓練可能一口氣用上非常多張卡、連續跑好幾週,但**它會結束**,結束了機器就還回去。數量跟時數是可以估算、可以排隊的。現在多出來的那一塊是「使用」。模型要常駐、要二十四小時待命、每一個字都要即時算。**不是訓練變少了,是使用長出了一塊更大的、而且永遠不會結束的需求。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>而 Agent 讓需求更爆</h2>
+<div class="semoji">💥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個 Agent 會自己開一堆子任務</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你又可能一次派出很多個 Agent</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>底下就是一堆 GPU 同時啟動</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>Agent 又把這件事放大了一層。以前是一個人問一句、算一次;現在一個 Agent 接到任務,會自己拆成一堆子任務、自己反覆呼叫模型好幾十次。而你可能還一次派出很多個 Agent 同時跑。所以帳面上你只交辦了一件事,底下卻是一堆 GPU 同時被啟動。這就是為什麼需求會爆得這麼快。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>挑機器怎麼判斷?三問</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一、VRAM 夠不夠裝下你要的模型?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>二、頻寬夠不夠讓它跑得順?</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>三、整機配置有沒有藏瓶頸?</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以要判斷一台機器適不適合,問三題就好,而且有先後順序。第一題:VRAM 夠不夠裝下你要跑的模型 —— 記得要含對話快取那一塊。裝不下,就會被逼著拆一半到一般記憶體跑,速度直接掉一個檔次。第二題:頻寬夠不夠?這決定你用起來順不順、會不會慢到不想用。第三題:整機還有沒有藏瓶頸?記憶體、儲存、散熱有沒有拖後腿。先看裝得下,再看跑得動,最後看有沒有暗樁。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>誠實提醒:地端追不上雲端最強</h2>
+<div class="semoji">🙏</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>家裡再高階,通常還是比不過雲端最頂的模型</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>地端的價值是「夠用 + 資料在自己手上」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你要的是掌控,不是「最強」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後講一句誠實話,免得你期待錯方向。你在家裡組的機器,能跑的模型通常還是比不上雲端最頂那幾個 —— 但我要把這個差距講準一點:**這是時間差,不是等級差**。地端能跑的,大致是雲端前一段時間的水準,而那個水準對你手上大部分的事情其實夠用。真正卡住你的不是「地端」這兩個字,是你的預算跟這台機器的記憶體大小。所以地端的價值不是「我要最強」,而是「夠用,而且資料在我自己手上」。你買的是掌控權和資料主權,不是效能冠軍。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">14</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>買地端別只看算力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先看「裝得下」(VRAM),再看「跑得動」(頻寬)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>GPU 現在是被永不停止的「使用」吃掉的</li>
+</ul>
+<div class="note">水塔決定裝不裝得下,水管決定流得快不快 —— 兩個都要看。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話:買地端千萬別只看算力那個數字。先看裝不裝得下,那是 VRAM;再看跑不跑得動,那是頻寬。順序不能顛倒,因為裝不下的話,頻寬再高也沒有意義。而 GPU 之所以現在到處都不夠用,是因為它已經不是被「產出模型」吃掉,而是被永不停止的「使用」吃掉的。下次看規格表,先找這兩個數字。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=nwPROiXr-LM" target="_blank" rel="noopener">https://www.youtube.com/watch?v=nwPROiXr-LM</a><br>
+🧱 對應架構圖 · 地端硬體診斷:<a href="arch-hardware-debug.html">arch-hardware-debug.html</a><br>
+🧱 對應架構圖 · GPU 為什麼不夠:<a href="arch-gpu-produce-vs-use.html">arch-gpu-produce-vs-use.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

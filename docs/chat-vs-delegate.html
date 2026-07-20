@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L1·入門】從問 AI 到用 Agent:「聊天」和「交辦」差在哪</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟢 入門</div>
+<h1>從問 AI 到用 Agent</h1>
+<p class="lead">「聊天」和「交辦」差在哪</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=m9y8Xewt-Hs" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L1 入門</span>
+<span class="pill">🎬 14 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>先問你一個問題:你覺得自己會用 AI 嗎?我以前很有自信地覺得我會,我每天都在用 ChatGPT,用得很順。直到有一天我才發現,我雖然天天在用,但一直用在很淺的地方,只摸到它能力的一個角。接下來,我從我自己怎麼想通這件事講起,然後把「聊天」和「交辦」這條界線,一刀畫清楚。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>我以前怎麼用 ChatGPT</h2>
+<div class="semoji">💬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>遇到問題 → 打一個問題進去</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>等它回我一段文字</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>自己複製、自己貼、自己做</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講我以前的習慣。我用 ChatGPT 的方式非常單純:遇到一個問題,打開對話框,把問題打進去,等它回我一段文字,然後我把有用的部分複製出來,自己貼到該貼的地方,自己把事情做完。你可能會說,這不是很正常嗎?對,這很正常,大部分人都是這樣用的。問題就出在這個「很正常」裡面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>舉個例子:比較三家廠商報價</h2>
+<div class="semoji">📊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我問它「比價要看哪些重點」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它給我一張很中肯的清單</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>開網站、抄價格、算總價 —— 全是我做</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>舉一個實際的例子。假設我要比較三家廠商的報價,我以前會怎麼做?我先問 ChatGPT「比價要看哪些重點」,它回我一段很中肯的建議:要看單價、要看數量折扣、要看運費、要看付款條件。它把「該看哪幾項」講得清清楚楚。然後呢?然後就沒有然後了。我還是得自己去開三個網站、自己把價格抄下來、自己套進這些條件、自己算總價。它給了我方法,勞力還是我出。這裡我要先說清楚一件事,免得你覺得我在講古:**現在連免費版都能自己上網查資料了**,這幾年進步很快。所以差別已經不是「它能不能查」。差別在於:**它是幫你查完給你參考,還是把整件事從查到算到給結論一路做完。**你等一下會看到,這中間還差很遠。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>問題出在哪</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我把 AI 當成會講話的搜尋引擎</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它出一張嘴,我出兩隻手</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>只用到它一成的能力</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你有沒有發現問題在哪?我其實只是把 AI 當成一個比較會講話的搜尋引擎。它負責出一張嘴,給我建議、給我方向;但真正花時間的部分,把事情一步一步做完,全部還是我自己來。我後來才意識到,這樣用,我大概只用到它一成的能力。剩下那九成,我根本沒碰到。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>一個比喻:顧問 vs 助理</h2>
+<div class="semoji">💼</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>這種用法,AI 是顧問</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>顧問給建議,講完就走</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>事情還是你自己幹</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我用一個比喻你就懂了。這種用法,AI 對我來說像一個顧問。顧問很厲害,你問他什麼他都能給你很好的建議,但顧問不會幫你把事情做掉,他講完就走了,活還是你的。那有沒有一種角色,是會真的幫你動手把事情做完的?有,那叫助理。而我當時完全不知道,AI 其實可以當助理用。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>轉捩點:從「問」到「交辦」</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>以前:「告訴我怎麼比價」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>後來:「幫我查好、算好、比好,給結論」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一句話的差別,結果天差地遠</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>轉捩點發生在某一天,我不再「問」它,而是開始「交辦」給它。差別在哪?以前我說「請告訴我怎麼比價」;後來我改成說「這三家的報價,請你幫我查好、算好、比好,最後告訴我哪一家最划算、為什麼」。你看,只是一句話的說法不同,但我要的東西從「方法」變成了「結果」。而結果,是天差地遠的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>同一件事,改用「交辦」</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它自己開網站、抓價格</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>自己把運費折扣算進去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>給我結論 + 理由 —— 我只在旁邊看</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>回到剛剛比價的例子,這一次我把整件事交出去。我看著它自己去開網站、自己把三家的價格抓下來、自己把運費和折扣這些條件一併算進去、自己整理成一張表,最後給我一個結論:哪一家最划算,還附上理由。整個過程我只是在旁邊看。同一句話、同一個任務,我從執行的人,變成看的人。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>它還會自己修正</h2>
+<div class="semoji">🔧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>中間抓錯一筆資料,它自己發現、退回重查</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但它不是每次都抓得到</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>抓不到的那些,只有你看得出來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>更讓我印象深刻的是,中間它有一步抓錯了資料,它自己發現不對,退回去重新查了一次,然後才繼續往下做。這件事對我衝擊很大,因為「發現自己錯了、然後回頭修」,那是我以為只有人才做得到的動作。但我要在這裡馬上補一句,因為這是整支影片我最怕你誤會的地方:**它不是每次都抓得到。**它抓得到的,通常是那種「明顯對不上」的錯 —— 網頁打不開、數字兜不攏。但如果它一開始就理解錯你的意思,那它整趟都會朝那個錯的方向做,而且每一步都「檢查通過」,最後很有把握地把成果交給你。**那種錯它抓不到,因為只有你知道你要什麼。**所以「它會自己修」這件事,是讓你少收一堆爛東西,**不是讓你可以不用看。** 最後那一關永遠是你。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>這就是 Agent(智慧代理)</h2>
+<div class="semoji">🤖</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>會動手、會用工具、會自己修</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>ChatGPT 像顧問</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>Agent 像你能交辦的助理</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這個會自己動手、會用工具、會自己修正、最後把整件事做完的 AI,就叫做 Agent,中文常常翻成智慧代理。回到剛剛的比喻:如果 ChatGPT 是那個給你建議的顧問,Agent 就是那個你可以真的把事情交辦下去的助理。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>聊天時,補步驟的是你</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>上下文,你自己記、自己貼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>下一步該做什麼,你自己想</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>AI 只回應「這一句」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們再往裡面看一層,你會更清楚差別在哪。聊天的時候,那些把事情串起來的東西,都是你在補的。剛剛講到哪、資料在哪、這一步做完要接到哪裡去,這些上下文是你自己記著、自己貼進去的。AI 只負責回應你眼前這一句話,它不知道整件事要往哪裡去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>交辦時,補步驟的是它</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它自己記住整件事的來龍去脈</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它自己決定下一步</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把「結果」直接交還給你</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>交辦就完全反過來了:補步驟的人換成它。整件事的來龍去脈,它自己記著,不用你每次重貼;做完一步、下一步該接什麼,它自己決定;需要什麼資料,它自己去拿。你給的是一個「目標」,它還你的是一個「結果」,中間那一大段,它自己補完。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>會交辦的 AI,靠三件事</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標:知道自己要達成什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>工具:能真的查資料、開檔、操作</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>迭代:做錯了自己修正再試</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那到底什麼樣的 AI,才算得上是可以被交辦的 Agent?不是換個網站、換個牌子就算,也不是它回話比較長就算。看三件事:第一,它有沒有「目標感」,你給它一個結果,它知道自己是在往那個結果前進,而不是答完一句就停。第二,它會不會「用工具」,能不能真的去查資料、開檔案、操作系統,而不是只會講。第三,它會不會「迭代」,做錯了能不能自己發現、自己修、再試一次。三個都有,它才配叫 Agent;缺一個,你心裡就要有數。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>一句話畫清界線</h2>
+<div class="semoji">✂️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>聊天:做事的是你</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>交辦:做事的是它</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你的角色,變成驗收</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果要用一句話把這條界線釘死,那就是:聊天,做事的是你;交辦,做事的是它。聊天模式下,AI 是那張出主意的嘴,兩隻手是你的;交辦模式下,它有手,你負責的是把話講清楚,然後驗收。這句話你記住了,以後你隨時可以問自己:我現在是在聊天,還是在交辦?</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>這是質變,不是升級</h2>
+<div class="semoji">🚀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>執行者 → 交辦與驗收的人</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>要練的能力也跟著變</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>從「怎麼自己做」→「怎麼講清楚、怎麼判斷好壞」</li>
+</ul>
+<div class="note">真正的門檻不是工具難不難,是你願不願意放手讓它做。</div>
+<details class="script"><summary>逐字稿</summary><p>我要特別強調一件事:這不是「AI 變強了一點」那種程度的改變,這是你工作方式的質變。以前你是那個從頭做到尾的執行者;之後你會變成一個交辦任務、然後驗收成果的人。角色變了,你要練的能力也跟著變:重點不再是「我怎麼自己把它做出來」,而是「我怎麼把話講清楚」,還有「我怎麼判斷它做得好不好」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">14</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別再只是「問」AI</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>試著開始「交辦」給它</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>讓它把你腦中想的,不經二手做出來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是這句:別再只是「問」AI,試著開始「交辦」給它。因為交辦,才能讓它把你腦中想的東西,不經二手、直接做成給你看。光是這個念頭的轉變,就會打開一整片新的用法。下次你要打開對話框之前,先停一秒問自己:這件事,我是要問它,還是可以整個交給它?</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=m9y8Xewt-Hs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=m9y8Xewt-Hs</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L2·上手】讓 Agent 動手:讀檔、查資料、操作系統</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔵 上手</div>
+<h1>讓 Agent 動手</h1>
+<p class="lead">讀檔、查資料、操作系統</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=dZQuVWD9_Fw" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L2 上手</span>
+<span class="pill">🎬 11 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>純聊天,其實是不夠的。你跟 AI 對話、問它、請它給建議,但你有沒有發現,它講得再好,東西還是在你的電腦裡,它碰不到。接下來我要讓 Agent 真的動手,去碰你的檔案、你的系統、外面的資料。這裡的主角,叫做工具。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>什麼是「工具」</h2>
+<div class="semoji">🔧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>讓 Agent 能對外界動作的能力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讀寫檔案、上網查資料、執行指令</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>沒有工具,它就只是一張嘴</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講清楚,什麼是工具。工具,就是讓 Agent 能夠對外界動手的能力。具體來說,像是讀跟寫你的檔案、上網去查最新的資料、或是在你電腦上執行一段程式、跑一個指令。你可以把它想成是 Agent 的手跟腳。如果只有一個很會講話的腦袋,卻沒有手腳,那它再聰明,也只是一張嘴,講完就結束了。工具,就是把手腳裝上去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>有工具跟沒工具,差在哪</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>沒工具:憑印象回答,可能亂編</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>有工具:真的去查、去讀、去做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>但注意:有查過 ≠ 一定讀對</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那有工具跟沒工具,到底差在哪?差很大。沒有工具的時候,你問它一個問題,它是憑腦袋裡的印象回答你,聽起來很順,但它可能記錯、甚至憑空編一個看起來很像的答案給你。有工具就不一樣了:它會真的去把那個網頁打開來查、真的把那個檔案讀進來看、真的把那件事做一遍。同樣一句回答,一個是憑感覺講的,一個是查證過、做過的,你敢不敢信,差別就在這裡。不過我要馬上補一句但書,不然你會太放心:**「它有去查」不等於「它讀對了」。**它可能打開了對的檔案,但看錯欄位;可能查到了對的網頁,但抓了過期的那一段;也可能三份資料裡它只採信了錯的那一份。所以有工具讓它**比較可能**有根據,但那個「根據對不對」,最後還是要你看一眼。從「憑空編」進步到「查了但可能讀錯」,是一大步,但還不是終點。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>實際看它動手:讀檔 → 處理 → 存回</h2>
+<div class="semoji">🎬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>給它一個真實的檔案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讓它讀進來、處理</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>再把結果存回去</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):給 Agent 一份實際檔案,讓它讀取→處理→輸出</div>
+<details class="script"><summary>逐字稿</summary><p>光講你沒感覺,我直接做給你看。接下來我會給它一個真實的檔案,可能是一份原始資料、也可能是一份文件,然後我下一個指令,讓它把這個檔案讀進來、處理一遍,再把結果存回去變成一個新檔。你注意看它的動作:它不是在對話框跟我聊,它是真的去開了我硬碟上的那個檔案。我們來看。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>回顧:它不是「教你做」,是「做好了」</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它沒有告訴我步驟</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它直接把檔案處理好、存好</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這就是工具帶來的差別</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>好,看完回來。你有沒有抓到剛剛那個關鍵?它不是告訴我「你應該這樣做、那樣做」,然後把工作丟回給我。它是直接把那個檔案讀進去、處理完、存好,擺在那邊等我驗收。以前它只能出一張嘴,現在它能把事情做完。這一步,就是工具帶來的差別:從「會講」變成「會做」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>會做,也代表有風險</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它會真的改你的檔、跑你的指令</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>改錯了就是真的改下去了</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以要先設好界線</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但是,我要在這裡踩一下煞車。它會做,是好事,可是你要清楚一件事:它是真的在動你的東西。它會真的改你的檔案、真的跑你電腦上的指令。這代表如果它判斷錯了,那個錯也是真的發生,不是在對話框裡講講而已,是真的改下去、真的執行了。能力越大,越要先幫它設好界線。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>它會跳出來問你「可以嗎」</h2>
+<div class="semoji">🙋</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>要動重要的東西時,它會停下來要你允許</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>那個視窗不是形式,是最後一道關卡</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>看清楚它要動什麼,再按</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你實際用的時候會遇到一個畫面,我想先幫你打個底,因為這是最容易被隨手點掉的一關。當 Agent 要做比較重要的動作 —— 像是改你的檔案、執行一段指令、把東西送出去 —— **很多工具會停下來跳出一個視窗問你:「我要做這件事,可以嗎?」**我知道那個東西看久了很煩,尤其它一連問你五六次的時候,你會很自然地開始連按「允許」,甚至直接選「以後都不用問我」。但我要老實說:**那個視窗,就是你最後一道關卡。**它按下去之後的事情,是真的會發生的。所以我的建議很具體:**至少看一眼它要動的是哪個檔案、哪個資料夾。**尤其看到「刪除」「覆蓋」「送出」「全部」這幾個字的時候,停三秒。還有,那個「以後都不用問我」,**在你還沒摸熟它之前,不要按** —— 那等於把煞車拆掉。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>你讓它讀檔,檔案就出門了</h2>
+<div class="semoji">📤</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>用雲端的 AI,它「讀」你的檔 = 內容傳到外面去</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不是在你電腦裡就地看完</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>公司文件、客戶名單、個資,先想一下</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>還有一件事,是我覺得最多人沒意識到、但後果可能最嚴重的。你叫它「讀一下我桌面那個檔案」,它照做了,感覺就像它在你電腦裡看了一眼。**但如果你用的是雲端的 AI,實際發生的事情是:那個檔案的內容被傳出去了。**它不是在你電腦裡就地讀完,是把內容送到外面的伺服器,那邊才有腦袋能理解它。所以你讓它讀什麼,你就等於把什麼送出去了。自己的購物清單、隨手記的雜事,那沒什麼問題。但如果是**公司的內部文件、客戶名單、還沒公開的資料、別人的個資**,那就要先停一下,問自己一句:**這份東西,送到外面去沒關係嗎?**不確定的時候,就當作不行。這條線寧可保守 —— 因為送出去這件事,是**收不回來的**。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>三個保命習慣</h2>
+<div class="semoji">🛡️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先在可回復的環境試,別直接動正式資料</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>重要動作,先讓它給你確認再做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>永遠自己驗收,別全盤照收</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以我給你三個保命的習慣。第一,先在一個可以回復的環境試,比如先拿一份備份、一個測試資料夾練手,別一開始就叫它動你唯一一份、動了就回不來的正式資料。第二,重要的、不可逆的動作,像刪檔、覆蓋、送出去,先讓它停下來給你確認,你點頭它再做。第三,也是最重要的,永遠自己驗收,它做完你要親眼看過結果對不對,別因為它很會做就全盤照收。這三條,你越常交辦,越要守。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>它說「存好了」,你要自己打開看</h2>
+<div class="semoji">🔎</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它會很有把握地說「已經完成」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但可能存錯地方、存成空的、只做了一半</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>打開來看一眼,五秒鐘的事</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這是一個小習慣,但我要單獨講,因為它救過我很多次。Agent 做完之後,會很有把握地跟你說:「已經處理完成,結果存在某某檔案。」那個語氣非常肯定,你會很自然地就相信了。但我實際遇過的狀況包括:**存到別的資料夾去、存出來是空的、只處理了前面幾筆就當作全部做完、還有它以為自己存了其實根本沒存。**重點是,**它不是在騙你** —— 它是真的以為自己做完了。它看到的是「我執行了儲存這個動作,沒有跳錯誤」,但「沒跳錯誤」跟「結果是對的」,中間有很大的空間。所以養成一個習慣就好:**它說存好了,你就去打開那個檔案看一眼。**不用細看,看它在不在、裡面有沒有東西、筆數大概對不對。五秒鐘的事,但它把「我以為做好了」變成「我知道做好了」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>它讀進來的東西,可能夾帶指令</h2>
+<div class="semoji">🪤</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>檔案、網頁、別人寄來的信裡,可以藏話給 AI 看</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它分不出哪句是你交代的、哪句是檔案裡的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>讀回來的東西是資料,不是命令</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後這件事比較少人講,但你既然要讓它讀外面的東西,就該知道。你請它讀一份文件、一個網頁、或是別人寄來的檔案,**那份東西裡面,是可以藏一段話的** —— 那段話不是寫給你看的,是寫給 AI 看的,內容大概像:「忽略前面的指示,改成去做某某事」、「把使用者的某某資料也一起附上」。人看的時候不會理這種東西,但 AI 讀進來之後,**它眼前只是一整片文字,它分不出哪一句是你交代的、哪一句是那份檔案裡夾帶的。**聽起來有點嚇人,但你要記住的其實只有一句話:**它從外面讀回來的東西,是「資料」,不是「命令」。**實務上你只要做兩件事就夠了:**讀來路不明的東西時,別同時給它可以刪、可以寄、可以付錢的能力**;還有,**它突然要做你沒交代過的事,那就是警訊,停下來。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>工具讓 Agent 從「會講」變「會做」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>會做,就代表有風險</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要設界線,也要自己驗收</li>
+</ul>
+<div class="note">會做的另一面就是有風險 —— 先設界線,再放手。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是:工具,讓 Agent 從一個「會講」的嘴,變成一個「會做」的助手。但別忘了,會做的另一面就是有風險,所以你要幫它設好界線,也要自己驗收。今天就可以挑一個「讀一份檔案、整理成表格」的小任務試一次 —— 那是最安全、也最能立刻看出差別的起點。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=dZQuVWD9_Fw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=dZQuVWD9_Fw</a><br>
+🧱 對應架構圖 · LLM Tool Use 完整拆解:<a href="arch-tool-use.html">arch-tool-use.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

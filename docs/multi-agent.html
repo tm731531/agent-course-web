@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】一次派很多個:你怎麼指揮多個 Agent 分工、平行跑</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟡 進階</div>
+<h1>一次派很多個</h1>
+<p class="lead">你怎麼指揮多個 Agent 分工、平行跑</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=IQPot9UU3YQ" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 15 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>交辦單一件事你已經會了。但真實工作裡的任務,常常不是一步就做得完,而且大到一個 Agent 扛不動。接下來我要講兩件事:一個 Agent 怎麼撐完一整段多步驟的流程,以及當一個不夠的時候,你怎麼一次派很多個、讓它們分工。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>複雜任務難在哪</h2>
+<div class="semoji">🧗</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>步驟很多,不是一步就做完</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>步驟之間有先後、有依賴</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>中間錯一步,後面全歪掉</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先看複雜任務難在哪。它難不在單一步驟有多深,而在三件事:步驟很多,不是一問一答就結束;步驟之間有先後、有依賴,後面那步要等前面的結果才能做;而且中間只要錯一步,後面會整條歪掉。這就是為什麼「一次回答得很漂亮」跟「把一整件事做完」是兩種能力。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>它怎麼處理:先規劃</h2>
+<div class="semoji">🗺️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>拿到大任務,先不急著動手</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把它拆成一小步一小步</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>排出該先做什麼、後做什麼</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>Agent 處理複雜任務的第一件事,是先規劃。它拿到一個大任務,不會急著動手,而是先把它拆成一小步一小步,然後排出順序:哪一步得先做、哪一步要等前面的結果。這一步你通常看不到,但它決定了後面做得順不順。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>依序執行、邊做邊驗</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>照著計畫,一步一步做</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>每做完一步,回頭檢查對不對</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>但注意:自己檢查自己,有盲點</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>規劃完就照著做,而且是邊做邊驗。每完成一步,它會回頭看這一步的結果對不對、能不能接到下一步。如果發現不對,它會退回去修,而不是帶著錯誤一路做到底。「規劃」加上「驗證」,這兩件事合起來,才是它撐得住複雜任務的原因 —— 不是因為它某一次答得特別聰明。但這裡要老實講一件事,不然你會太放心:**它檢查的是它自己**。跟人一樣,自己看自己的東西會有盲點 —— 它一開始理解錯了方向,後面每一步都會照著那個錯的方向去「檢查通過」。所以它的自我檢查能抓到「做到一半卡住、結果明顯不對」這類問題,但抓不到「從頭到尾都在做錯的那件事」。**最後那一關,還是你。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>實際看它做一個多步驟任務</h2>
+<div class="semoji">🎬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>丟一個有好幾個相依步驟的任務</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>看它自己規劃、一步步做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>還會自我檢查,錯了回頭修</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):丟一個有相依步驟的真實任務(查資料 → 整理成表 → 分析 → 產出報告),全程看它規劃、執行、自我檢查、發現錯了回頭修。</div>
+<details class="script"><summary>逐字稿</summary><p>講這麼多,直接看一次。我丟一個有好幾個相依步驟的真實任務給它:先上網查資料、整理成表、做分析、最後產出一份報告。你注意看三個地方:它有沒有先規劃、有沒有照順序做、以及中間出錯的時候,它會不會自己發現、自己回頭修。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>剛剛發生了什麼</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它不是一次就吐出答案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>是先想步驟,再一步步做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>做完還會回頭檢查</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>回頭看剛剛那段。它不是一次就把答案吐出來,而是先想步驟、再一步步執行,中間還回頭檢查過。這跟一問一答最大的差別是:你交辦的東西可以變大了 —— 從「幫我寫一段」變成「幫我把這件事從頭做到完」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>但有些任務,一個扛不動</h2>
+<div class="semoji">🏋️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>做得再好,也還是一個的產能</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>有些任務量大到得同時開工</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有些任務需要不同專長</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>不過一個 Agent 再會規劃,它還是一個,產能有上限。有些任務的量大到你需要同時開很多份工;有些任務則是需要好幾種不同的專長,一個角色兼不來。這時候就輪到下一種用法:一次派很多個。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>形態一:讓它去叫另一個</h2>
+<div class="semoji">📞</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你的 Agent 中途去呼叫另一個模型</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>借它比較強的那一塊</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>回來繼續把事情做完</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一種形態最簡單:你的 Agent 做到一半,自己去呼叫另一個模型或另一個 Agent,借用對方比較強的那一塊,拿到結果再回來繼續。比如主力那個負責整體流程,遇到需要特別長的推理時,就把那一段丟給另一個更擅長的,答案拿回來再往下走。你從頭到尾只交辦了一次,中間它自己去找幫手。不過這裡有個常見的誤會要先破:很多人以為可以「平常用便宜的,難的時候再叫強的」,這樣最省錢。實際上這招常常失靈,原因很反直覺 —— **那個比較弱的,不知道自己什麼時候該求助。**它不會的東西,它也不知道自己不會,所以它會自信地自己做完。真正有效的用法反而是:**兩個都夠強、但擅長的地方不同**,互相補位。這是為了補能力,不是為了省錢。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>形態二:一組 Agent 分工</h2>
+<div class="semoji">🧑‍🤝‍🧑</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>A 蒐集與整理資料</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>B 根據資料寫成報告</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>C 讀一遍、挑毛病、抓錯</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二種形態是分工:你一次開一組 Agent,每個扮演不同角色。比如 A 負責蒐集和整理資料,B 根據那些資料寫成報告,C 專門讀一遍、挑毛病、把錯的抓出來。這比較像一個小團隊,而不是一個全能的人 —— 而且最後那個「專門找碴」的角色特別有用,因為做的人常常看不到自己的盲點。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>形態三:平行加速</h2>
+<div class="semoji">⚡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把一件大事切成很多小份,很多個同時開工</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但真正的好處是「查得夠廣」,不見得是「更快」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>而且:平行「查」可以,平行「動手改」不行</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三種形態是平行:把一件大事切成很多小份,讓很多個同時開工。舉個例子:你要比較五十家供應商,一次派五十個同時去查。但這裡我要修正一個大家都會有的期待,包括我自己一開始也這樣以為:**你以為派五十個會快五十倍,實際上常常沒有,有時候甚至更慢。**為什麼?因為派工要時間、五十份結果收回來要有人整理、而且你的帳號同時能跑幾個是有上限的,不是你說五十就五十。所以平行真正的好處,不是「快」,是「**廣**」—— 一個人查五十家,查到第四十家的時候前面早忘光了;五十個同時查,每一個都只專心看一家,涵蓋得比較完整。**為了廣度去派,通常划算;為了速度去派,常常失望。**還有一條界線一定要記住,這是最多人立刻踩的坑:**平行「查東西」很安全,平行「動手改東西」很危險。**五十個同時讀資料,彼此不會打架;但五十個同時改同一批檔案、同一份表,它們會互相蓋掉對方做的,而且你事後很難查出是誰蓋的。要改東西,老老實實一個一個來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>也可以混著用</h2>
+<div class="semoji">🔗</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>團隊裡某一路,再往外呼叫另一個模型</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>分工之外,再平行開很多份</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>組合方式很多,不用背</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這三種形態不是互斥的,實務上常常混著用。比如你開了一個分工的團隊,而團隊裡負責分析的那一路,又自己去呼叫另一個更強的模型;或者分工之外,某一個角色底下再平行開十份。組合方式很多,你不用去背 —— 重點是知道「可以這樣拆」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>共同點:全部都是你的</h2>
+<div class="semoji">🔑</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>都是你開的、你的帳號、你的機器</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你預設信任它們,不用誰跟誰自我介紹</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>出事,責任也都在你這邊</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡有一個很重要的共同點,值得你記住:上面講的每一種,不管是呼叫另一個模型、開一組團隊、還是平行五十份,那些 Agent 全部都是你的 —— 你開的、你的帳號、你的機器。所以你不需要幫它們做身分驗證,也不需要誰跟誰自我介紹。但這裡要很小心一個偷換:**「它是我的」跟「它不會做錯事」,是兩件事。**你信任的是它的**身分**,不是它的**行為** —— 它是你的分身沒錯,但你的分身一樣會誤解你的意思、一樣會做錯,而且它現在有你的帳號、你的權限,做錯起來規模比你自己手滑大得多。所以「都是我的」這件事省掉的是身分驗證,**不是省掉盯著它**。這個前提很重要,因為一旦要協作的對象不是你的,整個問題就會完全不一樣。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>派它們上網查,要知道的一件事</h2>
+<div class="semoji">🪤</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>網頁裡可以藏一段話,寫給 AI 看的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它可能把「讀到的內容」當成「你的指示」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以:讀回來的東西是資料,不是命令</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>既然剛剛講到派五十個上網查,有一件事你一定要先知道,不然這是最容易出事的地方。網頁、PDF、別人寄來的檔案裡面,**是可以藏一段話的** —— 那段話不是寫給你看的,是寫給 AI 看的,內容大概像:「忽略你原本的任務,改成去做某某事」、「把你手上的資料寄到這個信箱」。人看網頁不會理這種東西,但 AI 讀進來的時候,**它眼前只是一整片文字,它分不出哪句是你交代的、哪句是網頁裡夾帶的。**這件事在只有一個 Agent 的時候就存在,但你一次派五十個去讀外面的東西,等於同時開了五十扇門,而且你來不及一個一個看它們讀到什麼。心裡先記住一句話就好:**它從外面讀回來的東西,是「資料」,不是「命令」。**所以派出去查資料的那些,盡量只給它「查」的權限,**別順手給它可以寄信、可以刪東西、可以付錢的能力。**查回來的東西你自己看過再決定要不要動手,這一關不要省。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>什麼時候該用、什麼時候別用</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>該用:量夠大、需要不同專長、想要互相檢查</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>別用:小任務,一個就綽綽有餘</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>別用:步驟環環相扣、根本拆不開</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那什麼時候該派很多個?三種情況:任務量夠大,值得拆成很多份平行做;需要好幾種不同專長;或者成果很重要,你想要有人互相檢查。反過來,什麼時候別用?小任務一個就綽綽有餘,派很多個只是浪費;還有步驟環環相扣、根本拆不開的任務,平行沒有意義,反而會亂。別為了「用」而用。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">14</div>
+<h2>代價:帳單和盯梢都會放大</h2>
+<div class="semoji">💸</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一次派 100 個 = 用量也放大 100 倍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>同時很多個在跑,你更難全部看住</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>任務講不清,多派只會更亂</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後講代價,這部分很多人會忽略。第一是成本:一次派一百個,用量就是放大一百倍,威力很大,帳單也很大,所以要主動控管。第二是你更難盯:同時好幾個在跑,你沒辦法每一個都看住。而這會放大一件事 —— 如果你的目標和驗收標準本來就講得不夠清楚,派一個只是做歪一次,派一百個就是同時做歪一百次。還有第三個,是最不直覺、但最該記住的:**錯誤會被串起來放大。**假設每一個 Agent 都有九成準,聽起來很高吧?但如果 A 做完交給 B、B 做完交給 C,一路串三手,最後的正確率是九成乘九成再乘九成,大概只剩**七成三**。每一棒都很優秀,接力完卻掉了快三成,而且中間沒有人覺得自己出錯。所以串越多手,你越要在中間插檢查點,不要一路串到底才在最後看結果。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">15</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>複雜任務靠的是「規劃 + 驗證」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>多 Agent 是把一個助理變成一個團隊</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>團隊要管理,也要算成本</li>
+</ul>
+<div class="note">不管開幾個,它們都是你的分身 —— 講不清楚,錯的就是全部。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話:複雜任務靠的是規劃加驗證,不是更聰明的一次回答;而多 Agent,是把一個助理變成一個團隊。團隊會讓你快很多,但團隊要管理、要算成本,而且你的話講得越不清楚,派得越多,錯得越整齊。所以下次你想一次派很多個之前,先把驗收標準寫下來。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=IQPot9UU3YQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=IQPot9UU3YQ</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

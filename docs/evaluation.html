@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L4·工程】怎麼知道 Agent 做得夠好:評估與回歸測試,把「感覺對」變「有證據對」</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟠 工程</div>
+<h1>怎麼知道 Agent 做得夠好</h1>
+<p class="lead">評估與回歸測試,把「感覺對」變「有證據對」</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=v6XRiXNd0vc" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L4 工程</span>
+<span class="pill">🎬 16 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。多數人驗收 Agent 的成果,靠的是肉眼看一下、覺得對就過。接下來我想講一個更硬的問題:當任務一多、或你要把 Agent 放進正式流程,肉眼根本看不過來的時候,你要怎麼系統化地「證明」它夠好、夠穩?接下來就講這件事。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先回顧:我們以前怎麼驗收</h2>
+<div class="semoji">👀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>交辦 → 它做完 → 你瞄一眼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>看起來對,就過了</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>任務一多、要上線,就看不過來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先看多數人是怎麼驗收的,方法其實很樸素:你交辦一個任務,它做完,你瞄一眼,看起來對,就過了。一次兩次沒問題,靠肉眼很快。但問題來了:當你一天要跑幾十個任務,或是你要把這個 Agent 接進公司正式流程、天天自動跑,你一個人的眼睛,根本看不過來。這時候,樸素的驗收就不夠用了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>痛點:「我覺得它做得不錯」不是證據</h2>
+<div class="semoji">🤔</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>「我覺得不錯」是感覺,不是事實</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>今天對,明天可能就歪了</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你其實不知道它到底穩不穩</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我先戳破一個東西。「我覺得它做得不錯」——這句話,不是證據,是一種感覺。你今天測了三題,它都對,你就安心了。但你有沒有想過:同樣的任務,明天再跑一次,它可能就歪掉了。你改了一句 prompt、換了個模型,它可能突然某類問題就答錯。你以為你在掌控它,其實你根本不知道它到底穩不穩定。感覺,是會騙人的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>核心概念:用一組固定案例反覆驗它</h2>
+<div class="semoji">📐</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>準備一組「固定的測試案例」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>同樣的輸入 → 看輸出對不對</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>還要看:每次跑,一不一致</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那正確做法是什麼?核心概念其實很簡單:你準備一組「固定的測試案例」,一次又一次拿去驗它。同樣的輸入,你看它的輸出對不對;而且不只看對不對,還要看它每次跑,是不是一致。這個「用一組固定案例反覆去驗」的動作,就是我們要講的主角,英文叫 eval,評估。它把驗收從「臨場看一眼」,變成「有一把固定的尺」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>怎麼做:最小可行版本</h2>
+<div class="semoji">🧰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>挑幾個代表性的真實任務</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>寫下「正確答案長怎樣」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>存起來,當成你的考題</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那具體怎麼做?我給你一個最小、馬上能動手的版本。第一步,挑幾個「代表性的真實任務」——不是刁鑽的偏門題,是你平常最常交辦、最在意做對的那幾種。第二步,針對每一題,寫下「正確答案長什麼樣子」,或至少寫下「怎樣算對、怎樣算錯」。第三步,把這組題目跟答案存起來。這就是你的考卷,一份固定不變的考題。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>怎麼做:每次改動就跑一遍</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>改了 prompt → 跑一遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>換了模型 → 跑一遍</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>改了流程 → 跑一遍</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>看:有沒有退步</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>有了這份考卷,接下來就好辦了。只要你動了任何東西——改了 prompt、換了模型、調了流程——你就拿這組固定案例,完整跑一遍,對照答案看結果。重點不是「它有沒有全對」,重點是「跟上次比,有沒有變差」。你在做的,其實是每次改動前後,各考一次同一份卷子,然後比分數。這個動作聽起來很笨,但它是你唯一能抓到問題的方法。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>關鍵詞:回歸測試(regression)</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>退步 = 本來會的,改完變不會了</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這種退步,肉眼最難發現</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有固定測試,才抓得到</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡要記一個關鍵詞:回歸測試,英文 regression。什麼叫回歸、叫退步?就是你調了某個東西,結果「本來會做對的,現在反而做錯了」。這是最陰險的一種問題,因為你改的時候眼睛盯著新功能,根本不會回頭去看舊的那些案例有沒有被你弄壞。而唯一能抓到這種退步的辦法,就是有一組固定的測試,每次都完整跑過。沒有它,你就是在盲改。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>第一個難題:它每次答案都不一樣</h2>
+<div class="semoji">🎲</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>同一題跑兩次,字面幾乎不會相同</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>所以不能用「跟標準答案一字不差」來判</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>改判:同一題跑 5 次,對幾次</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但你真的動手做,馬上會撞到第一個難題,而且這題跟傳統軟體測試完全不同。傳統程式你餵同樣的輸入,輸出永遠一模一樣,所以測試可以拿字串直接比對。但模型是**帶隨機性**的:同一題跑兩次,意思可能一樣,字面幾乎不可能一樣。這代表兩件事。第一,你不能用「跟標準答案一字不差」當判斷標準,那樣會全部誤判成失敗。第二,更重要 —— **跑一次通過,不代表它穩**。所以正確的做法是:同一題跑個五次,記的不是「過或不過」,是「五次裡對幾次」。一題五次全對,跟一題五次只對三次,那是完全不同的可靠度,但你只跑一次的話,這兩種看起來一模一樣。**通過率,才是你要記的那個數字。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>第二個難題:開放式的答案怎麼判對錯</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>能程式判的先程式判:數字、格式、關鍵事實</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>真的判不了的,才交給另一個模型當評審</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>評審要給明確評分標準,不是問「這個好不好」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二個難題是:很多任務的正確答案根本不是一個標準答案。「幫我寫一封回覆客訴的信」,對的寫法有一百種,你要怎麼自動判?這裡的順序很重要,不要一開始就跳到最花俏的做法。**能用程式判的,一律先用程式判。** 有沒有算錯數字、格式對不對、該提到的那三個關鍵事實有沒有出現 —— 這些寫幾行程式就能查,又快又不會騙你。真的判不了的那部分,才用一個現在很流行的做法:**再叫一個模型來當評審**,英文叫 LLM-as-judge。你把題目、Agent 的答案、還有評分標準一起餵給它,讓它打分。關鍵在最後那個「評分標準」:你不能問「這個答案好不好」,那會得到毫無意義的分數。你要問的是具體的、可勾選的:「有沒有回應客戶提到的那個問題?有沒有給出時間點?語氣是不是有禮貌?」**評審問得越具體,分數才越有意義。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>用模型當評審,要防它的偏心</h2>
+<div class="semoji">🚨</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它偏愛長的答案 —— 廢話多的常拿高分</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>同樣兩個答案換順序,分數會變</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>解法:標準寫死、順序對調各跑一次、自己抽 20 題對答案</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但模型當評審有它自己的毛病,你要先知道,不然你會拿一把歪的尺量得很認真。第一,**它偏愛長的答案**。同樣的內容,寫得比較長、比較華麗的那份,常常拿到比較高的分,哪怕多出來的都是廢話。第二,**順序會影響它**。你把 A 答案跟 B 答案的位置對調再問一次,它給的評價可能就翻過來了。怎麼防?三招。第一,評分標準寫得越死越好,少留模糊空間。第二,要比較兩個答案的時候,**兩種順序各跑一次**,結果一致才算數。第三,也是最重要的:**你自己要抽個二十題,親手看過,對照評審給的分。**如果評審給高分的那些你看了搖頭,那你的尺是壞的,要先修尺,而不是拿它的分數去做決定。**評審本身,也是要被驗收的東西。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>最後一個陷阱:別把考卷變成目標</h2>
+<div class="semoji">🕳️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一直對著那五題調,五題會滿分,別的照樣爛</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>考卷是抽樣,不是全部</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>被真實情況坑到,當天就把那題加進考卷</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後講一個很容易掉進去的陷阱,而且掉進去了你還會覺得自己做得很好。你有了那五題之後,會不自覺一直對著那五題調 prompt、調流程,調到五題全過。問題是:**那五題滿分,不代表第六題會對。**你只是把 Agent 調成很會考這五題,這在機器學習裡有個名字,叫過擬合。你要記得:那份考卷是**抽樣**,它代表你關心的那一類任務,它本身不是目標。所以有兩個習慣要養。第一,**考卷要持續長大** —— 每次真實情況坑到你,不管是它做錯還是做歪,當天就把那一題補進考卷,不要拖。第二,**別把考卷的題目直接寫進 prompt 裡**,那等於把答案抄給它,分數就完全失真了。一份會跟著你踩坑一起長大的考卷,才是活的;一份三個月沒動過的考卷,量到的東西已經跟現況無關了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>為什麼企業更需要這個</h2>
+<div class="semoji">🏢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>要接進正式流程、給很多人用</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>老闆問:它有多可靠?</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你不能只回「我感覺還行」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這件事,個人玩玩也許還好,但只要進到企業就變成必要。為什麼?因為你要把這個 Agent 接進正式流程、給很多同事天天用。這時候一定會有人問你:它到底有多可靠?出錯率多少?這個問題,你不能用「我感覺還行」來回答。你得拿得出實際的數字、實際跑過的案例。在公司裡,沒有證據,就沒有人敢用你的東西。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>這是「敢不敢上線」的信任基礎</h2>
+<div class="semoji">🚦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>demo 好玩 ≠ 敢上線</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>上線要的是:可重複的證據</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>eval = 那份信任的底氣</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我把這件事講得更白一點。一個 Agent 在你電腦上 demo 得很漂亮,跟你敢不敢把它放上線、讓它自動處理真實業務,是兩回事。demo 只要成功一次就好看;上線要的,是它每天跑、跑一萬次都穩。而支撐你「敢按下上線」的那份底氣,就是這組評估。它是你和公司之間的信任基礎——你有一組可重複的證據,證明它到底行不行。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>呼應 vibe engineering</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>完成的定義是「可驗證」,不是「我覺得對了」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>eval = 這句話的「規模版」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一次的肉眼驗收 → 一套可重複的證據</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講到這,可以收在一個更根本的原則上:真正的完成,是「可驗證」,不是「我覺得對了」。這裡講的 eval,其實就是那句話的規模版。以前你是一個任務、用眼睛驗一次;現在你是把那個「驗一次」的動作,升級成一套「可以自動重複跑」的證據系統。同樣的精神,只是從一次性,長成了可規模化。這就是從 vibe coding 走向 vibe engineering 的差別。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">14</div>
+<h2>一個務實的起點:別一開始就搞複雜</h2>
+<div class="semoji">🌱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不用一步到位、不用高級工具</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先寫下:你最在意的 5 個案例</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>每個配上「正確答案」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>你可能會覺得:這聽起來好工程、好麻煩。別怕,起點可以非常小。你完全不用一開始就去搞什麼高級的評估平台、自動化框架。你就做一件事:把你「最在意、最不能錯」的五個案例寫下來,每一個配上一份正確答案。就這樣。一個文件、五題、五個答案。這是任何人今天下午就能開始做的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">15</div>
+<h2>就這麼做,你已經比多數人嚴謹</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>改動「前」跑一次,記結果</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>改動「後」再跑一次,對照</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有退步就擋下,沒退步才放行</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>有了那五題,用法就是這麼樸實:每次你要改東西之前,先拿這五題跑一次,把結果記下來;改完之後,再跑一次,兩邊對照。只要發現本來對的變錯了,你就知道這次改動有問題,擋下來、別放行。就這麼簡單的一個對照動作,你就已經比市面上大多數「憑感覺就上線」的人,嚴謹太多了。嚴謹,不等於複雜。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">16</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別用「我覺得對了」決定信不信任</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>用一組固定案例反覆驗它</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把「感覺對」升級成「有證據對」</li>
+</ul>
+<div class="note">把「感覺對」升級成「有證據對」—— 這是能放給別人用的門檻。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是:別再用「我覺得對了」去決定要不要信任一個 Agent。改成用一組固定的案例,反覆去驗它,把「感覺對」升級成「有證據對」。這一步,就是一個 Agent 能不能真的放進你的工作、放心交給別人用的門檻。跨過它,你的 Agent 才算真的可靠。你可以從三個案例開始:一個典型的、一個邊界的、一個你以前被它坑過的。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=v6XRiXNd0vc" target="_blank" rel="noopener">https://www.youtube.com/watch?v=v6XRiXNd0vc</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

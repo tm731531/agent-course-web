@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L5·企業】架一台 MCP Server:把你自己的能力,開放給 Agent 用</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔴 企業</div>
+<h1>架一台 MCP Server</h1>
+<p class="lead">把你自己的能力,開放給 Agent 用</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=8GVzOHYJrSw" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L5 企業</span>
+<span class="pill">🎬 12 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>會用 MCP 的人很多:找一台別人做好的 server 掛上去,Agent 馬上多一項能力。但如果你想反過來 —— 把你自己的、或你公司的獨門能力,變成任何 Agent 都能接上來用的東西,那你要當的就不是使用者,是提供者。接下來我把整條路走一遍:一台 server 到底在提供什麼、五個步驟怎麼架、以及最重要的一件事 —— 對內自己用跟對外開放,在工程上根本是兩回事。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先把定義講清楚</h2>
+<div class="semoji">📖</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>MCP 是一套標準,規定 Agent 怎麼接工具與資料</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>server 是「把能力擺出來」的那一端</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>已交由中立的基金會治理,不是某一家的規格</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先把定義釘清楚。MCP 的全名是 Model Context Protocol,模型上下文協定。它是一套標準,規定 Agent 要怎麼去接外面的工具跟資料。而 server,就是把能力擺出來、等著被拿的那一端。順帶講一下它的身世,因為這對企業要不要押注很重要:MCP 是 Anthropic 在二〇二四年十一月提出並開源的,但在二〇二五年十二月,他們把它捐給了 Linux Foundation 底下新成立的基金會,跟另外幾家一起當發起單位。所以它現在不只是「開源」,而是交給中立的組織治理 —— 這才是「不會被某一家收回去」這句話真正站得住的原因。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>Server 到底是什麼角色</h2>
+<div class="semoji">🔌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它站在「工具那一端」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>把一個能力包成標準、可被呼叫的樣子</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>而且這條線是雙向的 —— 它也可以回頭跟你要東西</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那 server 具體是什麼角色?它站在工具那一端。你有一個能力 —— 可能是查你們公司的庫存、可能是讀一份內部文件、可能是呼叫一個你們自己寫的服務 —— 你把它包成一個標準的、任何 Agent 照同一套規矩就能呼叫的東西,那個包裝就是 server。補充一點,因為這點會影響你的設計:**這條線其實是雙向的**。server 大多數時候是被呼叫的一方,但它也可以反過來要求使用者補資料 —— 比如少了一個必填的參數、或需要你去瀏覽器完成一次登入授權。它可以請對面去問人,而不是自己硬猜一個值填下去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>一台 Server 對外宣告三種東西</h2>
+<div class="semoji">📢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>可呼叫的動作:tools</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>可讀的資料:resources</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>可用的提示範本:prompts</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>一台 server 架好之後,會對外宣告三種東西。第一種是 tools,可以被呼叫的動作 —— 查一筆庫存、送出一張單、算一個數字。第二種是 resources,可以被讀取的資料 —— 一份文件、一張表、一段設定。第三種是 prompts,可以直接套用的提示範本 —— 把「處理這類問題該怎麼問」先寫好,讓使用的人不用自己摸索。這三類是目前的核心。協定本身還在演進,像是「工作要跑很久、不可能當場等結果」這種需求,也已經有專門的機制在標準化了。你先把這三類吃透,後面的擴充都是長在這個骨架上。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>架設一台 Server:五個步驟</h2>
+<div class="semoji">🪜</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>① 決定開放哪些能力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>② 把每個能力定義成一個工具</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>③ 決定跑法:只給自己用,還是對外開放</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>④ 跑成一台 server</li>
+<li style="border-left-color:#f472b6;background:color-mix(in srgb,#f472b6 8%,transparent)"><span class="dot" style="background:#f472b6">5</span>⑤ Agent 端設定連上</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>架一台 server,五個步驟。第一,決定開放哪些能力。第二,把每一個能力定義成一個清清楚楚的工具。第三,決定這台要怎麼跑:是只跑在自己的機器上給自己用,還是要放到網路上給別人連。第四,把它跑起來。第五,到 Agent 那一端做設定,讓它連上你這台。我要特別把第三步標出來,因為很多教學會把它吞掉 —— 但那一步決定了你後面要做多少工,而且是「會用」跟「會架」之間最真實的一條分界線。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>步驟一:決定開放哪些能力</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先想清楚「要讓 Agent 做什麼」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>只挑真的需要開放的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>開得太少幫不上忙,開得太雜後面難管</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一步,決定開放哪些能力。這一步是設計題,不是技術題,而且做得好不好差很多。你要先想清楚:你希望 Agent 拿這台 server 做什麼?然後只挑真的需要的開出去,不是把手邊全部功能一次攤開。拿捏在兩邊:開得太少,Agent 幫不上忙,大家用兩次就放棄;開得太雜,你後面每一項都要管權限、管稽核,自己把自己壓垮。我的建議是從「你每天都在手動做、而且做起來很煩」的那幾件開始。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>步驟二:定義工具,而且要防輸入</h2>
+<div class="semoji">🔧</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>名字要一看就懂 —— 挑工具的是 Agent,不是人</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>輸入要定義成機器讀得懂的規格,不是一段說明</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>那些參數是 AI 產生的 —— 當成陌生人送進來的東西</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二步,把每個能力定義成一個工具。三件事,而且第三件最容易出事。第一,取一個一看就懂的名字。因為挑工具的是 Agent 不是人,名字模糊它就挑錯。第二,輸入不是寫一段文字說明就好,而是要定義成一份**機器讀得懂的規格**:哪些欄位、什麼型別、哪些必填。Agent 是照這份規格組參數的,規格越明確,它越不會亂給。第三,這一點是「會用」的人完全不用管、但你要架就一定得管的:**那些參數是 AI 產生的,你要把它當成陌生人從網路上送進來的東西**。該檢查的一樣都不能少。實際掃描過的資料顯示,很多公開的 MCP server 就是栽在這裡 —— 直接把 AI 給的字串接進系統指令或資料庫查詢,結果被人一句話打穿。你寫一般網站後端會做的輸入驗證,在這裡一項都不能省。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>步驟三:只給自己用,還是對外開放</h2>
+<div class="semoji">🚦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>對內:跑在自己機器上,跟你同一個身分、同一份權限</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>對外:走網路,身分驗證是硬性要求不是選配</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>概念一樣,工程強度差一個量級</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三步,也是我最想強調的一步。概念上,對內跟對外是一樣的 —— 你都是把能力擺出來讓 Agent 來拿。但我要老實跟你講,**工程上這是兩件事**。對內的版本,通常就是一支程式跑在你自己的機器上,由 Agent 那端直接把它叫起來。它跟你是同一個身分、同一份權限,不需要登入,也不需要驗證誰是誰。這種你一個下午可以做出來。對外的版本走的是網路,你等於在對整個網際網路開一個門:誰能進來、他是誰、他手上那張通行證是不是發給你這一台的 —— 全部都要驗。這在規範裡不是建議,是硬性要求。所以我的建議是:**先從對內那一種開始練**,把能力設計清楚;要跨出去對外的時候,你要處理的就不只是 MCP,而是一整套標準的授權機制。那時候請把它當成一個正式的對外服務來做,而不是把本機那台直接搬上去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>步驟四、五:跑起來 + 接上去</h2>
+<div class="semoji">▶️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把這些工具跑成一台 server</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>到 Agent 端設定,連上這台</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>兩邊講同一套協定,就通了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四步跟第五步就相對機械了。第四步,把你定義好的那些工具跑成一台 server。第五步,到 Agent 那一端做設定,告訴它「有這麼一台,連上去」。接下來兩邊就照同一套協定講話,不用你再為每一個 Agent 各寫一套接法 —— 這正是標準真正的價值。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>資料怎麼流:走一次完整來回</h2>
+<div class="semoji">🔄</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Agent 先問:你有哪些工具?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>選一個、帶上參數,發出呼叫</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>中間那道「要不要執行」的確認,是對面給的,不是協定保證的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們走一次完整的來回,你就有畫面了。Agent 連上來的第一件事,是問你這台:你有哪些工具、各是做什麼的?你這台把宣告的那三類東西回給它。接下來 Agent 做事的時候,發現需要你這裡的某個能力,它就從清單裡挑一個、帶上該帶的參數,發出呼叫。你這台實際把事情執行掉,再把結果回傳,Agent 拿到結果接著往下做。這裡有個細節要提醒架 server 的人:在多數 Agent 工具裡,「發出呼叫」跟「真的執行」中間,還有一道給人按確認的關卡。但那道關卡是**使用端的軟體提供的,不是協定規定的** —— 換一個 client 可能就沒有,或者使用者早就嫌煩把它關掉了。所以會造成不可逆後果的動作,你要在自己這台上設防,不能指望對面一定會問人。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>為什麼值得自己架一台</h2>
+<div class="semoji">💎</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把你的獨門能力變成標準能力</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>大多數支援 MCP 的 Agent 都能接</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一次架好,不用為每一家各寫一套</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那為什麼值得花這個工?因為你把「只有你會、或只有你們公司有」的能力,變成了一個標準能力。包裝之前,誰想用都得為你客製一次;包裝之後,大多數支援 MCP 的 Agent 照同一套方式就能接上來。我不會說「任何 Agent 都能用」—— 各家對 MCP 的支援程度還是有落差,有的吃得比較完整、有的只吃基本款。但比起以前每接一家就要重寫一次,這已經是天差地遠了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>給提供者的三個提醒</h2>
+<div class="semoji">🛡️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>能只在自己機器上跑的,別急著放到網路上</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一旦對外:先有身分驗證,再談功能</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>危險動作在自己這端設防,別指望對面會問人</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後給要真的動手的人三個提醒,而且順序有意義。第一,**能只在自己機器上跑的,就不要急著放到網路上**。一放上去,你要處理的東西會多一個量級,而且是資安等級的責任。第二,如果真的要對外,順序不能反:**先把身分驗證做好,再談功能**。現在網路上有非常多 MCP server 是完全沒有身分驗證、直接裸奔的,誰連上去都能用。不要成為其中一台。第三,承接剛剛講的:不要假設對面一定有人會按確認。會造成不可逆後果的動作 —— 刪東西、送出去、付錢 —— 在你自己這台上就要有防線。開放和邊界,是同一個動作的兩面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>架 server = 幫你的能力插上標準接頭</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但對外開放,就是一個正式的對外服務</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>先對內做一台練手,再談要不要對外</li>
+</ul>
+<div class="note">對內一個下午;對外是身分驗證、輸入檢查、危險動作防線,一項都不能省。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話:架一台 MCP server,就是把你的能力插上一個標準接頭,讓整個 Agent 世界都用得到。但要記住那條分界線 —— 對內跑一台,是一個下午的事;對外開放一台,那是一個正式的對外服務,身分驗證、輸入檢查、危險動作的防線,一項都不能省。你現在不用馬上動手寫,但要記得有這條路:以後當你想讓 Agent 用你自己的東西、或公司的系統,答案往往就是「幫它架一台 MCP server」。而你可以先從最小的那一步開始:挑一件你每天手動做、做起來很煩的事,在自己的電腦上把它包成一個工具。那台只有你自己用的 server,就是最好的練習。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=8GVzOHYJrSw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=8GVzOHYJrSw</a><br>
+🧱 對應架構圖 · 架一台 MCP Server:<a href="arch-mcp-server.html">arch-mcp-server.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

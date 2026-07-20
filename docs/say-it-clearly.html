@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L2·上手】把話講清楚:目標 + 脈絡 + 驗收,交辦成功的三塊</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔵 上手</div>
+<h1>把話講清楚</h1>
+<p class="lead">目標 + 脈絡 + 驗收,交辦成功的三塊</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=FMSo_EUGKUU" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L2 上手</span>
+<span class="pill">🎬 9 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>很多人試著用 Agent,結果覺得它很不好用,常常答非所問,做出來的東西根本不是我要的。於是就下了一個結論:這東西是不是還不夠聰明?但我自己踩過很多次坑之後發現,問題常常不是它笨,而是我根本沒把話講清楚。接下來我就專門講一件事:怎麼交辦,才會成功。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先講一個很常見的誤會</h2>
+<div class="semoji">🤔</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>交辦出去,結果答非所問</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>我們常怪:它是不是不夠聰明</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>但很多時候,是我們沒講清楚</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講一個很常見的誤會。你把一個任務交辦出去,結果它給你的東西牛頭不對馬嘴,你心裡第一個念頭通常是:這 AI 是不是不夠聰明?我以前也是這樣想。但後來我把我自己下的指令回頭一句一句看,才發現一個殘酷的事實:很多時候不是它做錯,是我根本沒說清楚我要什麼。它只是照著我含糊的話,去猜了一個答案而已。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>好交辦的三個要素</h2>
+<div class="semoji">🧱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>目標:你到底要達成什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>脈絡:它需要知道的背景</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>驗收:怎樣才算做對</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那到底怎樣叫做把話講清楚?我把它拆成三塊,你記住這三個詞就好。第一是目標,你到底要它達成什麼。第二是脈絡,也就是它需要知道的背景資訊。第三是驗收標準,怎樣才算做對、做完。目標、脈絡、驗收。這三塊都給足了,交辦的成功率會差非常多。接下來我一塊一塊跟你講,什麼叫講清楚,什麼叫講不清楚。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>第一塊:目標</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不清楚:「幫我看一下這份報價」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>清楚:「挑出最便宜的一家,告訴我省多少」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>講出你要的結果,不是丟一個模糊動作</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講第一塊,目標。講不清楚的目標長什麼樣?像是「幫我看一下這份報價」。看一下?看完要幹嘛?它不知道。它可能幫你唸一遍,可能幫你挑毛病,但你要的其實是別的。講清楚的版本是:「幫我從這三家報價裡,挑出最便宜的一家,並且告訴我比第二名省多少錢。」你看,同樣一件事,後面這句話直接講出了你要的結果,而不是丟一個模糊的動作給它去猜。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>第二塊:脈絡</h2>
+<div class="semoji">📎</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不清楚:直接叫它做,背景全靠猜</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>清楚:先給它該知道的前提</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>例:預算多少、給誰看、有什麼限制</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二塊,脈絡。這塊最容易被漏掉。我們自己腦袋裡有一堆背景,但常常忘了它不知道。講不清楚,就是直接叫它做,背景全靠它猜。講清楚,就是先把它該知道的前提補給它。比如說:這份報價是要給老闆看的,預算上限是十萬,而且我們公司規定一定要選有開發票的廠商。這些前提你先講,它就不會做出一個超出預算、或不能報帳的建議,害你整份重來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>第三塊:驗收</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不清楚:做完你才發現不是要的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>清楚:先講「怎樣算做對」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>例:輸出成表格、附上理由、限一頁</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三塊,驗收標準。這塊決定了它交回來的東西你順不順手。講不清楚,就是它做完之後,你才發現格式不對、內容太多或太少,又要來回改好幾次。講清楚,就是你事先告訴它怎樣算做對。比如說:結果請整理成一張表格、每一家後面附上你推薦或不推薦的理由、而且整份控制在一頁以內。你先把驗收標準講出來,它就會照著這個標準做,而不是照它自己的想像做。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>做給你看:爛指令 vs 好指令</h2>
+<div class="semoji">🎬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>同一個任務,兩種交辦方式</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先給模糊指令,看它怎麼亂猜</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>再給到位的指令,看差多少</li>
+</ul>
+<div class="note">▶ DEMO(Tom 螢幕錄影):挑同一個任務(例如整理三家廠商報價比價)。第一次故意給模糊爛指令,例如「幫我看一下這幾家報價」,讓觀眾看它答非所問、亂猜方向、產出不是要的。第二次給完整好指令:目標(挑最便宜並算出省多少)+ 脈絡(給老闆看、預算上限、要能報帳)+ 驗收(輸出成一張表、附推薦理由、限一頁),讓它一次到位。把兩次產出並排對比。</div>
+<details class="script"><summary>逐字稿</summary><p>講到這裡,不如直接做給你看。接下來這段,我用同一個任務,交辦兩次。第一次,我故意給它一個很爛、很模糊的指令,你看它怎麼亂猜。第二次,我把目標、脈絡、驗收三塊都講清楚,你看結果差多少。我們來看畫面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>回頭看:差別在哪</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>爛指令 → 它只能亂猜,產出歪掉</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>好指令 → 一次到位,不用來回改</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>差別就在那三塊有沒有講清楚</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>看完了,我們回頭對一下。第一次那個爛指令,它不是不做,而是資訊不夠,只能亂猜一個方向,結果自然就歪掉了。第二次那個好指令,它幾乎一次到位,你不太需要來回改。同一個 AI、同一個任務,結果差這麼多,關鍵就在那三塊:目標、脈絡、驗收,你到底有沒有講清楚。它的聰明程度從頭到尾都一樣,變的是你給它的資訊。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>一個實用的提醒</h2>
+<div class="semoji">🪞</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它做爛時,先別急著怪它</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>回頭看自己的交辦有沒有到位</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>改指令,常常比換工具還有效</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>所以我想給你一個很實用的提醒。下次當它做出來的東西不對,你先別急著怪它笨、也別急著想是不是要換一個更貴的工具。先做一件事:回頭看你剛剛那句交辦,目標、脈絡、驗收,是不是有哪一塊你根本沒講?我自己的經驗是,很多時候把指令改好,比換工具還有效,而且是免費的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>交辦講清楚 = 目標 + 脈絡 + 驗收</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>三塊都給足,成功率天差地遠</li>
+</ul>
+<div class="note">目標 + 脈絡 + 驗收 —— 三塊都給足,再按送出。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是:交辦講清楚,等於目標加脈絡加驗收。這三塊都給足,你的交辦成功率會天差地遠。下次交辦之前,先在心裡把這三塊各講一遍給自己聽:我要什麼結果、它需要知道什麼背景、我怎麼算它做對了。這三句講得出來,再按送出。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=FMSo_EUGKUU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=FMSo_EUGKUU</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

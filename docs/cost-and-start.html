@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L1·入門】要花多少錢、怎麼開始:成本邏輯、訂閱 vs API、小錢就能試</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟢 入門</div>
+<h1>要花多少錢、怎麼開始</h1>
+<p class="lead">成本邏輯、訂閱 vs API、小錢就能試</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=xitCFSFt7FY" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L1 入門</span>
+<span class="pill">🎬 15 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>你大概已經知道 Agent 是什麼、跟以前的問答差在哪。那最現實的問題就來了:這東西到底花多少錢?我一個人,要怎麼開始?接下來我就把這件事講清楚。但在講數字之前,我要先幫你「換一個腦」,因為如果你腦中還裝著舊時代那套算力的想法,你會把整件事的成本想歪。所以我們先從換腦開始。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先幫你換一個腦</h2>
+<div class="semoji">🧠</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>用過 Spark、Databricks 那種人請注意</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你腦中的算力 = 租 GPU 的機器小時數</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這個認知,在 Agent 時代要更新</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先講一個很多人會卡住的地方。如果你是上一個時代,用過 Spark、用過 Databricks、跑過大數據的人,那你腦中對「算力」的想像,幾乎一定是這樣:算力等於租一台機器的小時數。你租幾台 GPU、租幾個小時,成本就是這樣算出來的,固定、可預測,租好了就那樣擺著。這個認知本身沒有錯,它在那個時代是對的。但是到了 Agent 時代,這個想法要更新,不然你會拿舊地圖走新的路。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>舊世界:租 GPU 小時</h2>
+<div class="semoji">🖥️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先開好一批固定產能</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>付錢方式 = 時間 × 機器數</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>平的、可預測,閒著也在付</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們先把舊世界講清楚。舊世界的邏輯是這樣:你要用算力,你得先開好一批固定的產能,比如我先租五台 GPU 機器擺在那。付錢的方式很單純,就是時間乘上機器數,開幾台、開幾個鐘頭,乘一乘就是帳單。它的特性是「平的」,是一條很平穩、很好預測的線。但它也有一個很痛的地方:就算這幾台機器閒著沒事做,你一樣在付錢,因為你租的是產能,不是你真的用掉的東西。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>新世界:按 token 計費</h2>
+<div class="semoji">📈</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>token = 它處理的文字量</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>沒有固定產能,隨叫隨用</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>花費由「你叫它做多少事」決定</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那新世界呢?新世界的邏輯整個換掉了。它不是按時間算,而是按 token 算。token 你先簡單理解成「它處理的文字量」,你丟給它多少字、它回你多少字,加起來就是消耗。這裡最關鍵的差別是:沒有固定產能這回事了,你不用先租、先開一批機器擺著,而是隨叫隨用。你今天用得多就付得多,用得少就付得少,甚至完全不用就是零。你的花費,是由「你到底叫它做了多少事」決定的,不是由時間決定的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>尖峰暴衝:漲的是工作量</h2>
+<div class="semoji">🚀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>這小時只問一題 → 幾乎是零</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>下一小時開 100 個 agent 一起跑</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>token 就變 100 倍</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這個差別在尖峰的時候會特別明顯,我舉個例子你就有感覺。假設這一個小時,我只丟一個問題進去,那這小時的花費幾乎是零,趨近於沒有。可是下一個小時,我心血來潮,一次啟動一百個 agent 幫我同時跑一百件事,那這一個小時的 token 消耗,可能就直接變成一百倍。你注意一下,這裡漲上去的不是「時間」,時間還是那一個小時;漲的是我派出去的「工作量」。這就是新舊世界最根本的不同:舊世界看你租多久,新世界看你叫它做多少。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>但要分兩種情況,免得講錯</h2>
+<div class="semoji">🔌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>用雲端 API:根本沒在租 GPU,GPU 被抽象掉</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>自己養模型:還是 GPU 小時,只是利用率變尖峰</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>後者要嘛為爆量預留、要嘛排隊</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>不過這裡我要很小心地補一句,免得把你帶偏。上面講的按 token,其實還要分兩種情況。第一種,你用的是雲端 API,像是 Claude、像是 GPT。這種情況下,你根本沒有在租 GPU,那些機器對你是完全看不見的、被抽象掉了,你只要按 token 付錢就好,背後有幾台機器不干你的事。第二種,是你自己養模型、自己去買 GPU 機器來跑。這種情況你付的還是 GPU 小時沒錯,但你的機器利用率會從平穩變成尖峰,結果就是:你要嘛為了爆量的時刻先預留一堆機器閒著,要嘛就讓任務排隊等。這兩種是完全不同的成本模型,別搞混。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>兩種入口:訂閱制 vs API</h2>
+<div class="semoji">🎟️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>訂閱:固定月費、介面友善、不用寫程式(但有用量上限)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>API:按 token、沒月費地板、可串進自己的系統</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講完成本邏輯,再來講你實際上要從哪個門走進去。基本上有兩種入口,一種叫訂閱制,一種叫 API。訂閱制:你付一筆固定的月費,有一個很友善的介面,你打開就能用,完全不需要寫任何程式。API 則是給開發者、給企業用的:它是按 token 計費,沒有月費的地板,好處是你可以把它串進自己的系統裡,而且資料流向你可以自己掌控。這兩個入口,對應的是兩種完全不同的人。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>公司用的話,分界不是「訂閱 vs API」</h2>
+<div class="semoji">🏢</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>真正的分界:個人帳號 vs 公司簽的企業方案</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>企業版訂閱本來就是為合規做的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>重點是「有沒有合約」,不是「走哪個入口」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡要澄清一個很多人搞錯的觀念,包括我以前也講錯過。常聽到有人說「公司只能走 API,訂閱制是給個人玩的」——**這個講法不對。**真正的分界線不在「訂閱還是 API」,而在「**你用的是個人帳號,還是公司簽下來的企業方案**」。主流廠商都有企業版的訂閱,而且那個版本本來就是為了公司需求做的:**它會白紙黑字寫明不拿你的資料去訓練、可以接公司的登入系統、有使用紀錄可以稽核、而且是簽正式合約的。**那跟你自己刷卡辦的那個帳號,是完全兩回事,即使畫面長得一模一樣。所以公司要用,實務上兩條路都會走:**一般同事日常用企業版訂閱,要把 AI 接進公司系統的那部分才走 API。**你只要記住一句話就好:**別拿你的個人帳號處理公司的資料。**這跟入口沒關係,跟那個帳號背後有沒有一份合約有關係。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>個人不受這個限制</h2>
+<div class="semoji">🙋</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>企業卡在合規,個人沒這問題</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你不用先想「公司要不要部署」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>先把自己的手感養起來再說</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>很多人一聽到「要走 API、要自控環境、要顧合規」,就先被嚇退了,覺得這東西門檻好高、好複雜,乾脆不碰。但你要分清楚:那是企業的處境,不是你的。你一個人要開始試用這件事,根本沒有那些合規包袱。你不需要先去想「公司到底要不要部署這個」、「IT 會不會擋」,那些是之後、是別人的問題。你現在唯一要做的,是先把自己的手感養起來,先讓自己知道這東西能幫你做到什麼程度。這兩件事,要完全分開看。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>個人怎麼便宜起步</h2>
+<div class="semoji">🛒</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一兩頓飯錢:月費約 600,高階約 3000</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>實際金額以官網當期為準</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>先用訂閱制介面版,別一開始碰 API</li>
+</ul>
+<div class="note">金額會變動,請以官方網站當期方案為準</div>
+<details class="script"><summary>逐字稿</summary><p>那到底要花多少錢才能開始?講一個你會很有感的比較:大概就是一兩頓飯錢的等級。以目前來說,一般的訂閱月費大約在新台幣六百塊上下,更高階、額度更大的方案大約在三千塊左右。我要特別強調,這個數字會變,實際金額請一定要以官方網站當期的方案為準,不要把我講的數字記死。重點是那個量級:花這樣的小錢,你就能自己先試、先養手感,而且這跟公司未來要不要部署完全是兩回事、零風險。還有一個建議:一開始你就用訂閱制的介面版就好,不要一上來就去碰 API,那個等你有手感了再說。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>「額度內隨便用」其實有上限</h2>
+<div class="semoji">⏳</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是月底才歸零 —— 是每隔幾小時算一次</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>交辦大任務、一次派很多個,最容易撞到</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>撞到會被暫停一段時間,不是加錢就能解</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡我要先幫你打一劑預防針,因為**你第一天認真用就會遇到**,而且沒人先講的話,你會以為是自己做錯了什麼。訂閱制常被講成「額度內隨便用」,聽起來像吃到飽。實際上不是。它有用量上限,而且**不是月底才結算,是每隔幾個小時就算一次的**。你用得太兇,它會跟你說「你這段時間的用量到了,請等幾小時後再試」。什麼時候最容易撞到?**剛好就是你開始把它當 Agent 用的時候** —— 交辦一個要跑很多步驟的大任務、或者一次派好幾個同時做,那種用法的消耗量,跟你隨口問幾個問題完全不是同一個量級。所以聽到「隨便用」不要太興奮,**它擋的正是你最想做的那種用法。**遇到了不用慌,那不是壞掉也不是你的錯,等一下就恢復了;真的常常撞到,再考慮換更高的方案或改用 API,那是另一種計費方式,不會這樣擋你。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>為什麼 Agent 特別燒錢</h2>
+<div class="semoji">📜</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>它每回一次,都要把整段對話重看一遍</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>對話越長,每一次就越貴</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以貴的不是「問了幾次」,是「累積了多長」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>如果你之後要走 API、或者只是想搞懂為什麼帳單長那樣,這一張很值得聽,**因為這是 Agent 之所以貴的根本原因**,而且很反直覺。你可能以為費用是這樣算的:問一次算一次,問十次就是十份。**不是。**它每要回答一次,是把**整段對話從頭到尾重看一遍** —— 你前面問過的、它前面答過的、它中間讀進來的檔案,全部要再讀一次,因為它沒有記憶,它只能靠「重看」來知道發生過什麼。所以同一個對話裡,**第二十次發言比第一次貴得多**,不是因為你問得比較難,純粹是因為它要重讀的東西變多了。這就是為什麼 Agent 特別燒:它跑一個任務可能來回幾十步,每一步都在重讀越來越長的一整段。知道這件事有什麼用?**任務做完了就開新的對話,別在同一個對話裡一路做到底。**這一招同時省錢、又讓它比較不會被前面的雜訊干擾。還有一個實用的小知識:**它「寫出來」的字,比你「丟進去」的字貴很多,大約好幾倍。**所以真的要省的時候,先想辦法讓它少寫廢話 —— 叫它「直接給結論、不要重複我的問題」,比你少貼一份資料有效得多。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>你會得到什麼(一):生活</h2>
+<div class="semoji">📚</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>行程規劃,幫你排好一整天</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>幫你查證、比較(買東西、看合約)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把一堆雜訊,整理成一個結論</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那花這筆小錢,你到底能換到什麼?我分成三塊講,先講第一塊:生活。在生活上,它可以幫你做行程規劃,把一整天、一整趟旅程的安排排好。它可以幫你查證跟比較,比如你要買一個東西,它幫你把幾家的規格、價格攤開來比;你要看一份合約,它可以幫你把裡面的重點跟眉角先挑出來 —— 但這種**後果比較大的事情**,我要特別加一句:**它是幫你「看快一點」,不是幫你「決定」。**它可能漏掉一條、也可能把某條理解錯,而合約、醫療、法律、報稅這幾類東西,看錯的代價是你要自己承擔的。所以正確的用法是:**讓它幫你找出「該注意哪幾條」,然後那幾條你自己讀一遍**,重要的還是要問真的專業的人。它還很擅長把一堆亂七八糟的雜訊,幫你整理成一個乾淨的結論。這些都是你每天在做、但很花時間的事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>你會得到什麼(二):學習</h2>
+<div class="semoji">🎓</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把難懂的資料,變成你的專屬家教</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>幫你出考題,測自己懂了沒</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一步一步講解,講到你懂為止</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二塊,學習。這一塊我自己感受特別深。它可以把一份很難懂的資料,直接變成你的專屬家教,你看不懂的地方,就叫它用你聽得懂的方式重講一次。它可以幫你出考題,讓你測測看自己到底是真懂還是假懂。它可以陪你一步一步地講解,你哪裡卡住就停在哪裡,一直講到你真的通了為止。對想學新東西的人來說,這等於身邊隨時有一個不會累、不會不耐煩的老師。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">14</div>
+<h2>你會得到什麼(三):工作</h2>
+<div class="semoji">💼</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>把重複的、多步驟的工作</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>整段交辦掉,不是一步一步問</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你從執行者,變成驗收的人</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三塊,工作。這一塊是最有價值的。工作上,它最有價值的地方,是可以把那些重複的、要跑很多步驟的工作,整段交辦出去。注意我說的是「整段」,不是你一步一步去問它,而是把一個完整的任務丟給它,讓它自己跑完。這樣一來,你在工作裡的角色就變了:你從那個埋頭把事情做完的執行者,變成一個交辦任務、然後負責驗收的人。這就是整件事最核心的那個質變。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">15</div>
+<h2>帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先換掉「租機器小時」的舊腦</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>再花小錢用訂閱制親手試一次</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>前提到這裡就講完了</li>
+</ul>
+<div class="note">先換腦,再動手 —— 兩件事缺一不可。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話,那就是這句:先換掉你腦中「租機器小時」那顆舊腦,搞懂新世界是按你叫它做多少事來算的;然後,花一點小錢,用訂閱制,親手去試一次。這兩件事,一個是換腦,一個是動手,缺一不可。今天聽完就可以去做第一件事:挑一個訂閱制入口,花一點小錢,交辦一件你本來要自己做半小時的事。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=xitCFSFt7FY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=xitCFSFt7FY</a><br>
+🧱 對應架構圖 · 選型框架:<a href="arch-model-selection.html">arch-model-selection.html</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+
