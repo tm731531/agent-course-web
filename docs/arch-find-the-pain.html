@@ -92,7 +92,7 @@ flowchart TB
   所以用問的去挖後面六種,問到最後會以為「這客戶講不清楚自己要什麼」,
   其實是拿錯工具。</p>
 
-  <h2>♾️ 第二層:實際運轉的迴圈(沒有出口)</h2>
+  <h2>🔁 第二層:實際運轉的迴圈(有兩個出口)</h2>
   <div class="diagram">
     <pre class="mermaid">
 flowchart LR
@@ -104,14 +104,19 @@ flowchart LR
   N -->|對| ST["聽他講故事<br/>「為什麼會變成這樣?」"]:::data
   N -->|沒被否定也要記| R
   ST --> R["記錄各種狀況<br/>限制 · 判準 · 例外"]:::data
-  R --> AI["跟 AI 討論下一步<br/>整理模式 · 想怎麼繼續"]:::infra
+  R --> J{"這次否定<br/>有沒有教你新東西?"}:::decision
+  J -->|有新資訊| AI["跟 AI 討論下一步<br/>整理模式 · 想怎麼繼續"]:::infra
+  J -->|連續榨不出新東西<br/>沒人願意為它改做法| STOP(["🛑 停損<br/>這裡沒有東西,收手"]):::warn
   AI --> F["修正對「他們怎麼用」的理解"]:::proc
   F --> D
+  O --> CONV{"有人開始<br/>自己回來用?"}:::decision
+  CONV -->|是,否定變成「再順一點」| DONE(["✅ 收斂<br/>切去做穩、做可靠"]):::result
   classDef proc fill:#dbeafe,stroke:#2563eb,color:#17335e
   classDef data fill:#fef3c7,stroke:#d97706,color:#4a2f06
   classDef decision fill:#ede9fe,stroke:#7c3aed,color:#3b1d78
   classDef result fill:#dcfce7,stroke:#16a34a,color:#0f3f22
   classDef infra fill:#e5e9f0,stroke:#475569,color:#1e293b
+  classDef warn fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
     </pre>
   </div>
   <div class="legend">
@@ -119,12 +124,16 @@ flowchart LR
     <span class="k"><span class="s proc"></span>你做的動作</span>
     <span class="k"><span class="s data"></span>拿到的資訊</span>
     <span class="k"><span class="s infra"></span>AI 在這裡幫忙</span>
+    <span class="k"><span class="s result"></span>收斂出口</span>
+    <span class="k"><span class="s warn"></span>停損出口</span>
   </div>
   <div class="steps">
-    <div class="step"><div class="h"><span class="num">1</span><b>迴圈沒有出口</b><span class="dir">常態,不是階段</span></div>
-      <div class="bd">沒有「探完了、開始正式做」這個分界點。你給的東西可能是錯的,甚至可能永遠是錯的 —— 那不是失敗,那就是這個方法運作的樣子。你不是在逼近一個正確答案,你是在持續換方向。</div></div>
+    <div class="step"><div class="h"><span class="num">1</span><b>迴圈會落地 —— 從兩個出口</b><span class="dir">不是無限打轉</span></div>
+      <div class="bd">「探索和建置沒有乾淨的分界線」是對的,但別誤讀成「永遠不收斂」。迴圈有兩個出口:<b>收斂</b> —— 否定從「方向錯」變成「再順一點」、有人自己回來用,就切去做穩;<b>停損</b> —— 連換幾個方向都榨不出新資訊、沒人願意為它改任何現有做法,就承認這是死路、收手。沒有出口的不是這個方法,是還沒學會什麼時候該停的人。</div></div>
     <div class="step"><div class="h"><span class="num">2</span><b>記錄是獨立動作</b><span class="dir">不要只記結論</span></div>
       <div class="bd">每一輪都要記:撞到什麼限制、他們用什麼標準判斷對錯、有哪些例外。這些散開來看沒意義,累積起來才會浮出模式 —— 而模式就是你要找的那個東西。</div></div>
+    <div class="step"><div class="h"><span class="num">2.5</span><b>「被否定=方法在運作」有前提</b><span class="dir">別當免死金牌</span></div>
+      <div class="bd">只有當否定<b>帶來新資訊</b>(多一條限制、多一個判準)時,才叫方法在運作。如果同一個反對重複第三次、對方只給「就是不喜歡」、或已讀不回 —— 那不是方法在運作,是在燒你們的關係。這一條防的是把方法變成「怎樣都對」的不可證偽套語。</div></div>
     <div class="step"><div class="h"><span class="num">3</span><b>AI 幫的不只是「做」</b><span class="dir">也幫你決定下一步</span></div>
       <div class="bd">AI 讓做一版的成本崩掉,這是它最明顯的貢獻。但同樣重要的是:把累積的紀錄丟給它,一起整理模式、討論下一步該往哪換。判斷還是你的,但整理和發想可以一起做。</div></div>
     <div class="step"><div class="h"><span class="num">4</span><b>你迭代的不是那個東西</b><span class="dir">是你的情境理解</span></div>
