@@ -17,8 +17,12 @@
   /* diagram: always light so lines/labels stay readable in any theme */
   .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
     overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
-  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid{display:flex;justify-content:center;background:#fbfcff}
   .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  /* 寬圖(有兩個出口那張)不壓縮、改水平捲動,避免字被擠出節點 */
+  .diagram.wide{padding-bottom:14px}
+  .diagram.wide .mermaid{justify-content:flex-start;min-width:0}
+  .diagram.wide .mermaid svg{max-width:none;min-width:720px}
   .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
     background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
   .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
@@ -93,21 +97,20 @@ flowchart TB
   其實是拿錯工具。</p>
 
   <h2>🔁 第二層:實際運轉的迴圈(有兩個出口)</h2>
-  <div class="diagram">
+  <div class="diagram wide">
     <pre class="mermaid">
 flowchart TB
-  S(["① 從一個小方法開始 · 不用等需求清楚"]):::result
-  S --> D["② 做出一個具體的東西<br/>小 · 快 · 可以被丟掉"]:::proc
+  S(["① 從小方法開始"]):::result --> D["② 做一個具體的東西<br/>小 · 快 · 能丟掉"]:::proc
   D --> G["③ 給出去 · 讓它被用"]:::proc
-  G --> O["④ 去看 · 實際被怎麼用、卡在哪"]:::data
-  O --> N{"⑤ 被說不對?"}:::decision
-  N -->|對,聽他講故事<br/>「為什麼變成這樣?」| R["⑥ 記錄各種狀況<br/>限制 · 判準 · 例外"]:::data
-  N -->|沒被否定也要記| R
-  R --> AI["⑦ 跟 AI 討論下一步<br/>整理模式 · 想怎麼繼續"]:::infra
-  AI --> F["⑧ 修正對「他們怎麼用」的理解"]:::proc
-  F -.回到第②步.-> D
-  O ==>|有人開始自己回來用| DONE(["✅ 收斂出口<br/>切去做穩、做可靠"]):::result
-  R ==>|連換幾個方向都<br/>榨不出新東西| STOP(["🛑 停損出口<br/>這裡沒東西,收手"]):::warn
+  G --> O["④ 去看<br/>被怎麼用、卡在哪"]:::data
+  O --> C{"⑤ 有人自己回來用?"}:::decision
+  C -->|是| DONE(["✅ 收斂<br/>切去做穩"]):::result
+  C -->|還沒| N{"⑥ 這次否定<br/>有教你新東西?"}:::decision
+  N -->|沒有,連幾輪都沒| STOP(["🛑 停損<br/>收手"]):::warn
+  N -->|有:多一條限制/判準| R["⑦ 記錄 + 聽他講故事"]:::data
+  R --> AI["⑧ 跟 AI 討論下一步"]:::infra
+  AI --> F["⑨ 修正對「怎麼用」的理解"]:::proc
+  F -.回第②步.-> D
   classDef proc fill:#dbeafe,stroke:#2563eb,color:#17335e
   classDef data fill:#fef3c7,stroke:#d97706,color:#4a2f06
   classDef decision fill:#ede9fe,stroke:#7c3aed,color:#3b1d78
