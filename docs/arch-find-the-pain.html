@@ -95,22 +95,19 @@ flowchart TB
   <h2>🔁 第二層:實際運轉的迴圈(有兩個出口)</h2>
   <div class="diagram">
     <pre class="mermaid">
-flowchart LR
-  S(["從一個小方法開始<br/>不用等需求清楚"]):::result
-  S --> D["做出一個具體的東西<br/>小、快、可以被丟掉"]:::proc
-  D --> G["給出去 · 讓它被用"]:::proc
-  G --> O["去看<br/>實際被怎麼用、卡在哪"]:::data
-  O --> N{"被說不對?"}:::decision
-  N -->|對| ST["聽他講故事<br/>「為什麼會變成這樣?」"]:::data
+flowchart TB
+  S(["① 從一個小方法開始 · 不用等需求清楚"]):::result
+  S --> D["② 做出一個具體的東西<br/>小 · 快 · 可以被丟掉"]:::proc
+  D --> G["③ 給出去 · 讓它被用"]:::proc
+  G --> O["④ 去看 · 實際被怎麼用、卡在哪"]:::data
+  O --> N{"⑤ 被說不對?"}:::decision
+  N -->|對,聽他講故事<br/>「為什麼變成這樣?」| R["⑥ 記錄各種狀況<br/>限制 · 判準 · 例外"]:::data
   N -->|沒被否定也要記| R
-  ST --> R["記錄各種狀況<br/>限制 · 判準 · 例外"]:::data
-  R --> J{"這次否定<br/>有沒有教你新東西?"}:::decision
-  J -->|有新資訊| AI["跟 AI 討論下一步<br/>整理模式 · 想怎麼繼續"]:::infra
-  J -->|連續榨不出新東西<br/>沒人願意為它改做法| STOP(["🛑 停損<br/>這裡沒有東西,收手"]):::warn
-  AI --> F["修正對「他們怎麼用」的理解"]:::proc
-  F --> D
-  O --> CONV{"有人開始<br/>自己回來用?"}:::decision
-  CONV -->|是,否定變成「再順一點」| DONE(["✅ 收斂<br/>切去做穩、做可靠"]):::result
+  R --> AI["⑦ 跟 AI 討論下一步<br/>整理模式 · 想怎麼繼續"]:::infra
+  AI --> F["⑧ 修正對「他們怎麼用」的理解"]:::proc
+  F -.回到第②步.-> D
+  O ==>|有人開始自己回來用| DONE(["✅ 收斂出口<br/>切去做穩、做可靠"]):::result
+  R ==>|連換幾個方向都<br/>榨不出新東西| STOP(["🛑 停損出口<br/>這裡沒東西,收手"]):::warn
   classDef proc fill:#dbeafe,stroke:#2563eb,color:#17335e
   classDef data fill:#fef3c7,stroke:#d97706,color:#4a2f06
   classDef decision fill:#ede9fe,stroke:#7c3aed,color:#3b1d78
