@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L6·開創】原來 MCP 不用存資料:把閘道當導向器,而不是資料倉儲</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟣 開創</div>
+<h1>原來 MCP 不用存資料</h1>
+<p class="lead">把閘道當導向器,而不是資料倉儲</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=AxJLkaiHdMA" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L6 開創</span>
+<span class="pill">🎬 10 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>我要跟你講一個做到一半才長出來的轉念。一開始我以為要蓋一個資料倉儲 —— 把公司散在各處的資料抄一份進來,讓 Agent 查。做著做著我停下來問自己一句:**這份資料,我到底需不需要存?**結果答案是不用。**這台 server 身上一筆資料都沒有,卻能讓 Agent 什麼都查得到。**接下來我把這個轉念整個攤開:它為什麼成立、我實際上做了什麼、以及為什麼「不存資料」反而是更強的設計。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先講清楚 Agent 卡在哪:它很無知</h2>
+<div class="semoji">🌫️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>公司內部常常有上千個各自獨立的 API</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>Agent 不知道有哪些資料可查</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>就算知道,也不知道該怎麼問、問哪一個</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先把問題講清楚,你才知道我在解什麼。很多大一點的組織,資料不是一座乾淨的湖,而是**上千個各自獨立、各自授權的 API** —— 散在不同系統後面,每一個規格都不一樣。人可以靠文件、靠問同事慢慢摸;但 Agent 沒有這些背景,它其實非常無知。**它不知道到底有哪些資料可以查;就算知道有,也不知道該怎麼問、該問哪一個。**我最早的直覺,跟大部分人一樣 —— 那就蓋個倉儲,把資料集中起來給它查嘛。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>岔路:持有資料,還是導向資料</h2>
+<div class="semoji">🔀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>路 A:自己存一份 —— 做資料倉儲、做快取</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>路 B:自己不存 —— 只告訴 Agent「去哪查」並幫它轉過去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>我一開始站在 A,後來整個換到 B</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡有一個岔路,而且選錯會痛很久。**路 A,持有資料**:你自己做一個倉儲或快取層,把上游的資料抄一份進來,Agent 直接查你。**路 B,導向資料**:你自己一筆都不存,只做兩件事 —— 告訴 Agent「這種問題該查哪個資料集」,然後把它的查詢即時轉拋到上游、把當下的結果原封帶回來。我一開始很自然站在 A,因為「集中資料」聽起來就是正解。但真正動手之後,A 的代價一個一個冒出來。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>為什麼「自己存一份」是陷阱</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>兩份資料會分歧 —— 到底哪一份才算數?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>永遠有同步的負擔:上游改了,你要追</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>而且你把敏感資料多落地了一個地方</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>持有資料的陷阱,有三個,而且每一個都不小。第一,**你會有兩份會分歧的真相**。上游一份、你快取一份,某一天它們對不上,你要回答一個很煩的問題:到底哪一份才算數?第二,**同步是永遠還不完的債**。上游改了欄位、加了資料,你得一直追著它跑。第三,這一點最嚴重 —— **你等於把敏感資料多落地了一個地方**。本來資料好好待在有授權、有稽核的上游,你抄出來之後,又多一份要保管、要防外洩的副本。我盯著這三條看,忽然意識到一件事:**上游本來就是權威來源了,我幹嘛再存一份?**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>轉念:我要消除的是「無知」,不是「距離」</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>資料的真相,一直都在上游,不缺我這份</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>Agent 缺的不是「一份副本」,是「知道去哪查」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>所以我的工作不是搬資料,是消除它的無知</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這就是整件事的轉捩點。我原本以為 Agent 的問題是「離資料太遠」,所以想把資料搬近一點。**錯了。Agent 的問題不是距離,是無知。**資料的真相一直都在上游,好好的,不缺我抄的這一份。Agent 真正缺的,是**知道有什麼、知道去哪查、知道怎麼問**。所以我要做的根本不是搬運工,是一個嚮導 —— **我身上不用有資料,我只要知道資料在哪、幫它導過去查。**一句話講完這台 server 的靈魂:**Agent 問你,你身上沒資料,但你知道資料在哪、幫他導過去查。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>所以這台 server 只做兩件事</h2>
+<div class="semoji">🚦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>引導:告訴 Agent「這類問題,查這個資料集」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>轉拋:把查詢即時打到上游,把當下結果原封帶回</li>
+</ul>
+<div class="note">關鍵在自身零狀態:不落地、不快取、連上一次是誰都不記。</div>
+<details class="script"><summary>逐字稿</summary><p>想通之後,這台 server 該做什麼就變得非常乾淨,只有兩件事。**第一件,引導。**Agent 說「我想查某某東西」,你告訴它「這種問題,去查這個資料集」。**第二件,轉拋。**Agent 決定要查了,你把它的請求即時打到上游,把上游當下回的結果,原封不動帶回來。然後 —— **你自己什麼都不留。**不落地、不建快取、連「上一次是誰來查的」都不記。每一次呼叫都是獨立的、乾淨的。這種「什麼都不記」聽起來很偷懶,其實是它最值錢的地方:**沒有狀態,就沒有會分歧的第二份真相、沒有同步債、沒有多一份外洩風險。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>對 Agent 只開四個工具</h2>
+<div class="semoji">🧰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>探索:有哪些資料集?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>理解:這個怎麼查、要不要帶身分?</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>定位:用我的問題,幫我找對資料集</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>查詢:真的去查,把真資料帶回來</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這台 server 對 Agent 只暴露四個工具,剛好走完它的認知流程。**第一,探索** —— 有哪些資料集?把整份目錄攤給它看。**第二,理解** —— 挑到一個之後,它問:這個有哪些欄位、要不要帶身分、範例長怎樣?**第三,定位** —— 這個最關鍵,它可以用一句白話問「我想查這個」,你幫它對到正確的資料集。這一步就是「導向」兩個字的核心。**第四,查詢** —— 真的去查,把上游當下的真資料帶回來,不落地。你發現沒有:探索、理解、定位、查詢 —— **這不是四個功能,是 Agent 想事情的順序。**工具照它的思路長,它才用得順。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>一個我想特別講的邊界:身分不歸我湊</h2>
+<div class="semoji">🪪</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>有些資料要「你是誰」才能查</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>閘道不自己去查表拼出使用者是誰</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>身分由前面的 Agent 帶進來;缺了,就明講「我需要身分」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡有一個設計決定,我想特別講,因為它很容易做錯。有些資料是要看「你是誰」才給查的。那身分該由誰負責?很直覺的做法是:閘道自己聰明一點,去別的地方查一查、把使用者身分拼出來。**我刻意不這樣做。**因為一旦閘道會偷偷幫忙湊身分,你的授權邏輯就藏到一個你意想不到的角落去了,哪天湊錯了,是災難。所以我畫了一條很硬的邊界:**身分解析是前面那個 Agent 的責任,不是我的。**需要身分的資料,身分就由呼叫我的那一端帶進來;**如果它沒帶,我不猜、不湊,我就直接回一句結構化的「這個要身分才能查」,請它回頭去要。****寧可明確地說我需要身分,也不要默默用一個錯的身分。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>還有一條:不做假資料</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>查不到就明講查不到,附上為什麼</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>絕不回一個「看起來像真的」的假答案</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>導向型的信任很脆:一次假資料就全毀</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>還有一條原則,我把它看得很重:**這台 server 絕對不做假資料。**轉拋的時候,上游可能會拒絕、可能會逾時、可能查不到。這種時候最偷懶的做法,是回一個「看起來很合理」的假答案讓場面好看。**千萬不要。**導向型 server 的整個信任,建立在一句話上:**我回給你的,一定是真的;不然我就明確告訴你為什麼拿不到。**所以查不到,我就結構化地講清楚:是沒權限、還是逾時、還是這個代碼不存在,並且給 Agent 一個它接得住、可以據以行動的訊息。**因為只要有一次假資料,之後它回的每一筆你都不敢信了 —— 信任是脆的,一次就碎。**</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>為什麼這集放在「開創」</h2>
+<div class="semoji">🌱</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>沒有人交代我「要做一台不存資料的閘道」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>是動手做、撞到持有資料的代價,才長出來的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>最好的設計,常常是你做到一半自己想通的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後我想講,為什麼這集我放在「開創」這一級。因為**沒有任何人交代我「去做一台不持有資料的閘道」**。需求一開始長的樣子是「做個東西讓 Agent 查得到資料」,換十個人來做,九個會直覺去蓋倉儲。這個「不存資料」的設計,不是規格寫好的,是我真的動手、真的撞到「持有資料」那三個代價之後,自己想通、自己長出來的。**這就是開創級的味道:沒有標準答案等你抄,好的設計是你在做的過程裡,被現實逼出來、也被自己想清楚的。**所以別怕先做一個「笨版本」—— 很多最漂亮的轉念,都是做到一半才冒出來的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>帶走一句話</h2>
+<div class="semoji">🧳</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>MCP server 不一定要持有資料</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它可以只是一台幫 Agent 消除無知的路由器</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>動手前先問:這份狀態,我真的非存不可嗎?</li>
+</ul>
+<div class="note">上游已是權威來源時,閘道的價值在降低發現與存取的摩擦,不在複製資料。</div>
+<details class="script"><summary>逐字稿</summary><p>如果今天你只帶走一句話:**MCP server 不一定要持有資料。**當上游已經是資料的權威來源,你再存一份,買到的是分歧、同步債和多一份外洩風險;**它可以只是一台幫 Agent 消除無知的路由器 —— 引導它去哪查,幫它轉過去,自己乾乾淨淨。**所以下次你要為 Agent 接一個資料來源,動手之前先問自己一句:**這份狀態,我真的非存不可嗎?**很多時候答案是不用。而當答案是不用,你就會做出一台更小、更穩、更好維護的東西。這不是省事,這是更強的設計。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=AxJLkaiHdMA" target="_blank" rel="noopener">https://www.youtube.com/watch?v=AxJLkaiHdMA</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+
