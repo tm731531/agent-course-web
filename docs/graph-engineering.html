@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L4·工程】Graph:一群 AI 怎麼分工:一個 agent 扛不動時,把很多個接成一張分工圖</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟠 工程</div>
+<h1>Graph:一群 AI 怎麼分工</h1>
+<p class="lead">一個 agent 扛不動時,把很多個接成一張分工圖</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=L5VCXCWHcvQ" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L4 工程</span>
+<span class="pill">🎬 8 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》,這是六種工程系列的最後一集。前面我們讓一個 AI 會想、會做、站得穩。但有些任務,大到一個 AI 根本扛不動。這時候你需要的,是「一群 AI 分工合作」,而怎麼安排它們的分工,就叫 graph。它是這系列裡最新、也最容易做壞的一個。我用「一間餐廳」當例子,把它是什麼、什麼時候該用、又為什麼很多人一用就翻車,講清楚。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先想:一間餐廳怎麼出一桌菜</h2>
+<div class="semoji">🍽️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>接單、備料、炒鍋、擺盤、傳菜、結帳</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>很多人各做一格,不是一個人全包</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有分工、有順序、有人把關出餐</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先想一間餐廳,尖峰時段要出一桌菜,它怎麼運作?不是一個超人從頭做到尾。而是:前台接單、備料區切菜、炒鍋師傅下鍋、擺盤、傳菜、最後結帳——很多人,各做自己那一格,一格交給下一格。有分工、有先後順序,關鍵的地方還有人把關,菜不對不准出。一個 agent,就像一個廚師;當任務大到一個廚師忙不過來,你需要的,就是把它變成「一整間分工清楚的餐廳」。這就是 graph 想做的事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>①Graph 是什麼</h2>
+<div class="semoji">🕸️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>多個 agent 的「分工圖」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>有哪些角色、誰把工作交給誰</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>像一張組織圖 + 出餐動線</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一段,graph 是什麼。graph 中文是「圖」的意思,但這裡不是圖表,是「分工圖」。它畫的是:這個任務,拆成哪些角色、每個角色做什麼、誰做完交給誰。你可以想成一張公司的組織圖,加上一條「工作怎麼流動」的動線。前面的 loop 是「一個 agent 自己繞圈」,graph 則是「很多個 agent、還有一些固定步驟,接成一張網,一起把大事做完」。從一個人,到一整個團隊,這就是 graph 這一層在處理的事。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>②怎麼運作:節點 + 流轉 + 把關</h2>
+<div class="semoji">🔗</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>節點:每一格做一件事</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>流轉:這一格做完,交給哪一格</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把關:關鍵的地方,放一個人審</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二段,它怎麼運作,三個東西。第一,節點:圖上的每一格,負責做一件事。第二,流轉:定義這一格做完,要把結果交給哪一格,工作沿著線流動。第三,把關:在關鍵、或後果嚴重的地方,放一個檢查點,常常是「讓一個人來審一下」再放行。這裡有個很多人不知道的重點:節點不一定都是 AI。有些格子是固定的程式、有些是人的審核。graph 的藝術,是安排「哪一格用 AI、哪一格用固定程式、哪一格要人把關」。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>③好處:大任務拆得動</h2>
+<div class="semoji">✨</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個 agent 扛不動的,拆成很多格就做得動</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>每一格範圍小、好控制、好檢查</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>能平行:好幾格同時做,更快</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三段,好處。最直接的:一個 agent 扛不動的大任務,拆成很多格,就做得動了。而且每一格因為範圍小,反而更好控制、更好檢查——你知道每一格該產出什麼,錯了抓得到是哪一格。另外還能平行:好幾格沒有先後關係的,可以同時開工,整體更快。聽起來很美好對不對?這也是為什麼 graph 這個概念一出來,大家都很興奮。但接下來,我要講一個很重要、我自己親身踩過的坑,免得你一頭栽進去。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>反面教材:亂組,會空轉一整天</h2>
+<div class="semoji">🔥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我自己踩過:定了一組固定角色的團隊</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它們互相回報、互相改,一整天不收斂</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>根因:沒給一條「做到哪算完成」的線</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講個我自己真的踩過的坑。我一開始做多 agent,想說分工很漂亮,就定了一組固定角色的團隊,讓它們互相協作。結果呢?它們互相回報問題、互相修改,一個改完另一個又有意見,繞了整整一天,完全沒有收斂。事後我才想通:根因是我從頭到尾,沒給這張圖一條「做到哪裡、就算整件事完成」的線。沒有那條線,一群 AI 湊在一起,只會互相製造工作,永遠停不下來。這是 graph 最經典、也最貴的死法。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>硬數據:別以為多就是強</h2>
+<div class="semoji">📉</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>錯誤會放大:三個九成準的串起來剩七成三</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>固定預算下,單一 agent 常常贏過多 agent</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>別為了「多 agent」而多 agent</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>而且這不只是我個人經驗,有幾個很殘酷的數據。第一,錯誤會沿著鏈路放大:三個各自九成準的 agent 串在一起,整體只剩七成三。第二,研究發現,在一樣的運算預算下,單一 agent 在很多任務上,反而贏過一堆 agent 硬湊——很多「多 agent 比較強」,其實只是花了更多錢。第三,業界大量的多 agent 系統,失敗率高得驚人,而且多半是「架構設計」的問題,不是模型不夠聰明。結論很簡單:別為了「多 agent」而多 agent。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>④怎麼用:最後手段,不是預設</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>先確定「一個 agent 真的不夠」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>能一個 loop 做完,就別開整間餐廳</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要組,就給死一條「什麼叫完成」的線</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四段,那到底怎麼用?一句話:graph 是最後手段,不是你的預設選項。動手前先確定「一個 agent、一個 loop,真的扛不動這件事」——如果一個人做得完,就別大費周章開一整間餐廳。真的需要組 graph 了,務必做一件事:給死一條「什麼叫完成」的線,就是前面 loop 那集講的可驗證標準,讓整張圖知道什麼時候該收工。有了那條線,再加上關鍵處的人把關,你的餐廳才不會變成一群人瞎忙一整天。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Graph = 多個 agent 的分工圖</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不是取代 loop —— 一個 loop 是圖裡的一個節點</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>一個人做得完,就別急著開整間餐廳</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這集帶走一句話,也幫這個系列收尾:graph,就是把很多個 agent 接成一張分工圖,去做一個扛不動的大任務。但記住,它不是取代 loop——一個 loop,只是這張圖裡的一個節點。你不是從 loop「畢業」到 graph,而是當一個真的不夠時,才把好幾個組起來,而且要付出協調、可能失控的代價。所以那句話送給你:能一個人做得完,就別急著開整間餐廳。六種工程到這裡講完了,從一句 prompt,到一整張 graph,希望你現在都分得清、用得出來。我們下次見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=L5VCXCWHcvQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=L5VCXCWHcvQ</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

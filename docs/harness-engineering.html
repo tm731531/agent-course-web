@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L4·工程】Harness:讓 AI 動起來的地板:它會想、會做,但要真的動手,得先有一塊站得住的地板</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟠 工程</div>
+<h1>Harness:讓 AI 動起來的地板</h1>
+<p class="lead">它會想、會做,但要真的動手,得先有一塊站得住的地板</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=4TQUp-pAoPg" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L4 工程</span>
+<span class="pill">🎬 7 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。前面幾集,我們都在講 AI 怎麼想、怎麼做決定。但你有沒有想過:它想得再好,要「真的動手」——真的打開你的檔案、真的寄出一封信、真的操作一個系統——得靠什麼?靠的是一塊它站得住的地板,英文叫 harness。這一集,我用「給大廚一間廚房」當例子,講這個很多人忽略、但決定 AI 能不能真的落地的東西。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先想:你請了一個世界級大廚</h2>
+<div class="semoji">👨‍🍳</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>他手藝一流、腦中有一百道菜</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但你只給他一張空桌子,沒爐、沒刀、沒食材</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>他再厲害,也端不出一盤菜</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先想像一個畫面。你花大錢請到一個世界級的大廚,他手藝一流、腦子裡有一百道菜的做法。但你把他帶到一個空房間,只有一張空桌子——沒有爐子、沒有刀、沒有食材、連水都沒有。這個大廚再厲害,能端出一盤菜嗎?不可能。他的能力是真的,但他沒有一個「能工作的環境」。AI 就是這個大廚。前面我們把它教得很聰明,但如果它沒有一間「廚房」,它就只能用講的,動不了手。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>①Harness 是什麼</h2>
+<div class="semoji">🧰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>跑 AI 的「環境」:工具、連線、出錯處理</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>讓它能真的讀檔、查資料、寄信、操作</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它是 AI 站著工作的那塊地板</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一段,harness 是什麼。它就是「跑 AI 的環境」——那間廚房。裡面有什麼?有工具,讓它能真的打開檔案、查資料、寄信、操作系統;有對外的連線,讓它接得到它需要的東西;還有出錯的時候怎麼接住的機制。這些加起來,就是 harness,就是 AI 站著工作的那塊地板。它不是 AI 的腦,不是 AI 的做法,而是讓那顆腦、那套做法,能真正落到現實、動得了手的整套底層設施。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>②怎麼運作:給 AI「手腳」</h2>
+<div class="semoji">🔌</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>光有腦,它只能用「講」的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>接上工具,它才能真的「動手」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>harness 就是把工具接到 AI 身上</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二段,它怎麼運作。你可以這樣想:模型本身,只有一顆腦。光有腦,它能做的就是「用講的」——告訴你這封信該怎麼寫、這個檔該怎麼改。但它碰不到你的檔、寄不出那封信。harness 做的事,就是幫它接上「手腳」:把一個個工具,接到 AI 身上,讓它從「告訴你怎麼做」,變成「自己真的去做」。舉個最有感的例子:你請 AI 幫你把一份報表裡算錯的數字改對。只有腦的 AI,會跟你說「第三行應該改成五百」,然後你得自己去打開檔案、找到那一行、手動改掉;但接上了「檔案工具」的 AI,是自己打開那份檔、自己找到那一行、自己改好、自己存檔——你連碰都不用碰。同一句交辦,差別就在它有沒有那雙手。所以 harness 的核心,是「工具的接入」——它決定了 AI 的手,能伸到哪裡、能碰到什麼。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>③好處:從「能講」到「能做」</h2>
+<div class="semoji">✨</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>能自動:不用你手動搬中間結果</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>能重複:今天能跑,明天排程再跑一次</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>接得住錯:出狀況有地方處理,不會整個垮</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三段,有了 harness,好處是什麼。最根本的一個:AI 從「能講」變成「能做」。再具體一點,三個。第一,能自動:它自己讀、自己寫、自己送,你不用手動把中間結果搬來搬去。第二,能重複:今天能跑,明天排程讓它自己再跑一次,不用你在旁邊。第三,接得住錯:真的出了狀況,有一個地方去處理它,而不是整條流程當場垮掉。你會發現,這三個,全都是「可靠地把事情做完」的必要條件。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>④其實你天天在用一個 harness</h2>
+<div class="semoji">🖥️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你用的 Claude Code、那些 AI 工具</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>就是別人幫你蓋好的一間「廚房」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>工具、檔案存取、執行環境,都幫你接好了</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四段,實際上你怎麼用?好消息是,你可能天天都在用一個 harness,只是沒意識到。你用的那些 AI 工具——像 Claude Code 這種能真的幫你讀檔、改檔、跑指令的——它本身,就是別人幫你蓋好、裝潢好的一間廚房。工具、檔案存取、執行環境、出錯處理,全都幫你接好了,你直接進去用就好。所以對大部分人來說,「用 harness」不是自己去蓋,而是「選一個好用的、已經蓋好的」。你的重點,是知道它為什麼重要、以及怎麼挑。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>一個提醒:地板的品質,決定上限</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>工具爛、沒防護 → AI 再聰明也跑不穩</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>地板不穩,上面的 loop、graph 都會垮</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>選 harness,就是在選你的天花板</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後一個提醒。地板的品質,直接決定你的上限。如果這間廚房的工具很爛、沒有防護、出錯就整個當掉——那不管你上面的 AI 多聰明、你的 loop 設計得多好,整個都會跟著不穩。因為前面幾集講的那些——loop 自己跑、graph 多個分工——全都是站在這塊地板上的。地板一晃,上面全垮。所以選一個好的 harness,不是小事,你其實是在選你這整套 AI 系統的天花板有多高。這也是為什麼工程的人,很在意底層跑在什麼上面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Harness = 讓 AI 真的動手的環境與工具</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>沒有它,AI 只能用講的,動不了手</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>AI 的聰明是引擎,harness 是路</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這集帶走一句話:harness,就是讓 AI 從「能講」變成「能做」的那塊地板——工具、環境、出錯處理,一整套讓它真的動得了手的底層。沒有它,再聰明的 AI 也只能用嘴巴告訴你怎麼做。你可以這樣記:AI 的聰明是引擎,harness 是路;引擎再強,沒有路,也到不了任何地方。而大部分時候,你不用自己鋪路,選一條好路就行。最後一集,我們講當一個 agent 不夠、要一群 AI 分工時,怎麼把它們接成一張圖,那個叫 graph。我們下次見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=4TQUp-pAoPg" target="_blank" rel="noopener">https://www.youtube.com/watch?v=4TQUp-pAoPg</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+
