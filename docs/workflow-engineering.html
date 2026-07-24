@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】Workflow:把步驟寫死,穩穩跑:有些事你不要 AI 自由發揮 —— 你要它每次都一模一樣</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟡 進階</div>
+<h1>Workflow:把步驟寫死,穩穩跑</h1>
+<p class="lead">有些事你不要 AI 自由發揮 —— 你要它每次都一模一樣</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=GSpzoLhDFcQ" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 8 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。上一集我們講 loop,讓 AI 自己決定怎麼做到好。但你有沒有想過:有些事情,你其實根本不想讓它「自由發揮」?你要的是每次都一模一樣、穩穩當當。這一集講的 workflow,就是這件事——把步驟事先排好、寫死,讓它照著跑。它是 loop 的雙胞胎,搞懂它們的差別,你就知道什麼事該放手、什麼事該綁緊。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先想:每個月都要做的那件事</h2>
+<div class="semoji">📅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>每月結帳、做一份固定格式的報表</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>步驟每次都一樣,你早就滾瓜爛熟</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你要的是「不出錯」,不是「有創意」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先想一件你可能每個月都在做的事:結帳、然後做一份固定格式的報表。這種事有個特色——步驟每次都一模一樣,你自己早就滾瓜爛熟,閉著眼睛都會做。這時候你要 AI 幫忙,你要的是什麼?是「不出錯、每次都一致」,絕對不是「這個月給我來點創意、換個做法」。對這種事,讓 AI 自由發揮反而是災難。你要的,是把你腦中那套固定步驟,交給它照著跑。這就是 workflow。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>①Workflow 是什麼</h2>
+<div class="semoji">🏭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>事先把步驟排好、寫死</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>第一步、第二步、第三步…照順序跑</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>像工廠生產線,也像一份 SOP</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一段,workflow 是什麼。很簡單:就是你「事先把步驟排好、寫死」,然後讓它照著跑。第一步做這、第二步做那、第三步再做那,固定的順序,一步一步來。你可以把它想成工廠的生產線,或是一份寫得清清楚楚的 SOP、標準作業流程。每一站做什麼、下一站是誰,全都定好了。它的重點就是「照表操課」,不多想、不臨場改。這跟 loop 那種「自己邊做邊決定」,是完全相反的兩種做法。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>②怎麼運作:照固定順序,不臨場改</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>每一步做什麼,你先定好</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它不自己決定下一步,照你排的走</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同樣的輸入,每次跑出同樣的結果</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二段,它怎麼運作。關鍵在「誰決定步驟」。在 workflow 裡,每一步要做什麼,是你事先定好的,AI 不自己決定下一步,它就照你排好的順序走。因為路徑是固定的,所以會有一個很好的特性:同樣的輸入,每次都跑出同樣的結果。這叫可預測。你不會今天跑出一個樣、明天跑出另一個樣。對報表、對帳、對那些「差一點都不行」的事情,這種「每次都一樣」,正是你最想要的東西。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>跟 loop 的差別:誰決定下一步</h2>
+<div class="semoji">🔀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Loop:AI 自己邊做邊決定(活,但難預測)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>Workflow:你排死、它照跑(穩,但不變通)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同一件事,兩種相反的做法</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這裡把 loop 跟 workflow 正面擺在一起,你就通了。差別只有一句話:誰決定下一步。loop 是 AI 自己邊做邊決定,好處是靈活、會變通,壞處是比較難預測。workflow 是你把步驟排死、它照著跑,好處是穩、可預測,壞處是不會變通。一個活、一個穩,是同一件事的兩種相反做法。它們沒有誰比較高級,是「看你這件事需要什麼」。搞懂這個對照,你就掌握了用 AI 做事最重要的一個判斷。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>③好處:穩、便宜、可重複</h2>
+<div class="semoji">✨</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>穩:每次結果一致,不會今天對明天歪</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>便宜:不用每次都讓 AI 重新想一遍</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>可重複:誰來跑、跑幾次,都一樣</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三段,workflow 的好處,三個。第一,穩:每次結果一致,不會今天對、明天突然歪掉。第二,便宜:因為步驟定好了,不用每次都叫 AI 重新想一遍,省時間也省成本。第三,可重複:不管誰來跑、跑幾次,結果都一樣,你可以放心把它交給別人、或排程自動跑。你發現沒有,這三個好處,全都是「可靠」這件事的不同面向。當一件事的重點是可靠,而不是聰明,workflow 幾乎永遠是對的選擇。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>④何時用:先問一句話</h2>
+<div class="semoji">🧭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問自己:這件事的步驟,我列得出來嗎?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>列得出來、每次都一樣 → 用 workflow</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>列不出來、每次要看情況 → 用 loop</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四段,實際上你怎麼判斷該用哪個?記一句話就好,開工前先問自己:「這件事的步驟,我事先列得出來嗎?」如果列得出來,而且每次都一樣——那就用 workflow,把它排死,穩穩跑。如果列不出來,因為每次狀況都不同、要邊做邊看——那就別硬排,交給 loop,讓 AI 臨場決定。就這麼一句話,幫你分開九成的情況。步驟已知,用 workflow;步驟未知,用 loop。這是你用 AI 最實用的一把尺。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>其實常常一起用</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>大流程用 workflow 固定住</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>其中「不確定的那一步」塞一個 loop</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>外面穩、裡面活 —— 真實系統多半這樣</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後補一個實務。loop 跟 workflow,不是二選一,真實的系統常常是「一起用」。怎麼混?外面用一個 workflow 把大流程固定住:第一步收資料、第二步處理、第三步寄出。但中間「處理」那一步,如果每次狀況不同,你就在那一步塞一個 loop,讓 AI 臨場把它做到好。外面是穩的骨架,裡面某一格是活的。你不用純粹選一邊,而是「哪裡需要穩就 workflow、哪裡需要活就 loop」。這種混搭,才是高手真正在用的方式。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>Workflow = 步驟排死、照著跑、每次一樣</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>步驟已知用 workflow(穩),未知用 loop(活)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>判斷:這件事的步驟,我列得出來嗎</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這集帶走一句話:workflow,就是把步驟排死、照著跑、每次都一樣。它跟 loop 的分界,就一句:步驟你事先列得出來嗎?列得出來、要穩,用 workflow;列不出來、要活,用 loop。下次你要自動化一件事,先別急著動手,先問這一句,你就知道該把它綁緊、還是放手。到目前為止,我們都在講「AI 怎麼想、怎麼做」。下一集換個角度,講讓這一切真的跑得起來的地板——工具跟環境,那個叫 harness。我們下次見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=GSpzoLhDFcQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=GSpzoLhDFcQ</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

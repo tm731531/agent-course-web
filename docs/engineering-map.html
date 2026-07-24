@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L4·工程】六種工程,何時用哪一種:prompt、context、loop、workflow、harness、graph 一次分清</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟠 工程</div>
+<h1>六種工程,何時用哪一種</h1>
+<p class="lead">prompt、context、loop、workflow、harness、graph 一次分清</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=IJpa0g_39MI" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L4 工程</span>
+<span class="pill">🎬 13 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。這半年,你大概被一堆新名詞轟炸過:prompt engineering、context engineering,然後是 loop、workflow、harness,最近又冒出一個 graph。聽起來每一個都很重要,但它們到底差在哪、什麼時候該用哪一個?這一集,我用同一個很小的任務,從頭到尾把這六個詞串起來,讓你看完就分得清、用得出來。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先承認:這些詞很容易混</h2>
+<div class="semoji">🌀</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>半年冒出六個「X Engineering」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>各家文章排的順序還互相打架</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>混,是因為硬把它們排成一條直線</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們先誠實一點。這六個詞為什麼讓人混?因為每篇文章都想把它們排成一條直線,從 prompt 一路排到 graph,好像後面的比前面的高級。結果各家排的順序還不一樣,有人說 harness 最外層,有人說 loop 最新,你看了三篇,更亂。我今天要先把這個錯誤觀念拆掉:它們根本不在同一條線上。看懂這件事,這六個詞就再也不會混。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>結論先講:兩把尺 + 一塊地板</h2>
+<div class="semoji">📏</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>尺一:範圍多大(一句話 → 一整團隊)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>尺二:步驟誰決定(人排死 vs AI 臨場)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>地板:harness(跑這一切的環境)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先給你今天的結論,後面全部圍著它轉。這六個詞分屬三件事。第一把尺量「範圍多大」:從一句話,到一整個 Agent 團隊。第二把尺量「步驟是誰決定的」:是人事先排死,還是 AI 臨場自己決定。這兩把尺互相獨立。最後,下面永遠有一塊地板,叫 harness,就是「跑這一切的工具跟環境」。記住這兩把尺加一塊地板,剩下的都是細節。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>Prompt:實際怎麼用</h2>
+<div class="semoji">💬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>同一個任務,講法決定成果</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>「整理客戶名單」→ 太模糊</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>「去重、補全公司欄、照 A-Z 排」→ 可交付</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>從最小的開始。我們的任務是:整理一批雜亂的客戶名單。prompt engineering,就是你怎麼「開口交辦」這一句話。你如果只說「幫我整理一下這份名單」,它會給你一個它猜的整理法,八成不是你要的。但你如果說「把重複的合併、公司欄位空的補上、最後照公司名 A 到 Z 排序」,同一個模型,產出就完全不同。這是最基本、CP 值也最高的一段:大部分「AI 做不好」,其實是你話沒講清楚。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>Context:實際怎麼用</h2>
+<div class="semoji">📚</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不只那句話,是它「看得到的一切」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>貼上:欄位規格、兩三筆範例、忌口清單</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>「同一家公司不同寫法算同一筆」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>接著是 context engineering。它管的不是那句話,而是「AI 手邊看得到的所有資訊」。同樣整理名單,你可以多給它三樣東西:一,欄位規格,告訴它每一欄該長什麼樣;二,兩三筆已經整理好的範例,讓它照著做;三,一份忌口清單,比如「台積電跟 TSMC 要當成同一家公司」。你給的脈絡越齊,它越不用猜。很多人以為問題出在模型笨,其實是你沒把它該看的資訊擺到它面前。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>Loop:實際怎麼用</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>讓它自己「做 → 檢查 → 修 → 再做」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>關鍵:給一個「可驗證的完成標準」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>例:每筆都有公司名、零重複 = 才算完成</li>
+</ul>
+<div class="note">▶ DEMO</div>
+<details class="script"><summary>逐字稿</summary><p>再往上一層,loop engineering。這裡你不再一步步盯著它,而是讓它自己跑一個循環:做一版、檢查、發現問題、修、再檢查。但這裡有一個最容易被忽略的重點:你必須給它一個「可驗證的完成標準」。不是「整理到好」,而是「每一筆都要有公司名、而且完全沒有重複,做到這樣才算完成」。有了這把能跑出對或錯的尺,它才知道什麼時候該停。這件事我自己吃過虧:早期我沒給明確的完成標準,它就一直改、一直改,改到我受不了喊停。你的職責,其實不是描述『感覺對不對』,是給它一個能跑出『對或錯』的目標。等一下我直接讓一個 Agent 真的跑一次給你看。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>Workflow:實際怎麼用</h2>
+<div class="semoji">🏭</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>步驟你早就知道 → 直接排死</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>第一步去重、第二步補欄、第三步寄信</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>誰跑都一樣,穩、可重複、便宜</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>但如果這個整理名單的流程,你「每個月都要做一次」,而且步驟固定不變呢?那你就不該每次都讓 AI 臨場發揮。這時候用 workflow engineering:把步驟事先排死——第一步去重、第二步補公司欄、第三步套用信件範本寄出去。誰來跑、跑幾次,結果都一樣。它的好處是穩定、可重複、又便宜,壞處是不會隨機應變。這就帶到今天最重要的一個判斷。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>Loop vs Workflow:第二把尺</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問自己:步驟我列得出來嗎?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>列得出來 → Workflow(排死,穩)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>列不出來 → Loop(交給 AI 臨場決定)</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>loop 跟 workflow,是今天第二把尺的兩端,很多人在這裡選錯。判斷方法只有一句話:這件事的步驟,我事先列得出來嗎?如果列得出來、每次都一樣,就用 workflow 排死,穩又省。如果列不出來——因為每次狀況不同、要邊做邊看——那才交給 loop,讓 AI 臨場決定下一步。這裡也順帶破解一個迷思:固定步驟的流程,其實是「狀態機」,不是真正的 Agent。Agent 的靈魂,是它自己決定步驟、自己知道何時停。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>Harness:實際怎麼用</h2>
+<div class="semoji">🧰</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>跑這一切的「地板」:工具、連線、出錯處理</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它能不能讀你的檔、寄信、明天自動再跑</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>Claude Code 這類工具,本身就是一個 harness</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三把——不對,harness 不是尺,它是那塊地板。harness engineering 管的是「跑這一切的環境」:AI 有沒有工具可以真的打開你的檔案、有沒有權限寄信、出錯的時候怎麼接住、明天能不能自動再跑一次。你上面用 prompt 還是用 loop,都得先站在這塊地板上。你其實天天在用的 Claude Code 這種工具,本身就是別人幫你蓋好的一間 harness。當你開始在意「這個流程能不能可靠地、重複地自動跑」,你就已經在做 harness 工程了。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>Graph:實際怎麼用</h2>
+<div class="semoji">🕸️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一個 Agent 不夠 → 多個分工協作</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>接單、去重、寫信、審核,各做一格</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>警告:亂組會「互相製造工作、跑一天不收斂」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後,graph engineering,也是最新的一個。當任務大到一個 Agent 扛不動——比如你要一次處理十萬筆、還要有人審核、有人寄信——你就把很多個 loop 接成一張分工圖:一個負責接單、一個去重、一個寫信、一個把關。這就是 graph:多個 Agent 的分工與動線。但我要給你一個很實在、我自己踩過的警告。我最早做多 Agent 的時候,先定義了一組固定角色的團隊,想說分工很漂亮,結果它們互相回報錯誤、我跟著改,改了整整一天都沒收斂。事後才想通:我從頭到尾沒給它們一條「做到哪裡算完成」的停止線,它們就只能互相製造工作。所以記住——graph 不是取代 loop,一個 loop 只是圖裡的一個節點。能一個人做完,就別急著開整間餐廳。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>多 Agent 的殘酷真相(有數據)</h2>
+<div class="semoji">📉</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>錯誤會放大:三個九成準的 Agent 串起來 → 剩七成三</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>固定預算下,單一 Agent 常常贏過多 Agent</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>業界實測:多 Agent 系統失敗率四成到八成七</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>而且別以為多 Agent 一定比較強,有幾個很殘酷的數據你該知道。第一,錯誤會沿著鏈路放大:三個各自九成準的 Agent 串在一起,整體只剩七成三,亂接的話甚至放大十幾倍。第二,史丹佛二零二六年的研究發現,在一樣的思考預算下,單一 Agent 在多步推理上常常贏過多 Agent——很多「多 Agent 比較強」的說法,其實只是花了更多錢在算,不是架構真的比較好。第三,業界掃過一千六百個失敗案例,多 Agent 系統的失敗率高達四成到八成七,而且多數是結構設計的問題,不是模型不夠聰明。所以 graph 不是你的預設選項,是你確定單一 loop 真的撐不住了,才動用的最後手段。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">11</div>
+<h2>六個詞,一張表看完差異</h2>
+<div class="semoji">📊</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>範圍:prompt &lt; context &lt; loop &lt; graph</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>步驟誰決定:workflow(人) vs loop(AI)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>harness:一路都在的地板</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們把六個詞收進一張表。範圍這把尺,從小到大是:prompt、context、loop、graph——一句話、一份備料、一個 Agent 自己跑、一整個團隊。決定步驟這把尺,兩端是 workflow 跟 loop:人排死,還是 AI 臨場。而 harness,不在任何一把尺上,它是一路都在的地板。你看,六個詞其實只對應三個問題,一點都不玄。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">12</div>
+<h2>實戰:該從哪裡下手</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>① 先把 prompt + context 練熟(最划算)</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>② 步驟已知用 workflow,未知才用 loop</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>③ 一個 Agent 真的不夠,才上 graph</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那給正在往工程走的你,一個實際的下手順序。第一,先把 prompt 跟 context 練到熟,這是投報率最高的一段,九成問題在這裡就解決。第二,遇到要自動化的流程,先問步驟列不列得出來:列得出來用 workflow,列不出來才用 loop。第三,確定一個 Agent 真的撐不住了,才上 graph,別為了多 Agent 而多 Agent。而 harness,是你一開始在意「可靠、可重複」時就一路都在的底層。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">13</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>別背名詞順序,記兩把尺</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>一把量範圍,一把量「步驟誰決定」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>下面永遠有一塊 harness 地板</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這集帶走一句話:別去背這六個詞的順序,名詞每隔幾個月就會換一批,你背不完。你只要記住兩把尺——一把量「範圍多大」,從一句話到一整個團隊;一把量「步驟是誰決定的」,人排死還是 AI 臨場。再記得下面永遠有一塊叫 harness 的地板。有了這兩把尺,不管明年又冒出什麼新的 X engineering,你都放得進去、分得清楚。我們下次見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=IJpa0g_39MI" target="_blank" rel="noopener">https://www.youtube.com/watch?v=IJpa0g_39MI</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L2·上手】Context:AI 看得到的一切:不只你那句話 —— 你給的背景,決定它答得準不準</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🔵 上手</div>
+<h1>Context:AI 看得到的一切</h1>
+<p class="lead">不只你那句話 —— 你給的背景,決定它答得準不準</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=U-8VeAavkkQ" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L2 上手</span>
+<span class="pill">🎬 9 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。上一集我們講了 prompt,也就是把「那句話」講清楚。但你有沒有遇過:話明明講得很清楚了,AI 還是答得零零落落?那通常不是你 prompt 的問題,是它缺了另一樣東西——背景資訊,英文叫 context。這一集我用「帶一個新來的助理」當例子,把 context 是什麼、為什麼它常常才是關鍵,講清楚。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先想像:一個很聰明的新助理</h2>
+<div class="semoji">🧑‍💼</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>他能力很強、學歷很好</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>但第一天上班,什麼都不知道</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你不給資料,他再聰明也做不出你要的</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先想像一個畫面。你請到一個很聰明的新助理,能力很強、反應很快。但他第一天上班,對你的公司、你的客戶、你過去怎麼做事,通通不知道。這時候你丟一句「幫我處理一下這個客戶」,他能處理好嗎?不可能。不是他笨,是他手邊沒有任何背景。AI 就是這個超級聰明、但每天都是「第一天上班」的助理。你給它多少背景,它就能做到多好。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>①Context 是什麼</h2>
+<div class="semoji">📚</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>AI 手邊「看得到的所有資訊」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不只你這句 prompt,還有你附上的一切</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>規格、範例、檔案、前面的對話 —— 全算</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一段,context 到底是什麼。如果說 prompt 是「你交辦的那句話」,那 context 就是「AI 手邊看得到的所有資訊」。它不只是你這一句,還包括你貼給它的規格、你給的範例、你附上的檔案、甚至你們前面聊過的對話。這些全部加起來,就是 context,就是它做這件事時「眼前攤開的所有材料」。prompt 是指令,context 是它做這件事時能參考的一整張桌面。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>②怎麼運作:它只看得到「窗內」</h2>
+<div class="semoji">🪟</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>AI 一次只看得到一個範圍,叫 context window</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>窗內的它知道,窗外的它不知道</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它不會自動記得你上次、也讀不到你電腦裡的檔</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二段,它怎麼運作,這裡有個最多人誤會的地方。AI 一次只看得到一個範圍,這個範圍有個名字,叫 context window,你可以想成它的「視線範圍」或「工作桌面」。擺在桌面上的,它看得到;沒擺上去的,它就完全不知道。這代表兩件很重要的事:第一,它不會自動記得你上次跟它講過什麼;第二,它讀不到你電腦裡的檔案,除非你把內容貼進去。它不是不願意,是那些東西根本不在它的桌面上。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>資訊不夠,它就自己編(幻覺)</h2>
+<div class="semoji">🤥</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>桌面上少了資料,它不會說「我不知道」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它會用「聽起來很合理」的話補上去</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>這叫幻覺 —— 一本正經地說錯</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那如果桌面上少了關鍵資料,會怎樣?這是 AI 一個很有名、也很危險的毛病。它通常不會老實跟你說「這個我不知道」,反而會用一段「聽起來很合理」的話,把空缺補起來。名字、數字、來源,它都能編得煞有其事。這個現象有個名字,叫幻覺。它不是故意騙你,是它被訓練成「要回答」,資訊不夠就用猜的填。而防止幻覺最實在的辦法,不是叫它別亂講,是把它該看的資料,好好擺到它桌面上。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>③把脈絡給齊的好處</h2>
+<div class="semoji">✨</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>少解釋:不用每次從頭說明</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>少幻覺:有依據就不用瞎編</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>答得準:它照你的實際狀況回答</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三段,把脈絡給齊,好處是什麼。三個。第一,少解釋:你不用每次都從頭把來龍去脈講一遍,資料在桌面上,它自己會看。第二,少幻覺:它手邊有真的依據,就不需要用編的。第三,也是最實際的,答得準:它是照你「真實的狀況」在回答,而不是照它想像的通用情況。很多人一直在調 prompt、換模型,其實真正卡住的,是沒把背景資料餵夠。context,常常才是那個決定成敗的關鍵。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>④怎麼用:餵 context 的四招</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>貼規格:欄位、格式、標準長怎樣</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>給範例:一兩個「對的樣子」讓它照做</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>講限制:什麼不能碰、什麼要避開</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>附相關檔:把它該讀的內容直接貼進去</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四段,實際怎麼餵 context,記四招。第一,貼規格:把欄位、格式、你的標準長什麼樣,寫給它。第二,給範例:給它一兩個「對的樣子」,它照著模仿,比你講一堆規則還準。第三,講限制:什麼不能碰、什麼要避開、有什麼禁忌。第四,附相關檔:把它該讀的那份內容,直接貼進去,別指望它自己會知道。這四招,就是把新助理需要的資料夾,一份一份放到他桌上。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>前後對比:只問 vs 附上背景</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>只問:「這封客訴怎麼回?」→ 它給通用罐頭</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>附背景:訂單狀況+公司退款政策+過去回法</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同一個 AI,後者才像你們公司會給的答案</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們把它變具體。只問一句:「這封客訴怎麼回?」——AI 只能給你一個網路上到處都有的通用罐頭回覆。但如果你附上背景:這張訂單的實際狀況、你們公司的退款政策、還有過去類似客訴你們是怎麼回的——同一個 AI,這次給你的,就會是一個「真的像你們公司會發出去」的回覆。差別不在 AI 聰不聰明,在你有沒有把它該知道的背景,擺到它眼前。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>一個提醒:相關才好,不是越多越好</h2>
+<div class="semoji">⚖️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不是把所有東西都塞進去就贏</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>塞一堆不相關的,反而干擾它</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>給「跟這件事有關」的,精準比多重要</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後一個提醒,免得你矯枉過正。context 不是「塞越多越好」。如果你把一大堆不相關的東西全倒進去,反而會干擾它,讓它抓不到重點,甚至被無關的內容帶偏。就像你給新助理資料,是給他「這件事需要的那幾份」,不是把整個檔案室搬到他桌上。所以重點是「相關」,不是「大量」。給對的、給夠的,比給多的重要。這個分寸,是 context 這門功夫真正的細節。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>AI 不是笨,是你沒把它該看的擺到它面前</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>prompt 是那句話,context 是它眼前的整張桌面</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>答不準,先想:背景資料給夠了嗎</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這集帶走一句話:AI 答不準,常常不是它笨,是你沒把它該看的東西,擺到它眼前。記住 prompt 跟 context 的差別:prompt 是你交辦的那句話,context 是它做這件事時,眼前攤開的整張桌面。下次它答歪了、或開始一本正經地亂編,先別急,回頭想一想:它需要的背景資料,我給夠了嗎?把桌面擺好,聰明的助理才發揮得出來。下一集,我們讓 AI 不只是回答,而是自己動手一步步做到好,那個叫 loop。我們下次見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=U-8VeAavkkQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=U-8VeAavkkQ</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

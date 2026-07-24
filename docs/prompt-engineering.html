@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L1·入門】Prompt:你對 AI 說的那句話:同一個 AI,你怎麼講,決定它端出什麼</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟢 入門</div>
+<h1>Prompt:你對 AI 說的那句話</h1>
+<p class="lead">同一個 AI,你怎麼講,決定它端出什麼</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=WWg3EehX6Bo" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L1 入門</span>
+<span class="pill">🎬 9 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。這一集講一個你天天在用、卻很少有人真的教的東西:prompt,也就是「你對 AI 說的那句話」。你可能覺得,不就是打字問問題嗎?但同樣一個 AI,同一個問題,你講法不一樣,它給你的東西可以差十萬八千里。這一集,我用大家都懂的「餐廳點餐」,把 prompt 到底是什麼、為什麼這麼重要,一次講清楚。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先從點餐說起</h2>
+<div class="semoji">🍜</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>「來一碗麵」→ 老闆自己決定</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>「牛肉麵、不要辣、麵少一點」→ 你要的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同一家店,講法不同,端上來就不同</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先別管 AI,我們從吃飯講起。你走進一家麵店,跟老闆說「來一碗麵」,老闆會給你什麼?他自己猜一碗,可能是招牌、可能是最貴的。但你如果說「牛肉麵、不要辣、麵少一點、湯多一點」,端上來的就是你真正想吃的。同一家店、同一個廚師,你「怎麼講」,直接決定桌上那碗麵長什麼樣。你對 AI 說的那句話,就是這個道理,它有個名字,叫 prompt。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>①Prompt 是什麼</h2>
+<div class="semoji">💬</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>就是你交給 AI 的「那句話 / 那段話」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>AI 做的每一件事,都從這句開始</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它是你跟 AI 之間唯一的方向盤</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一段,prompt 到底是什麼。講白了,prompt 就是「你交給 AI 的那句話,或那段話」。你打進去的每一個字,就是 prompt。聽起來很簡單,但關鍵在這句:AI 做的每一件事,全都是從你這句話開始的。它不會讀心、不知道你腦子裡想什麼,它唯一的依據,就是你打進去的那段文字。所以這句話,是你跟 AI 之間唯一的方向盤。方向盤怎麼打,車就往哪走。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>②它怎麼運作:模糊,它就自己猜</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>AI 照「你的字面 + 它的猜測」動作</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>你講得越模糊,它猜得越多</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>猜錯了,不是它壞,是話沒給夠</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二段,它是怎麼運作的。這裡有個很多人不知道的重點:AI 是照「你的字面意思,加上它自己的猜測」在做事。你把話講滿,它照著做;你留白的地方,它就自己補、自己猜。所以你講得越模糊,它要猜的就越多,猜偏的機會就越大。很多人氣呼呼地說「這 AI 好笨」,其實不是它笨,是你那句話沒給夠,它只好用猜的。你給的資訊,決定它要不要用猜的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>模糊的代價:一直來回改</h2>
+<div class="semoji">🎲</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>「幫我寫個東西」→ 它給一個它猜的</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不對 → 你再解釋 → 它再改</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>來回三四次,還不如一次講清楚</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>模糊會付出什麼代價?我舉個真的很常見的例子。你跟 AI 說「幫我寫個東西」,它就給你一個它猜的版本。你一看,不是這樣,再解釋一次;它再改,又不太對,你再補一句。就這樣來回三四次,你花的時間,早就超過「一開始就把話講清楚」了。模糊的 prompt 不是比較快、比較省事,它其實是把「講清楚」這件事,拆成好幾次痛苦的來回。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>③講清楚的好處</h2>
+<div class="semoji">✨</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>一次到位,省下反覆來回</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>同一個 AI,產出品質你自己決定</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不用更貴的工具,只要更好的說法</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三段,把 prompt 講清楚,到底有什麼好處。最直接的,就是一次到位,省下那些反覆來回。但更重要的是這個觀念:同一個 AI,產出的品質,其實是你自己決定的。不是付更多錢、換更貴的工具才會變好,而是你「怎麼說」就能讓它變好。這是投報率最高的一件事,不用花一毛錢,只要把那句話講好,同樣的 AI 就能給你好上一大截的東西。這也是為什麼這一集我放在最前面講。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>④怎麼用:一句好 prompt 的四塊</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>做什麼(動詞):寫、整理、翻譯、比較</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>對誰/什麼(對象):這份、這段、這張表</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>要求(規格):條件、限制、重點</li>
+<li style="border-left-color:#a78bfa;background:color-mix(in srgb,#a78bfa 8%,transparent)"><span class="dot" style="background:#a78bfa">4</span>長怎樣(格式):表格、條列、幾個字</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四段,最實用的,一句好的 prompt 怎麼組。你不用背公式,記四塊就好。第一塊,做什麼,用動詞:寫、整理、翻譯、比較。第二塊,對誰或對什麼:這份文件、這段話、這張表。第三塊,要求:有什麼條件、限制、你在意的重點。第四塊,長什麼樣:你要表格、還是條列、還是三句話總結。把這四塊講齊,AI 就幾乎不用猜了。回到點餐:什麼麵、給誰、什麼要求、幾分熟,講齊了,端上來就是你要的。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>前後對比:同一件事兩種講法</h2>
+<div class="semoji">🔍</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>爛:「幫我看一下這封信」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>好:「幫我把這封客訴信,回一封道歉+補償方案,語氣客氣、三段內」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>多花十秒講,省下三次來回</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>我們把四塊套進一個真的例子,你就有感了。爛的講法:「幫我看一下這封信」——AI 根本不知道你要它做什麼,看完然後呢?好的講法:「幫我把這封客訴信,回一封道歉加補償方案,語氣客氣、控制在三段以內」。你看,做什麼、對什麼、什麼要求、什麼格式,全在裡面。你只是多花十秒鐘把話講齊,就省下後面三次「不對、再改」的來回。這十秒,是你整個過程裡最划算的十秒。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>一個提醒:prompt 是對話,不是咒語</h2>
+<div class="semoji">🗣️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>不用一次寫到完美</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>先講、看結果、再補一句</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它答歪了,通常是話還沒給夠</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後給你一個很重要的心態調整。很多人以為 prompt 是一種「咒語」,要一次唸對才有效,唸錯就完了。不是的。prompt 是「對話」。你不用一次寫到完美,你可以先講一版、看它給什麼、再補一句修正。它答歪了,先別急著怪它,回頭看看是不是你那句話還沒給夠。把它當成一個很聽話、但需要你講清楚的新同事,而不是一個要你唸對咒語的機器。這個心態,比任何技巧都重要。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>AI 做不好,先看你的 prompt 講清楚沒</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>四塊:做什麼、對什麼、什麼要求、什麼格式</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>同一個 AI,你的說法決定它的產出</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這集帶走一句話:下次 AI 做不好,先別急著換工具、也別急著罵它,先回頭看看你那句 prompt,有沒有講清楚。記得那四塊:做什麼、對什麼、有什麼要求、要什麼格式。把它們講齊,大部分問題當場就解決一半。同一個 AI,你的說法,決定它的產出。這是你用 AI 的第一個、也是最划算的技能。下一次,我們講當你把話講清楚之後,怎麼再給它足夠的『背景資訊』,那個叫 context。我們下次見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=WWg3EehX6Bo" target="_blank" rel="noopener">https://www.youtube.com/watch?v=WWg3EehX6Bo</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+

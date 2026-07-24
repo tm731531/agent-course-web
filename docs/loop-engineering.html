@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【L3·進階】Loop:讓 AI 自己做到好:你給一個做完的標準,它自己做→檢查→修,直到達標</title>
+<style>*{margin:0;box-sizing:border-box}body{margin:0}.totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent,#0ea5e9);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+<style>
+  .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;
+        --accent:#0ea5e9;--eyebrow:#64748b;
+        max-width:920px;margin:0 auto;padding:0 20px 80px;
+        font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+        color:var(--text);line-height:1.7;}
+  @media (prefers-color-scheme:dark){.deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}}
+  :root[data-theme="dark"] .deck{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;
+        --text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8;--eyebrow:#7c8ba1;}
+  :root[data-theme="light"] .deck{--bg:#f8fafc;--surface:#ffffff;--line:#e2e8f0;
+        --text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--eyebrow:#64748b;}
+  .deck{background:var(--bg);}
+  body{background:var(--bg,#0b1120);}
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:48px;}
+  .eyebrow{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--eyebrow);font-weight:600;}
+  .hero h1{font-size:clamp(2rem,5vw,3rem);line-height:1.15;margin:.4em 0 .3em;text-wrap:balance;font-weight:800;}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:60ch;}
+  .badges{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px;align-items:center;}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;
+        background:var(--surface);border:1px solid var(--line);font-size:.9rem;color:var(--muted);}
+  .yt{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+        background:var(--accent);color:#04121f;font-weight:700;text-decoration:none;font-size:.95rem;}
+  .yt:hover{filter:brightness(1.08);}
+  .slide{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:32px 32px 8px;margin:22px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .shead{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+  .snum{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+        font-weight:800;color:#04121f;font-size:1.1rem;}
+  .semoji{font-size:2rem;line-height:1;margin-left:auto;}
+  .shead h2{font-size:1.5rem;font-weight:800;margin:6px 0;line-height:1.25;text-wrap:balance;}
+  ul.cards{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px;}
+  ul.cards li{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+        background:color-mix(in srgb,var(--accent) 7%,transparent);border-left:4px solid var(--accent);
+        font-size:1.05rem;}
+  ul.cards li .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+        font-size:.85rem;font-weight:700;color:#04121f;}
+  details.script{margin:4px 0 20px;border-top:1px dashed var(--line);padding-top:12px;}
+  details.script summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;
+        letter-spacing:.03em;list-style:none;}
+  details.script summary::before{content:"▸ ";}
+  details.script[open] summary::before{content:"▾ ";}
+  details.script p{color:var(--muted);margin:12px 0 4px;font-size:1rem;}
+  .note{display:inline-block;margin:0 0 20px;padding:8px 16px;border-radius:10px;
+        background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);
+        font-weight:600;font-size:.95rem;}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;}
+  .foot a{color:var(--accent);}
+</style>
+
+<div class="deck">
+<header class="hero">
+<div class="eyebrow">從問 AI 到用 Agent · 🟡 進階</div>
+<h1>Loop:讓 AI 自己做到好</h1>
+<p class="lead">你給一個「做完的標準」,它自己做→檢查→修,直到達標</p>
+<div class="badges">
+<a class="yt" href="https://www.youtube.com/watch?v=jaB6mwrJGYY" target="_blank" rel="noopener">▶ 看影片</a>
+<span class="pill" style="border-color:var(--accent);color:var(--accent);font-weight:700">🎓 L3 進階</span>
+<span class="pill">🎬 10 個段落</span>
+<span class="pill">🀄 投影片 + 逐字稿</span>
+</div>
+<details class="script" open><summary>本集開場</summary><p>大家好,歡迎回到《從問 AI 到用 Agent》。前面兩集,我們把話講清楚、把背景給齊。但你有沒有發現,你還是得一步一步盯著它:做這個、好,再做那個。這一集要講的 loop,就是讓 AI 自己跑起來——你只給一個「做完長什麼樣」的標準,它自己做、自己檢查、自己修,直到達標。這是從「問 AI」跨到「用 Agent」最關鍵的一步,我們慢慢講。</p></details>
+</header>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">1</div>
+<h2>先想:你怎麼請人做事</h2>
+<div class="semoji">🧑‍🍳</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你請人整理一份報告</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不會每一個段落都站旁邊盯</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>他自己做完、自己檢查、再交給你</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>先想一個日常畫面。你請一個同事幫你整理一份報告,你會怎麼做?你不會搬張椅子坐他旁邊,每打一段就看一下、指揮一下。你會告訴他「要什麼、什麼算做好」,然後讓他自己去做、自己檢查、弄好了再交給你。你信任的是一個「會自己跑完一輪」的人。loop 要做的,就是把 AI 從「你一步步指揮的工具」,變成這樣一個「你交代完就自己跑完」的幫手。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">2</div>
+<h2>①Loop 是什麼</h2>
+<div class="semoji">🔁</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>AI 自己「做一版 → 檢查 → 修 → 再檢查」的循環</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>不是你問一句、它答一句就結束</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>它會繞好幾圈,直到達到你給的標準</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第一段,loop 是什麼。前面你跟 AI 是「一問一答」:你問一句,它答一句,結束。loop 不一樣,它是一個「循環」:AI 自己做一版、檢查對不對、發現問題就修、再檢查——一圈一圈繞,直到達到你要的標準才停。英文 loop 就是「迴圈」的意思。差別在這:一問一答只跑一次,loop 會自己繞很多圈。這就是為什麼有了 loop,它才叫得上 agent,一個能自己把事情做完的幫手。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">3</div>
+<h2>②怎麼運作:做→看→決定,再一圈</h2>
+<div class="semoji">⚙️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>做:先產出一版</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>看:檢查這版對不對、還差什麼</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>決定:沒達標就修,再繞一圈;達標就停</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第二段,這個循環怎麼轉。其實就三個動作,一直重複。第一,做:它先產出一版東西。第二,看:它回頭檢查這一版對不對、還差什麼。第三,決定:如果還沒達標,它就修一修,再繞一圈回到「做」;如果達標了,它就停下來,交給你。做、看、決定,做、看、決定——就這樣一圈一圈,直到好為止。你會發現,整個循環能不能正常停下來,全看第三步那個「達標了沒」怎麼判斷。這就帶到 loop 的靈魂。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">4</div>
+<h2>靈魂:它靠什麼知道「可以停了」</h2>
+<div class="semoji">🎯</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>循環要停,得有個「什麼叫做好」的標準</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>這個標準,是你要給的</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>給不出來,它就不知道何時該停</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>loop 的靈魂,在這一題:它到底靠什麼,知道「好了、可以停了」?答案是——靠你給它的那個「什麼叫做好」的標準。這個標準,不是 AI 自己會生出來的,是你要給的。你給得清楚,它就知道繞到哪一圈可以收工;你給不出來,它就永遠不知道什麼時候該停。所以 loop 用得好不好,槓桿其實不在 AI 多努力,而在你有沒有給出一個「它自己驗得了」的標準。這一點,是這整集最重要的一句話。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">5</div>
+<h2>重點:給「能跑出對或錯」的標準</h2>
+<div class="semoji">✅</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>模糊「整理到好」→ 好是什麼?它沒法自測</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>明確「每筆都有公司、零重複」→ 它自己驗得了</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>標準要能跑出 true / false,不是憑感覺</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>那什麼叫「好的標準」?關鍵是:它要能跑出「對」或「錯」,而不是憑感覺。你跟它說「整理到好」——什麼叫好?它沒辦法自己判斷,只能一直猜、一直改。但你如果說「每一筆都要有公司名、而且完全沒有重複」——這它自己驗得了:數一數、比一比,達標沒達標,清清楚楚。差別就在這:一個是模糊的感覺,一個是能跑出對或錯的標準。你把目標講成後者,loop 就會自己收斂到停;講成前者,它就一直空轉。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#38bdf8">6</div>
+<h2>③好處:你不用一步步盯</h2>
+<div class="semoji">✨</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>你只給「目標 + 達標標準」</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>中間的做、檢查、修,它自己來</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>你的角色從「操作員」變「出題的人」</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第三段,好處。一旦你給出一個它驗得了的標準,你就解放了。你只要給「目標,加上什麼叫達標」,中間那些做、檢查、修的苦工,它自己會繞。你不用再一步步盯著、一句句下指令。你的角色變了:從一個「操作員」,變成一個「出題目、訂驗收標準的人」。這其實就是你在職場帶人的能力——你不會幫下屬做每一步,你會把目標和驗收講清楚,然後讓他跑。用 agent,用的是同一套能力。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#34d399">7</div>
+<h2>反面教材:沒給標準,它改個沒完</h2>
+<div class="semoji">⚠️</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>我自己踩過:沒給明確的達標標準</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>它就一直改、一直改,停不下來</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>不是它壞,是它沒有一條「可以收工」的線</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>講個反面的,我自己真的踩過。有一次我讓 AI 幫我弄一個東西,我沒給它明確的「怎樣算完成」,只說「弄好一點」。結果它一直改、一直改,改出一版、我覺得還好、它又改一版,繞了非常久都停不下來,白白燒掉一堆時間。事後我才想通:不是它壞掉,是我從頭到尾,沒給它一條「跨過去就算完成、可以收工」的線。它想停也停不了,因為根本沒有終點。這個坑,幾乎每個開始用 agent 的人都會踩一次。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#fbbf24">8</div>
+<h2>④怎麼用:把目標寫成「驗得了」的</h2>
+<div class="semoji">🧩</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>問自己:做完我怎麼「檢查」它對?</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>能數的(數量)、能比的(格式)、能跑的(測試)</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把那個檢查,當成給它的完成標準</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>第四段,實際怎麼用,一句話:把你的目標,寫成一個「你自己驗得了」的樣子。方法很簡單,開工前先問自己一句:「做完之後,我要怎麼檢查它到底對不對?」答案通常是這幾種:能用數量檢查的(幾筆、幾個)、能用格式檢查的(是不是表格、有沒有這幾欄)、能用實際跑一次來檢查的。你把那個「檢查方式」,直接當成給 AI 的完成標準交給它。它就能自己一圈一圈跑,跑到通過那個檢查為止。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#a78bfa">9</div>
+<h2>一個區別:固定步驟不是 loop</h2>
+<div class="semoji">🚦</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>「第一步…第二步…」照做 = 流程,不是 loop</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>loop 的靈魂是「自己決定 + 自己知道何時停」</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>有步驟 ≠ 會自轉</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>最後釐清一個很多人會混的地方。如果你只是把「第一步做這、第二步做那」寫死,讓它照著跑——那是一條固定流程,不是真正的 loop。差別在哪?固定流程不會隨狀況調整,做完就做完。而 loop 的靈魂,是它「自己決定下一步要不要再繞、自己判斷什麼時候達標」。有步驟,不等於會自轉。下一集我們就會講,什麼時候該用「把步驟寫死」的流程、什麼時候該放手給 loop,那個對照叫 workflow。</p></details>
+</section>
+<section class="slide">
+<div class="shead">
+<div class="snum" style="background:#f472b6">10</div>
+<h2>這集帶走一句話</h2>
+<div class="semoji">💡</div>
+</div>
+<ul class="cards">
+<li style="border-left-color:#38bdf8;background:color-mix(in srgb,#38bdf8 8%,transparent)"><span class="dot" style="background:#38bdf8">1</span>loop = 讓 AI 自己做→檢查→修到達標</li>
+<li style="border-left-color:#34d399;background:color-mix(in srgb,#34d399 8%,transparent)"><span class="dot" style="background:#34d399">2</span>槓桿在你給的「標準」,不在 AI 多努力</li>
+<li style="border-left-color:#fbbf24;background:color-mix(in srgb,#fbbf24 8%,transparent)"><span class="dot" style="background:#fbbf24">3</span>把目標寫成能跑出對或錯的,它就會自己收斂</li>
+</ul>
+<details class="script"><summary>逐字稿</summary><p>這集帶走一句話:loop,就是讓 AI 自己做、自己檢查、自己修,直到達標。而它跑得好不好,槓桿不在 AI 多努力,在你給的那個「標準」講得夠不夠清楚。記得——把你的目標,寫成一個「能跑出對或錯」的樣子,它就會自己一圈一圈收斂到停;寫成模糊的感覺,它就會像我那次一樣,改個沒完。你出的題目,決定它跑不跑得完。下一集,我們講 loop 的雙胞胎:什麼時候該把步驟寫死,那個叫 workflow。我們下次見。</p></details>
+</section>
+<footer class="foot">
+完整影片:<a href="https://www.youtube.com/watch?v=jaB6mwrJGYY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=jaB6mwrJGYY</a><br>
+📚 <a href="index.html">回課綱總表 →</a><br>
+《從問 AI 到用 Agent:一個人的實戰升級》— 教學用網頁投影片。
+</footer>
+</div>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body>
+</html>
+
