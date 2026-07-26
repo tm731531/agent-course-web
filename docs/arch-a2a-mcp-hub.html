@@ -65,7 +65,7 @@ flowchart LR
   A["🔌 A2A<br/>自描述介面<br/>終結 N×M"]:::t1
   M["🧩 MCP<br/>統一工具面<br/>最低管理"]:::t2
   H["🗼 Hub<br/>統籌治理<br/>單一入口"]:::t3
-  B -->|同後端要給多 agent| A -->|要統一入口 + 授權| M -->|MCP 多到各自管失控| H
+  B -->|"同後端要給多 agent"| A -->|"要統一入口 + 授權"| M -->|"MCP 多到各自管失控"| H
   classDef t0 fill:#f4e6d2,stroke:#b8722c,color:#5a3d1a,stroke-width:2px
   classDef t1 fill:#fdecd2,stroke:#c88a3a,color:#5a3d1a,stroke-width:2px
   classDef t2 fill:#d7eff1,stroke:#2aa5a0,color:#0b3a40,stroke-width:2px
@@ -103,8 +103,8 @@ flowchart TB
   S1[("老系統")]:::sys
   S2[("老系統")]:::sys
   AG1 --> H1
-  AG2 -->|直接掛 MCP| M2
-  AG3 -->|直接打 A2A| A3
+  AG2 -->|"直接掛 MCP"| M2
+  AG3 -->|"直接打 A2A"| A3
   H1 --> M1
   H1 --> M2
   H2 -.長官要的.-> M3
@@ -153,11 +153,11 @@ flowchart TB
   end
   L1["🔌 A2A · 薄(零改動)<br/>用它本來的服務帳號<br/>不知道 Hub 存在"]:::leaf
   L2["🔌 raw API · 薄(零改動)<br/>本來的 API key"]:::leaf
-  C -->|① 身分| G
+  C -->|"① 身分"| G
   D --> G
-  G -->|② 放行| V
-  V ==>|③ 注入服務帳號| L1
-  V ==>|③ 注入 API key| L2
+  G -->|"② 放行"| V
+  V ==>|"③ 注入服務帳號"| L1
+  V ==>|"③ 注入 API key"| L2
   G --> AU
   class G decision
   classDef ag fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
@@ -213,12 +213,12 @@ flowchart TB
     L1["30 年 IBM AS/400"]:::infra
     L2["他廠系統 + 主/輔 DB"]:::infra
   end
-  U ==>|① 身分 · MCP over SSO| IDP
+  U ==>|"① 身分 · MCP over SSO"| IDP
   IDP --> PDP
   REG --> PDP
-  PDP -->|② 放行 → 取憑證| VAULT
+  PDP -->|"② 放行 → 取憑證"| VAULT
   PDP --> AUDIT
-  VAULT ==>|③ 注入服務帳號(預設粗)| W1
+  VAULT ==>|"③ 注入服務帳號(預設粗)"| W1
   VAULT ==> W2
   W1 --> L1
   W2 --> L2
