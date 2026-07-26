@@ -190,7 +190,7 @@ flowchart TB
     <tr><th>層</th><th>你實際寫什麼</th><th>性質</th><th>每個系統要重寫嗎</th></tr>
     <tr><td><b>A2A</b></td><td>Agent Card + 查詢 handler + 對後端的服務帳號 auth</td><td>真 domain code</td><td>✅ 每系統一份(真功夫在這)</td></tr>
     <tr><td><b>MCP</b></td><td>薄殼 + <code>list</code>/<code>describe</code>/<code>find</code>/<code>query</code> 四個通用工具 + 一份註冊表</td><td>殼寫一次;加系統 = 加資料</td><td>❌ 殼共用,只加註冊資料</td></tr>
-    <tr><td><b>Hub</b></td><td>SSO 設定 + policy 規則 + 目錄 DB + 憑證庫 + 稽核</td><td>設定 + 規則 + 資料,近乎零 domain code</td><td>❌ 用「組」的,加系統 = 登記一筆</td></tr>
+    <tr><td><b>Hub</b></td><td>身分聯邦(信任各家現有 SSO)+ policy 規則 + 目錄 DB + 憑證庫 + 稽核</td><td>設定 + 規則 + 資料,近乎零 domain code</td><td>❌ 用「組」的,加系統 = 登記一筆</td></tr>
   </table>
   <div class="steps">
     <div class="step"><div class="h"><span class="num">A</span><b>A2A —— 唯一真的要寫 code 的地方</b><span class="dir">厚</span></div>
@@ -198,7 +198,7 @@ flowchart TB
     <div class="step"><div class="h"><span class="num">M</span><b>MCP —— 它空,是因為它本來就該空</b><span class="dir">薄</span></div>
       <div class="bd">不是 domain 邏輯,是一個協議薄殼 + 四個通用工具(list/describe/find/query,寫一次全系統共用)+ 一份「掛了哪些 A2A/API」的註冊表。這就是「導向型 gateway」那一類——加一個系統只是在註冊表加一筆,不是寫新 code。</div></div>
     <div class="step"><div class="h"><span class="num">H</span><b>Hub —— 是「組」的,不是「寫」的</b><span class="dir">組裝</span></div>
-      <div class="bd">身分接 SSO(現成 library,設定)、目錄是一個 DB(存 metadata,你登記資料)、授權用現成 policy engine(你寫規則,不是 code)、憑證庫、稽核 log。你的工 = 設定 + 登記幾筆 + 寫幾條 policy。</div></div>
+      <div class="bd"><b>身分聯邦</b>:信任各家現有 SSO(OIDC/SAML,不建新的、不逼 16 家搬家)、目錄是一個 DB(存 metadata,你登記資料)、授權用現成 policy engine(你寫規則,不是 code)、憑證庫、稽核 log。你的工 = 設定 + 登記幾筆 + 寫幾條 policy。多法人集團尤其重要:Hub 執行法遵畫好的線,不自己決定誰能看哪家。</div></div>
   </div>
   <div class="callout"><b>一句話自檢:</b>如果你發現 MCP 或 Hub 裡要寫一堆「這系統怎麼查、那欄位怎麼授權」的 per-system 邏輯——<b>你做錯了,那些邏輯屬於 A2A</b>。MCP / Hub 越薄、越像「設定 / 資料」而不是「程式」,你就越省工。這正是「Hub 適應葉子、葉子零改動」的另一面:工全壓在 A2A(domain)+ 註冊資料,不散到上面兩層。</div>
 
