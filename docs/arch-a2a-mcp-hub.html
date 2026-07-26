@@ -51,7 +51,7 @@
   <header class="hero">
     <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
     <h1>A2A、MCP、Hub:同一個 Agent 問資料的四個檔位</h1>
-    <p class="lead">直接打 A2A、經過 MCP、還是走 Hub——底層都是同一件事:Agent 問資料。差別只在你用多少「直接」,去換多少「治理」。這頁把四個檔位的取捨,和 Hub 怎麼收上百個老系統,一次講清楚;而且你會發現,這其實是你很熟的 MVC 在重演。</p>
+    <p class="lead">直接打 A2A、經過 MCP、還是走 Hub——底層都是同一件事:Agent 問資料。差別只在你用多少「直接」,去換多少「治理」。這頁把四個檔位的取捨,和 Hub 怎麼收上百個老系統,一次講清楚;而且你會發現,這其實是你很熟的 MVC 在重演——但別忘了,現實不是乾淨的金字塔,而是一直長、會混雜的網。</p>
   </header>
 
   <h2>🎚️ 四個檔位:同一條線,不是四選一</h2>
@@ -129,6 +129,65 @@ flowchart TB
     </pre>
   </div>
   <p style="color:var(--muted);font-size:.95rem">心法:身分/授權/目錄/稽核<b>集中</b>在 Hub;A2A wrapper 由各系統自己長、自己維護(你不可能替一百隊寫幾千個)。既有系統與其使用者<b>完全不動</b>。授權兩道閘:Hub policy(ABAC)+ 系統擁有者背書;<code>auth_mode</code> 逐系統選 <code>service</code>(粗、預設)或 <code>obo</code>(細、身分下傳)。憑證永不進 AI 客戶端。</p>
+
+  <h2>🌿 現實不是乾淨的分層:野蠻生長 + 混雜</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">上面那張是<b>心智模型</b>——現實長出來的是這張。層界會糊掉、東西會一直長:同一種「層」出現在不同地方、包著不同東西,而且常常是被組織需求(某個長官一句話)推出來的。</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  AG1["🤖 agent"]:::ag
+  AG2["🤖 agent"]:::ag
+  AG3["🤖 agent"]:::ag
+  H1["🗼 Hub<br/>正規統籌"]:::hub
+  H2["🗼 Hub<br/>長官一句話開的"]:::hubx
+  M1["🧩 MCP<br/>串一堆 raw API"]:::mcp
+  M2["🧩 MCP<br/>收一堆 A2A"]:::mcp
+  M3["🧩 MCP<br/>混:API + A2A"]:::mcp
+  A1(["A2A"]):::a2a
+  A2(["A2A"]):::a2a
+  A3(["A2A"]):::a2a
+  A4(["A2A"]):::a2a
+  A5(["… 野蠻生長<br/>一個 DB 長 20~30 個"]):::a2a
+  P1["🔌 raw API"]:::api
+  P2["🔌 raw API"]:::api
+  S1[("老系統")]:::sys
+  S2[("老系統")]:::sys
+  AG1 --> H1
+  AG2 -->|直接掛 MCP| M2
+  AG3 -->|直接打 A2A| A3
+  H1 --> M1
+  H1 --> M2
+  H2 -.長官要的.-> M3
+  H2 -.也直收 API.-> P1
+  M1 --> P1
+  M1 --> P2
+  M2 --> A1
+  M2 --> A2
+  M3 --> A4
+  M3 --> P2
+  A1 --> S1
+  A2 --> S1
+  A3 --> S2
+  A4 --> S2
+  A5 --> S1
+  classDef ag fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
+  classDef hub fill:#dbeafe,stroke:#2563eb,color:#17335e,stroke-width:2px
+  classDef hubx fill:#fde2e2,stroke:#dc2626,color:#7f1d1d,stroke-width:2px,stroke-dasharray:5 3
+  classDef mcp fill:#ede9fe,stroke:#7c3aed,color:#4c1d95,stroke-width:2px
+  classDef a2a fill:#fef3c7,stroke:#d97706,color:#78350f,stroke-width:2px
+  classDef api fill:#e5e9f0,stroke:#475569,color:#1e293b,stroke-width:2px
+  classDef sys fill:#f1f5f9,stroke:#94a3b8,color:#334155,stroke-width:2px
+    </pre>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>A2A 野蠻生長</b><span class="dir">數量會爆</span></div>
+      <div class="bd">一個 DB 就能長 20~30 個 A2A,各系統自己長、沒人統一攔。真實數量是幾千,不是幾十——這正是為什麼需要一個「目錄」。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>MCP 沒有固定形狀</b><span class="dir">層界糊掉</span></div>
+      <div class="bd">一個 MCP 可能只是串一堆 raw API、可能收一堆 A2A、也可能混著兩種。所以「MCP 是一層」是簡化——它其實是「把一組能力收成工具面」這件事,發生在很多不同位置。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>Hub 常是「被推出來」的</b><span class="dir">組織驅動</span></div>
+      <div class="bd">不是規劃好的頂點。常常是某個長官一句話,為了一個需求就開一個 Hub 點,底下建個 MCP 把 API 收上去。於是 Hub 不只一個,有正規的、也有臨時長出來的(圖中紅色虛線那顆)。</div></div>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem"><b>所以重點反過來更清楚:</b>你攔不住這種野蠻生長,也不該假裝它是乾淨金字塔。Hub 的真正價值,不是阻止生長,而是給這團「混雜且一直長」的東西一個<b>目錄 + 授權 + 稽核</b>的控制面,讓它可被發現、可被治理。<b>乾淨的四層是你主動選來馴服它的紀律,不是它天生的樣子——這也正是「分層是選擇,不是義務」的另一面。</b></p>
 
   <h2>🏛️ 其實這就是 Agent 版的 MVC</h2>
   <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">你不是在發明新東西——當年軟體從「SQL 寫進畫面」走到 MVC、Front Controller、API Gateway;現在 Agent 存取資料,用新名字重跑同一條路。</p>
