@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2A、MCP、Hub 怎麼選:Agent 問資料的四個檔位 | 從問 AI 到用 Agent</title>
+<style>
+  *{margin:0;box-sizing:border-box}
+  :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
+  @media(prefers-color-scheme:dark){:root{--bg:#0b1120;--surface:#111a2e;--line:#1e293b;--text:#e8eef7;--muted:#94a3b8;--accent:#38bdf8}}
+  body{background:var(--bg);color:var(--text);line-height:1.7;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px}
+  .hero{padding:60px 0 24px}
+  .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
+  .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
+  h2{font-size:1.3rem;margin:36px 0 14px}
+  .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
+    overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+  .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
+  .diagram .mermaid svg{max-width:100%;height:auto;background:#fbfcff}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 2px 22px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:.82rem;color:var(--muted)}
+  .legend .k{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .legend .s{width:20px;height:16px;flex:0 0 auto;border:2px solid;display:inline-block}
+  .legend .s.proc{background:#dbeafe;border-color:#2563eb;border-radius:4px}
+  .legend .s.data{background:#fef3c7;border-color:#d97706;border-radius:11px/8px}
+  .legend .s.decision{background:#ede9fe;border-color:#7c3aed;width:15px;height:15px;transform:rotate(45deg)}
+  .legend .s.result{background:#dcfce7;border-color:#16a34a;border-radius:999px}
+  .legend .s.infra{background:#e5e9f0;border-color:#475569;border-radius:4px;box-shadow:inset 0 0 0 2px #fbfcff, inset 0 0 0 4px #475569}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .step .h{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .step .num{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#04121f;font-weight:800;display:grid;place-items:center}
+  .step .h b{font-size:1.02rem}
+  .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+  .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 6px;border-radius:5px;font-size:.9em}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
+  .links .yt{background:var(--accent);color:#04121f}
+  .links .src{border:1px solid var(--line);color:var(--text)}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+  .archnav{margin-top:26px;color:var(--muted);font-size:.9rem}
+  .archnav a{color:var(--accent);text-decoration:none;font-weight:600}
+  .totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}
+</style></head>
+<body><div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
+    <h1>A2A、MCP、Hub:同一個 Agent 問資料的四個檔位</h1>
+    <p class="lead">直接打 A2A、經過 MCP、還是走 Hub——底層都是同一件事:Agent 問資料。差別只在你用多少「直接」,去換多少「治理」。這頁把四個檔位的取捨,和 Hub 怎麼收上百個老系統,一次講清楚;而且你會發現,這其實是你很熟的 MVC 在重演。</p>
+  </header>
+
+  <h2>🎚️ 四個檔位:同一條線,不是四選一</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">不是四選一,是同一個「Agent 問資料」動作、你要多少紀律的四個檔位。往右一格,多一分治理、少一分直接。箭頭上的字,是「什麼情況才該往上爬」。</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart LR
+  B["🔓 裸接<br/>raw API/DB<br/>最快 · 最裸"]:::t0
+  A["🔌 A2A<br/>自描述介面<br/>終結 N×M"]:::t1
+  M["🧩 MCP<br/>統一工具面<br/>最低管理"]:::t2
+  H["🗼 Hub<br/>統籌治理<br/>單一入口"]:::t3
+  B -->|同後端要給多 agent| A -->|要統一入口 + 授權| M -->|MCP 多到各自管失控| H
+  classDef t0 fill:#f4e6d2,stroke:#b8722c,color:#5a3d1a,stroke-width:2px
+  classDef t1 fill:#fdecd2,stroke:#c88a3a,color:#5a3d1a,stroke-width:2px
+  classDef t2 fill:#d7eff1,stroke:#2aa5a0,color:#0b3a40,stroke-width:2px
+  classDef t3 fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2.5px
+    </pre>
+  </div>
+  <table>
+    <tr><th>檔位</th><th>用意</th><th>取捨(得 / 付)</th><th>老 pattern</th></tr>
+    <tr><td><b>裸接</b></td><td>零基建最快,只適合一次性 spike</td><td>得:立刻能動 / 付:N×M、無授權無稽核</td><td>SQL 寫進畫面</td></tr>
+    <tr><td><b>A2A</b></td><td>後端自描述+標準化,一個 A2A 全體重用</td><td>得:可重用、藏醜 legacy / 付:多層維護、授權各自管</td><td>Adapter + Repository</td></tr>
+    <tr><td><b>MCP</b></td><td>一個域的統一入口 + 最低發現/授權</td><td>得:一點連線拿一組能力 / 付:多一跳、MCP 會長很多個</td><td>一組 Controller 路由</td></tr>
+    <tr><td><b>Hub</b></td><td>MCP 多了要統籌:身分/policy/目錄/稽核集中</td><td>得:唯一真相、跨系統可治理 / 付:又一跳、新單點、要建控制面</td><td>Front Controller / API Gateway</td></tr>
+  </table>
+
+  <h2>🗼 Hub 落地:中央控制面 + 分散資料面</h2>
+  <div class="legend">
+    <span class="k"><span class="s result"></span>消費端 Agent</span>
+    <span class="k"><span class="s proc"></span>Hub 控制面元件</span>
+    <span class="k"><span class="s decision"></span>授權引擎</span>
+    <span class="k"><span class="s data"></span>A2A wrapper</span>
+    <span class="k"><span class="s infra"></span>既有系統 / 憑證庫</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  U(["🤖 消費端 Agent<br/>Claude Code / Codex / Copilot"]):::result
+  subgraph HUB["🗼 MCP Hub · 中央控制面(集中)"]
+    direction TB
+    IDP["身分代理<br/>企業 SSO / OIDC"]:::proc
+    REG["A2A 註冊目錄<br/>list · describe · find"]:::proc
+    PDP{"授權引擎<br/>ABAC · 兩道閘"}
+    VAULT["憑證保管庫<br/>唯一有狀態元件"]:::infra
+    AUDIT["稽核 · 限流<br/>真人身分 log"]:::proc
+  end
+  subgraph A2ALAYER["🔌 A2A 層 · 各系統自己長(一個 DB→20~30 個)"]
+    W1["A2A · 客戶主檔"]:::data
+    W2["A2A · 庫存 / 財務"]:::data
+    Wn["… 可達數千"]:::data
+  end
+  subgraph SYS["🏢 既有系統 · 完全不動"]
+    L1["30 年 IBM AS/400<br/>綠幕 + 既有使用者"]:::infra
+    L2["他廠系統 + 主/輔 DB"]:::infra
+  end
+  U ==>|① MCP over SSO| IDP
+  IDP --> PDP
+  REG --> PDP
+  PDP -->|② allow → 取憑證| VAULT
+  PDP --> AUDIT
+  VAULT ==>|③ 服務帳號 / OBO 身分下傳| W1
+  VAULT ==> W2
+  W1 --> L1
+  W2 --> L2
+  Wn --> L2
+  class PDP decision
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+  style HUB fill:#f8fafc,stroke:#cbd5e1,color:#475569
+  style A2ALAYER fill:#fffdf5,stroke:#e6d3a3,color:#78621f
+  style SYS fill:#f8fafc,stroke:#cbd5e1,color:#475569
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">心法:身分/授權/目錄/稽核<b>集中</b>在 Hub;A2A wrapper 由各系統自己長、自己維護(你不可能替一百隊寫幾千個)。既有系統與其使用者<b>完全不動</b>。授權兩道閘:Hub policy(ABAC)+ 系統擁有者背書;<code>auth_mode</code> 逐系統選 <code>service</code>(粗、預設)或 <code>obo</code>(細、身分下傳)。憑證永不進 AI 客戶端。</p>
+
+  <h2>🏛️ 其實這就是 Agent 版的 MVC</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">你不是在發明新東西——當年軟體從「SQL 寫進畫面」走到 MVC、Front Controller、API Gateway;現在 Agent 存取資料,用新名字重跑同一條路。</p>
+  <table>
+    <tr><th>Agent 時代</th><th>古典 pattern</th><th>負責什麼</th></tr>
+    <tr><td>舊系統 / 資料庫</td><td><b>Model</b></td><td>資料本身(很多異質後端 = 很多 Model)</td></tr>
+    <tr><td>A2A</td><td><b>Controller</b>(Adapter + Repository)</td><td>轉接醜介面、給乾淨存取口(很多 A2A = 很多 Controller)</td></tr>
+    <tr><td>MCP server</td><td>一組 Controller 的路由</td><td>把一個域的能力收成統一工具面</td></tr>
+    <tr><td>Hub</td><td><b>Front Controller</b> / API Gateway</td><td>單一入口、集中授權 / 路由 / 記錄</td></tr>
+    <tr><td>消費端 Agent</td><td><b>View</b> / Client</td><td>把資料組成使用者要看的答案</td></tr>
+  </table>
+
+  <h2>🎯 該停哪格:規模 × 必要性</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">越高不是越好。每往上一格拿「直接」換「治理」——爬多高,由你的規模乘以必要性決定。</p>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>一次性探索 / spike</b><span class="dir">→ 裸接</span></div>
+      <div class="bd">零基建最快,別為它蓋基礎建設。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>單一系統要給 Agent 用</b><span class="dir">→ A2A</span></div>
+      <div class="bd">包成自描述介面,終結 N×M,一個 A2A 全體重用。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>一個域 / 團隊要管理性</b><span class="dir">→ MCP</span></div>
+      <div class="bd">統一工具面 + 最低發現/授權/限流,AI 工具插上就用。</div></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>集團級、多個 MCP、要治理</b><span class="dir">→ Hub</span></div>
+      <div class="bd">把橫切關注集中,單一入口跨全系統,新增系統只是註冊。</div></div>
+  </div>
+  <table>
+    <tr><th>兩個方向都是錯</th><th>後果</th></tr>
+    <tr><td>規模到了還在裸接</td><td>技術債:N×M 遲早爆,而且沒人查得到是誰動了資料</td></tr>
+    <tr><td>MCP 才一個就蓋 Hub</td><td>過度設計:控制面的維運成本養不回來</td></tr>
+  </table>
+  <p style="color:var(--muted);font-size:.95rem"><b>一句話:</b>你當然可以直接打 A2A——就像你當然可以 <code>new</code> 一個 Controller 直接問 DB,能動。問題從來不是「能不能」,是規模化之後誰管授權、誰查得到是誰動了資料、上百個系統 ×N 個 agent 的 N×M 誰來收拾。</p>
+
+  <div class="links">
+    <a class="yt" href="https://www.youtube.com/watch?v=-CE2R77GHFM">▶ 相關影片:A2A、MCP、Hub 怎麼選</a>
+    <a class="src" href="https://blog.tomting.com/2026/07/26/a2a-mcp-hub-layered-access-tradeoffs/">📖 完整文章</a>
+    <a class="src" href="arch-a2a.html">🪪 延伸:A2A 開放堆疊</a>
+  </div>
+
+  <p class="archnav">📚 <a href="index.html">回課綱總表 →</a></p>
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · A2A / MCP / Hub 分層。通用概念示意,不含任何公司 / 廠區 / 系統名 / 真實資料規模。</footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad:true,
+    theme:'base',
+    themeVariables:{
+      fontFamily:'-apple-system,"PingFang TC","Noto Sans TC",sans-serif',
+      fontSize:'16px', background:'#fbfcff',
+      lineColor:'#475569', edgeLabelBackground:'#ffffff',
+      primaryColor:'#dbeafe', primaryBorderColor:'#2563eb', primaryTextColor:'#17335e',
+      clusterBkg:'#f8fafc', clusterBorder:'#cbd5e1'
+    },
+    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:58, padding:14, useMaxWidth:true}
+  });
+</script>
+<button class="totop" onclick="window.scrollTo(0,0)" aria-label="回到最上面">↑</button>
+<script>addEventListener("scroll",function(){var b=document.querySelector(".totop");if(b)b.classList.toggle("show",scrollY>500)})</script>
+</body></html>
