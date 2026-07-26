@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A2A、MCP、Hub 怎麼選:Agent 問資料的四個檔位 | 從問 AI 到用 Agent</title>
+<title>A2A、MCP、Hub 怎麼選:省工的分層方法論 | 從問 AI 到用 Agent</title>
 <style>
   *{margin:0;box-sizing:border-box}
   :root{--bg:#f8fafc;--surface:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#0ea5e9;--code:#0d1117;--codetext:#c9d1d9}
@@ -13,7 +13,7 @@
   .eyebrow{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
   h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:800;line-height:1.15;margin:.3em 0}
   .lead{color:var(--muted);font-size:1.08rem;max-width:64ch}
-  h2{font-size:1.3rem;margin:36px 0 14px}
+  h2{font-size:1.3rem;margin:40px 0 14px}
   .diagram{background:#fbfcff;border:1px solid #dbe3ef;border-radius:18px;padding:22px 20px;margin:16px 0 10px;
     overflow-x:auto;box-shadow:0 1px 3px rgba(15,23,42,.06)}
   .diagram .mermaid{display:flex;justify-content:center;min-width:560px;background:#fbfcff}
@@ -34,6 +34,8 @@
   .step .h b{font-size:1.02rem}
   .step .h .dir{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
   .step .bd{padding:14px 18px;color:var(--muted);font-size:.95rem}
+  .callout{background:color-mix(in srgb,var(--accent) 8%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
+    border-radius:14px;padding:16px 20px;margin:18px 0;font-size:.98rem}
   table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;display:block;overflow-x:auto}
   th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
   th{background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
@@ -42,16 +44,16 @@
   .links a{padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.95rem}
   .links .yt{background:var(--accent);color:#04121f}
   .links .src{border:1px solid var(--line);color:var(--text)}
-  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
   .archnav{margin-top:26px;color:var(--muted);font-size:.9rem}
   .archnav a{color:var(--accent);text-decoration:none;font-weight:600}
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
   .totop{position:fixed;right:20px;bottom:20px;width:48px;height:48px;border-radius:999px;background:var(--accent);color:#04121f;border:none;cursor:pointer;font-size:1.5rem;font-weight:800;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}.totop.show{opacity:.92;pointer-events:auto}html{scroll-behavior:smooth}
 </style></head>
 <body><div class="wrap">
   <header class="hero">
     <div class="eyebrow">從問 AI 到用 Agent · 架構補充</div>
-    <h1>A2A、MCP、Hub:同一個 Agent 問資料的四個檔位</h1>
-    <p class="lead">直接打 A2A、經過 MCP、還是走 Hub——底層都是同一件事:Agent 問資料。差別只在你用多少「直接」,去換多少「治理」。這頁把四個檔位的取捨,和 Hub 怎麼收上百個老系統,一次講清楚;而且你會發現,這其實是你很熟的 MVC 在重演——但別忘了,現實不是乾淨的金字塔,而是一直長、會混雜的網。</p>
+    <h1>A2A、MCP、Hub 怎麼選:省工的分層方法論</h1>
+    <p class="lead">直接打 A2A、經過 MCP、還是走 Hub——底層都是同一件事:Agent 問資料。這頁講三件事:四個檔位的取捨、現實為什麼是一團野蠻生長的網,以及最關鍵的——<b>怎麼在不逼一百個老系統改一行的前提下,讓 Hub 幫你省工。</b>核心一句:<b>讓 Hub 適應葉子,不是葉子適應 Hub。</b></p>
   </header>
 
   <h2>🎚️ 四個檔位:同一條線,不是四選一</h2>
@@ -77,58 +79,6 @@ flowchart LR
     <tr><td><b>MCP</b></td><td>一個域的統一入口 + 最低發現/授權</td><td>得:一點連線拿一組能力 / 付:多一跳、MCP 會長很多個</td><td>一組 Controller 路由</td></tr>
     <tr><td><b>Hub</b></td><td>MCP 多了要統籌:身分/policy/目錄/稽核集中</td><td>得:唯一真相、跨系統可治理 / 付:又一跳、新單點、要建控制面</td><td>Front Controller / API Gateway</td></tr>
   </table>
-
-  <h2>🗼 Hub 落地:中央控制面 + 分散資料面</h2>
-  <div class="legend">
-    <span class="k"><span class="s result"></span>消費端 Agent</span>
-    <span class="k"><span class="s proc"></span>Hub 控制面元件</span>
-    <span class="k"><span class="s decision"></span>授權引擎</span>
-    <span class="k"><span class="s data"></span>A2A wrapper</span>
-    <span class="k"><span class="s infra"></span>既有系統 / 憑證庫</span>
-  </div>
-  <div class="diagram">
-    <pre class="mermaid">
-flowchart TB
-  U(["🤖 消費端 Agent<br/>Claude Code / Codex / Copilot"]):::result
-  subgraph HUB["🗼 MCP Hub · 中央控制面(集中)"]
-    direction TB
-    IDP["身分代理<br/>企業 SSO / OIDC"]:::proc
-    REG["A2A 註冊目錄<br/>list · describe · find"]:::proc
-    PDP{"授權引擎<br/>ABAC · 兩道閘"}
-    VAULT["憑證保管庫<br/>唯一有狀態元件"]:::infra
-    AUDIT["稽核 · 限流<br/>真人身分 log"]:::proc
-  end
-  subgraph A2ALAYER["🔌 A2A 層 · 各系統自己長(一個 DB→20~30 個)"]
-    W1["A2A · 客戶主檔"]:::data
-    W2["A2A · 庫存 / 財務"]:::data
-    Wn["… 可達數千"]:::data
-  end
-  subgraph SYS["🏢 既有系統 · 完全不動"]
-    L1["30 年 IBM AS/400<br/>綠幕 + 既有使用者"]:::infra
-    L2["他廠系統 + 主/輔 DB"]:::infra
-  end
-  U ==>|① MCP over SSO| IDP
-  IDP --> PDP
-  REG --> PDP
-  PDP -->|② allow → 取憑證| VAULT
-  PDP --> AUDIT
-  VAULT ==>|③ 服務帳號 / OBO 身分下傳| W1
-  VAULT ==> W2
-  W1 --> L1
-  W2 --> L2
-  Wn --> L2
-  class PDP decision
-  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
-  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
-  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
-  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
-  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
-  style HUB fill:#f8fafc,stroke:#cbd5e1,color:#475569
-  style A2ALAYER fill:#fffdf5,stroke:#e6d3a3,color:#78621f
-  style SYS fill:#f8fafc,stroke:#cbd5e1,color:#475569
-    </pre>
-  </div>
-  <p style="color:var(--muted);font-size:.95rem">心法:身分/授權/目錄/稽核<b>集中</b>在 Hub;A2A wrapper 由各系統自己長、自己維護(你不可能替一百隊寫幾千個)。既有系統與其使用者<b>完全不動</b>。授權兩道閘:Hub policy(ABAC)+ 系統擁有者背書;<code>auth_mode</code> 逐系統選 <code>service</code>(粗、預設)或 <code>obo</code>(細、身分下傳)。憑證永不進 AI 客戶端。</p>
 
   <h2>🌿 現實不是乾淨的分層:野蠻生長 + 混雜</h2>
   <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">上面那張是<b>心智模型</b>——現實長出來的是這張。層界會糊掉、東西會一直長:同一種「層」出現在不同地方、包著不同東西,而且常常是被組織需求(某個長官一句話)推出來的。</p>
@@ -183,11 +133,108 @@ flowchart TB
     <div class="step"><div class="h"><span class="num">1</span><b>A2A 野蠻生長</b><span class="dir">數量會爆</span></div>
       <div class="bd">一個 DB 就能長 20~30 個 A2A,各系統自己長、沒人統一攔。真實數量是幾千,不是幾十——這正是為什麼需要一個「目錄」。</div></div>
     <div class="step"><div class="h"><span class="num">2</span><b>MCP 沒有固定形狀</b><span class="dir">層界糊掉</span></div>
-      <div class="bd">一個 MCP 可能只是串一堆 raw API、可能收一堆 A2A、也可能混著兩種。所以「MCP 是一層」是簡化——它其實是「把一組能力收成工具面」這件事,發生在很多不同位置。</div></div>
+      <div class="bd">一個 MCP 可能只是串一堆 raw API、可能收一堆 A2A、也可能混著兩種。「MCP 是一層」是簡化——它其實是「把一組能力收成工具面」這件事,發生在很多不同位置。</div></div>
     <div class="step"><div class="h"><span class="num">3</span><b>Hub 常是「被推出來」的</b><span class="dir">組織驅動</span></div>
       <div class="bd">不是規劃好的頂點。常常是某個長官一句話,為了一個需求就開一個 Hub 點,底下建個 MCP 把 API 收上去。於是 Hub 不只一個,有正規的、也有臨時長出來的(圖中紅色虛線那顆)。</div></div>
   </div>
-  <p style="color:var(--muted);font-size:.95rem"><b>所以重點反過來更清楚:</b>你攔不住這種野蠻生長,也不該假裝它是乾淨金字塔。Hub 的真正價值,不是阻止生長,而是給這團「混雜且一直長」的東西一個<b>目錄 + 授權 + 稽核</b>的控制面,讓它可被發現、可被治理。<b>乾淨的四層是你主動選來馴服它的紀律,不是它天生的樣子——這也正是「分層是選擇,不是義務」的另一面。</b></p>
+
+  <h2>🪶 省工方法論:讓 Hub 適應葉子,不是葉子適應 Hub</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">關鍵陷阱:如果為了讓 Hub 能治理,就去逼每個 A2A 宣告憑證格式、接身分下傳、配合 Hub 的規矩——那你不是省工,是把工攤給一百個葉子。省工的來源,是<b>反過來:把所有不對稱的適配都吞進 Hub 這一層,讓葉子維持它本來薄薄的樣子。</b></p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  C["🤖 大佬 agent"]:::ag
+  subgraph HUB["🗼 Hub · 厚(吞下所有適配)"]
+    direction TB
+    G{"粗閘<br/>誰能連哪個 A2A"}
+    D["目錄<br/>要什麼憑證 · 給誰用<br/>(上架時記,非葉子自己寫)"]:::hubc
+    V["憑證庫<br/>出口注入服務帳號"]:::hubc
+    AU["稽核<br/>真人身分 log"]:::hubc
+  end
+  L1["🔌 A2A · 薄(零改動)<br/>用它本來的服務帳號<br/>不知道 Hub 存在"]:::leaf
+  L2["🔌 raw API · 薄(零改動)<br/>本來的 API key"]:::leaf
+  C -->|① 身分| G
+  D --> G
+  G -->|② 放行| V
+  V ==>|③ 注入服務帳號| L1
+  V ==>|③ 注入 API key| L2
+  G --> AU
+  class G decision
+  classDef ag fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
+  classDef hubc fill:#dbeafe,stroke:#2563eb,color:#17335e,stroke-width:2px
+  classDef decision fill:#ede9fe,stroke:#7c3aed,color:#4c1d95,stroke-width:2px
+  classDef leaf fill:#fef3c7,stroke:#d97706,color:#78350f,stroke-width:2px
+  style HUB fill:#f8fafc,stroke:#cbd5e1,color:#475569
+    </pre>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>不對稱原則:工往 Hub 集中,葉子零改動</b><span class="dir">閘道厚、後面薄</span></div>
+      <div class="bd">A2A / API 維持它本來的授權方式(服務帳號 / API key / 自己的登入),一行不改,也不用知道 Hub 存在。憑證放 Hub 保管庫、在出口注入——葉子收到的還是它本來認得的那組帳號。你原本的 stateless gateway 直覺就是這個:閘道厚一點,讓後面全部維持薄。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>宣告在 Hub,不在葉子</b><span class="dir">要求往上帶</span></div>
+      <div class="bd">「這個端點要什麼憑證、給誰用」是<b>上架時記進 Hub 的目錄</b>(六步上架表),不是叫 A2A 自己去寫卡。那筆 metadata 是 Hub 的資產,不是葉子的作業。Hub 一次學會門檻,之後不用每次跳下去問。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>預設粗粒度,細粒度 opt-in</b><span class="dir">別逼老系統做 per-user</span></div>
+      <div class="bd">Hub 只管「哪個大佬能連哪個 A2A」(系統 / 端點級)。連上後,A2A 用它本來的服務帳號回。<b>絕不預設逼老系統做 per-user 身分下傳(OBO)</b>。只有少數「本來就支援身分、又真的需要 row-level」的系統,才個別開 OBO——例外,不是預設。</div></div>
+    <div class="step"><div class="h"><span class="num">4</span><b>把代價講白:粒度 = 工,你按系統挑</b><span class="dir">沒有又省工又細粒度</span></div>
+      <div class="bd">粗:省工 + 葉子零改動 + 但那個大佬看得到整個系統。細:A2A / 系統要配合身分 + 對得起內稽,但很貴,而且需要葉子天生支援身分——30 年老系統多半沒有。所以逐系統挑,不是全域一刀切。</div></div>
+  </div>
+  <table>
+    <tr><th>授權粒度</th><th>葉子要做的事</th><th>你換到什麼</th><th>適合</th></tr>
+    <tr><td><b>粗</b>(<code>service</code>,預設)</td><td>零改動,用本來的服務帳號</td><td>省工;但連上就看得到整個系統</td><td>30 年 IBM 等做不了現代身分的絕大多數</td></tr>
+    <tr><td><b>細</b>(<code>obo</code>,opt-in)</td><td>要接身分下傳、跑 row-level 授權</td><td>對得起內稽;但很貴、只有支援身分的系統做得到</td><td>財務 / 人事等高敏、且本來就有身分機制的少數</td></tr>
+  </table>
+  <div class="callout"><b>一句話收:</b>你省的工,是「不逼一百個葉子改」;你付的,是「預設粗粒度」。這是唯一誠實的省工法——把不對稱的適配都吞進 Hub,讓每個葉子當它不知道 Hub 存在。至於「Hub 隔兩層怎麼知道葉子的授權?」——它不知道、也不需要知道:<b>門檻在上架時往上帶一次(metadata),真相留在葉子自己守(它本來就會)。Hub 從不跳兩層下去問。</b></div>
+
+  <h2>🗼 Hub 落地:中央控制面 + 分散資料面</h2>
+  <div class="legend">
+    <span class="k"><span class="s result"></span>消費端 Agent</span>
+    <span class="k"><span class="s proc"></span>Hub 控制面元件</span>
+    <span class="k"><span class="s decision"></span>授權引擎(粗閘)</span>
+    <span class="k"><span class="s data"></span>A2A wrapper(薄)</span>
+    <span class="k"><span class="s infra"></span>既有系統 / 憑證庫</span>
+  </div>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  U(["🤖 消費端 Agent<br/>Claude Code / Codex / Copilot"]):::result
+  subgraph HUB["🗼 MCP Hub · 中央控制面(集中所有適配)"]
+    direction TB
+    IDP["身分代理<br/>企業 SSO / OIDC"]:::proc
+    REG["A2A 註冊目錄<br/>要什麼憑證 · 給誰用"]:::proc
+    PDP{"授權引擎<br/>粗閘 · ABAC"}
+    VAULT["憑證保管庫<br/>唯一有狀態元件"]:::infra
+    AUDIT["稽核 · 限流<br/>真人身分 log"]:::proc
+  end
+  subgraph A2ALAYER["🔌 A2A 層 · 薄 · 各系統自己長(零改動)"]
+    W1["A2A · 客戶主檔"]:::data
+    W2["A2A · 庫存 / 財務"]:::data
+    Wn["… 可達數千"]:::data
+  end
+  subgraph SYS["🏢 既有系統 · 完全不動"]
+    L1["30 年 IBM AS/400"]:::infra
+    L2["他廠系統 + 主/輔 DB"]:::infra
+  end
+  U ==>|① 身分 · MCP over SSO| IDP
+  IDP --> PDP
+  REG --> PDP
+  PDP -->|② 放行 → 取憑證| VAULT
+  PDP --> AUDIT
+  VAULT ==>|③ 注入服務帳號(預設粗)| W1
+  VAULT ==> W2
+  W1 --> L1
+  W2 --> L2
+  Wn --> L2
+  class PDP decision
+  classDef result fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+  classDef proc fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#17335e
+  classDef decision fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+  classDef data fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
+  classDef infra fill:#e5e9f0,stroke:#475569,stroke-width:2px,color:#1e293b
+  style HUB fill:#f8fafc,stroke:#cbd5e1,color:#475569
+  style A2ALAYER fill:#fffdf5,stroke:#e6d3a3,color:#78621f
+  style SYS fill:#f8fafc,stroke:#cbd5e1,color:#475569
+    </pre>
+  </div>
+  <p style="color:var(--muted);font-size:.95rem">身分 / 授權 / 目錄 / 稽核<b>集中</b>在 Hub;A2A wrapper <b>薄、零改動</b>,由各系統自己長。既有系統與其使用者<b>完全不動</b>。授權兩道閘:Hub 粗閘(ABAC)+ 系統擁有者背書;憑證永不進 AI 客戶端,在 Hub 出口注入。</p>
 
   <h2>🏛️ 其實這就是 Agent 版的 MVC</h2>
   <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">你不是在發明新東西——當年軟體從「SQL 寫進畫面」走到 MVC、Front Controller、API Gateway;現在 Agent 存取資料,用新名字重跑同一條路。</p>
@@ -226,7 +273,7 @@ flowchart TB
   </div>
 
   <p class="archnav">📚 <a href="index.html">回課綱總表 →</a></p>
-  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · A2A / MCP / Hub 分層。通用概念示意,不含任何公司 / 廠區 / 系統名 / 真實資料規模。</footer>
+  <footer class="foot">《從問 AI 到用 Agent》架構補充頁 · A2A / MCP / Hub 分層與省工方法論。通用概念示意,不含任何公司 / 廠區 / 系統名 / 真實資料規模。</footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script>
