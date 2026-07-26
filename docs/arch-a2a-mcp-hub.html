@@ -254,6 +254,48 @@ flowchart TB
   </div>
   <p style="color:var(--muted);font-size:.95rem">身分 / 授權 / 目錄 / 稽核<b>集中</b>在 Hub;A2A wrapper <b>薄、零改動</b>,由各系統自己長。既有系統與其使用者<b>完全不動</b>。授權兩道閘:Hub 粗閘(ABAC)+ 系統擁有者背書;憑證永不進 AI 客戶端,在 Hub 出口注入。</p>
 
+  <h2>🏢 真實案例:16 家上市公司怎麼聯邦</h2>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">情境:一個集團 16 家上市公司、4 套 ERP、30 個 WMS、10 個 HR,長出上千個各有 domain 的 API。集團長要快速跨公司看資料。這裡最容易做錯的一步,就是「把一個 SSO 放 Hub 上」——16 家是獨立法人,各有各的 SSO,你逼不動、法遵也不會過。</p>
+  <div class="diagram">
+    <pre class="mermaid">
+flowchart TB
+  BOSS(["🤵 集團長<br/>用自己公司帳號登入"]):::result
+  subgraph GHUB["🗼 集團 Hub · 身分聯邦 + 目錄 + 粗閘 + 稽核"]
+    direction TB
+    FED["身分聯邦 broker<br/>信任 16 家現有 SSO"]:::proc
+    GOV{"治理閘<br/>法遵畫的線"}
+    DIR["目錄 + 稽核<br/>誰何時看了哪家的什麼"]:::proc
+  end
+  subgraph CO["16 家上市公司 · 各留各的身分,不搬家"]
+    MA["A 公司 MCP<br/>A 的 SSO / API / A2A"]:::mcp
+    MB["B 公司 MCP<br/>B 的 SSO / API / A2A"]:::mcp
+    MN["… 共 16 家"]:::mcp
+  end
+  BOSS ==>|"經自家 SSO"| FED
+  FED --> GOV
+  DIR --> GOV
+  GOV ==>|"只放行法遵允許的"| MA
+  GOV ==> MB
+  GOV ==> MN
+  class GOV decision
+  classDef result fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
+  classDef proc fill:#dbeafe,stroke:#2563eb,color:#17335e,stroke-width:2px
+  classDef decision fill:#ede9fe,stroke:#7c3aed,color:#4c1d95,stroke-width:2px
+  classDef mcp fill:#fef3c7,stroke:#d97706,color:#78350f,stroke-width:2px
+  style GHUB fill:#f8fafc,stroke:#cbd5e1,color:#475569
+  style CO fill:#fffdf5,stroke:#e6d3a3,color:#78621f
+    </pre>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="h"><span class="num">1</span><b>16 家各留自己的 SSO,Hub 只「聯邦」</b><span class="dir">身分適應葉子</span></div>
+      <div class="bd">Hub 上放的不是一個 SSO,是身分聯邦 broker——信任那 16 個現有 SSO(OIDC/SAML),不取代。集團長用他自己公司的帳號登入,broker 認得、換發統一 session。這就是「Hub 適應葉子」套在身分上。</div></div>
+    <div class="step"><div class="h"><span class="num">2</span><b>Hub 收的是各家 MCP,不是那 1000 個 API</b><span class="dir">聯邦的聯邦</span></div>
+      <div class="bd">每家自己那台 MCP / gateway 收自家的 API + A2A;集團 Hub 聚合 16 家的 MCP,不直接碰上千個 API。所以 Hub 還是薄:身分聯邦 + 目錄 + 粗閘 + 稽核,零 domain。</div></div>
+    <div class="step"><div class="h"><span class="num">3</span><b>跨公司存取,先過法遵——Hub 執行,不決定</b><span class="dir">治理先於技術</span></div>
+      <div class="bd">上市公司有資訊隔離牆、關係人交易、內線交易規範;各家資料主權在各家。集團長能看哪家、哪些,是法務+稽核畫的線,不是技術打通就能拿。Hub 的授權層執行「治理層宣告好的規則」,並把「誰何時看了哪家的什麼」全稽核起來——這對上市公司是命。</div></div>
+  </div>
+  <div class="callout"><b>一句話:</b>SSO 不放 Hub,放的是信任 16 個 SSO 的<b>聯邦 broker</b>;集團長跨 16 家看資料,技術只是最後一哩,前面 90% 是<b>法遵先畫線、Hub 忠實執行 + 全稽核</b>。</div>
+
   <h2>🏛️ 其實這就是 Agent 版的 MVC</h2>
   <p style="color:var(--muted);font-size:.95rem;margin-bottom:6px">你不是在發明新東西——當年軟體從「SQL 寫進畫面」走到 MVC、Front Controller、API Gateway;現在 Agent 存取資料,用新名字重跑同一條路。</p>
   <table>
